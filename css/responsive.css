@@ -1,0 +1,258 @@
+/* =========================
+   ESTILOS BASE (Mobile First)
+   320px - 480px
+   ========================= */
+* {
+  /*outline: 1px solid red;*/
+}
+
+body {
+  font-size: 14px;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+h2, h4, label, input, select  {
+  color: #175AA0 !important;
+}
+
+label{
+  font-weight: bold;
+}
+
+.botonDeFormulario, .botonInformeMensual{
+  color: #fff;
+  background-color: #175AA0;
+}
+
+.botonDeFormulario:hover,  
+.botonDeFormulario:focus,
+.botonInformeMensual:hover,
+.botonInformeMensual:focus {
+    background-color: #fff;
+    color: #175AA0;
+    border: 2px solid #175AA0;
+}
+
+.parrafoInforme{
+  color: #175AA0;
+}
+
+#barraDeNavegacionDeInicio {
+  background-color: #175AA0;
+}
+
+#barraDeNavegacionDeInicio a{
+  color: #fff;
+  font-weight: bold;
+}
+
+#barraDeNavegacionDeInicio li:hover{
+  background-color: #fff;
+}
+
+#barraDeNavegacionDeInicio li:hover a{
+  color: #175AA0;
+}
+
+#barraDeNavegacionDeInicio a svg{
+  fill: #fff;
+}
+
+#barraDeNavegacionDeInicio li:hover svg{
+  fill: #175AA0;
+}
+
+#formVariablesEconomicas input, 
+#formVariablesEconomicas select {
+  border: 1px solid #175AA0;
+}
+
+#formVariablesEconomicas {
+  border: 2px solid #175AA0;
+}
+
+/* Versión simplificada (PRO) */
+@media (min-width: 320px) { 
+
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  canvas{
+    max-width: 100%;
+  }
+
+  h2 {
+    font-size: 2rem;
+  }
+
+  .botonDeFormulario {
+    border-radius: 1rem;
+    width: 100%;
+    height: 4rem;
+    font-size: 1.6rem;
+  }
+
+  .iconoDeDescarga{
+    height: 1.6rem;
+    width: 1.6rem;
+  }
+
+  .portadaDeInformeMensual {
+    width: 10rem;
+  }
+
+  .botonInformeMensual {
+    border-radius: 0.7rem;
+    width: 60%;
+    height: 2.5rem;
+    font-size: 1rem;
+  }
+
+  #barraDeNavegacionDeInicio a svg{
+    width: 2.2rem;
+    height: 2.2rem;
+  }
+
+  #barraDeInicio li {
+    height: 4rem;
+  }
+
+  #barraDeInicio li a {
+    font-size: 1.6rem;
+  }
+
+  #home, #somos, #informes {
+    border: 1px solid #0C2F54;
+    border-bottom: none;
+    height: 2rem;
+  }
+
+  #censos{
+    border: 1px solid #0C2F54;
+    height: 2rem;
+  }
+
+  #formVariablesEconomicas {
+    border-radius: 1rem;
+    padding-top: 1rem;
+    padding-bottom: 2rem;
+  }
+
+  #tituloFormularioVariablesEconomicas {
+    font-size: 1.3rem;
+  }
+
+  #tituloPanelDeDatos{
+    font-size: 1rem;
+  }
+
+  #formVariablesEconomicas button{
+    height: 2.5rem;
+    font-size: 1.1rem;
+  }
+
+  #yearInformeSeleccionado, #periodoInformeSelecionado {
+    font-size: 1.1rem;
+  }
+
+  #botonDescargarInformeSeleccionado{
+    font-size: 1.3rem;
+    height: 3rem;
+  }
+
+  #contenedorLienzoDeMapa{
+    scroll: scroll-x;
+    min-width: 200%;
+    height: 20rem;
+  }
+
+  #graficoVariablesEconomicas{
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+}/*FIN @media (min-width: 480px)*/
+
+@media (min-width: 768px) { 
+
+  .imagenVariableEconomica {
+    height: 35rem;
+    width: 35rem;
+  }
+
+  #home {
+    border: 1px solid #0C2F54;
+    height: 2rem;
+  }
+
+  #somos {
+    border: 1px solid #0C2F54;
+    height: 2rem;
+  }
+
+  #informes {
+    border: 1px solid #0C2F54;
+    border-top: none;
+    height: 2rem;
+  }
+
+  #censos{
+    border: 1px solid #0C2F54;
+    border-top: none;
+    height: 2rem;
+  }
+
+  #botonMostrarVariablesEconomicas, 
+  #botonMostrarPanelDeDatos {
+    max-width: 77%;
+  }
+
+  #formVariablesEconomicas {
+    border-radius: 1rem;
+    padding-top: 1rem;
+    padding-bottom: 2rem;
+    max-width: 77%;
+  }
+
+  #tituloFormularioVariablesEconomicas {
+    font-size: 1.3rem;
+  }
+
+  #tituloPanelDeDatos{
+    font-size: 1rem;
+  }
+
+  #formVariablesEconomicas button{
+    height: 2.5rem;
+    font-size: 1.1rem;
+  }
+
+  #yearInformeSeleccionado, #periodoInformeSelecionado {
+    font-size: 1.1rem;
+  }
+
+  #botonDescargarInformeSeleccionado{
+    font-size: 1.3rem;
+    height: 3rem;
+  }
+
+  #contenedorLienzoDeMapa{
+    scroll: scroll-x;
+    min-width: 100%;
+    height: 25rem;
+  }
+
+  #graficoVariablesEconomicas{
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+}
+@media (min-width: 1024px) { }
+@media (min-width: 1366px) { }
+@media (min-width: 1920px) { }
