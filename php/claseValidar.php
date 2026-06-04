@@ -46,22 +46,6 @@ class Validar {
 						           			   'valorAbsolutoMinimo'=>0,
 						         		 	   'valorAbsolutoMaximo'=>0],
 
-									'clave'=>['obligatorio'=>true,
-						          			  'longitudMinima'=>4,
-						          			  'longitudMaxima'=>40,
-						          			  'caracteresPermitidos'=>'/^[a-zA-Z0-9]+$/',
-						          			  'verificarValorNumerico'=>false,
-						          			  'valorAbsolutoMinimo'=>0,
-						         		 	  'valorAbsolutoMaximo'=>0],
-
-									'apellido'=>['obligatorio'=>true,
-						           	 			 'longitudMinima'=>2,
-						           	 			 'longitudMaxima'=>20,
-						           	 			 'caracteresPermitidos'=>'/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s\n\/.,\-()"' . "'°]+$/u",
-						           	 			 'verificarValorNumerico'=>false,
-						          			     'valorAbsolutoMinimo'=>0,
-						         		 	     'valorAbsolutoMaximo'=>0],
-
 									'nombre'=>['obligatorio'=>true,
 						           			   'longitudMinima'=>2,
 						           			   'longitudMaxima'=>30,
@@ -70,488 +54,29 @@ class Validar {
 						          			   'valorAbsolutoMinimo'=>0,
 						         		 	   'valorAbsolutoMaximo'=>0],
 
-									'nombreDeCalle'=>['obligatorio'=>true,
-						           		              'longitudMinima'=>2,
-						           		              'longitudMaxima'=>30,
-						           		              'caracteresPermitidos'=>'/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s\n\/.,\-()"' . "'°]+$/u",
-						           		              'verificarValorNumerico'=>false,
-						          			          'valorAbsolutoMinimo'=>0,
-						         		 	          'valorAbsolutoMaximo'=>0],
-
-									'descripcion'=>['obligatorio'=>true,
-						           					'longitudMinima'=>2,
-						           					'longitudMaxima'=>140,
-						           					'caracteresPermitidos'=>'/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s\n\/.,\-()"' . "'°]+$/u",
-						           				    'verificarValorNumerico'=>false,
-						          			        'valorAbsolutoMinimo'=>0,
-						         		 	        'valorAbsolutoMaximo'=>0],
-
 						         	'fecha'=>['obligatorio'=>true,
 						           			  'longitudMinima'=>8,
 						           			  'longitudMaxima'=>10,
 						           			  'caracteresPermitidos'=>'/^[0-9-]+$/',
 						           			  'verificarValorNumerico'=>false,
 						          			  'valorAbsolutoMinimo'=>0,
-						         		 	  'valorAbsolutoMaximo'=>0],
-
-									'altura'=>['obligatorio'=>true,
-						           			   'longitudMinima'=>1,
-						           			   'longitudMaxima'=>7,
-						           			   'caracteresPermitidos'=>'/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s\n\/.,\-()"' . "'°]+$/u",
-						           			   'verificarValorNumerico'=>false,
-						          			   'valorAbsolutoMinimo'=>0,
-						         		 	   'valorAbsolutoMaximo'=>0],
-
-						            'manzanaSector'=>['obligatorio'=>false,
-						           		              'longitudMinima'=>0,
-						           		              'longitudMaxima'=>4,
-						           		              'caracteresPermitidos'=>'/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s\n\/.,\-()"' . "'°]+$/u",
-						           		              'verificarValorNumerico'=>false,
-						          			          'valorAbsolutoMinimo'=>0,
-						         		 	          'valorAbsolutoMaximo'=>0],
-
-						            'edificio'=>['obligatorio'=>false,
-						                         'longitudMinima'=>0,
-						                         'longitudMaxima'=>3,
-						                         'caracteresPermitidos'=>'/^[a-zA-Z0-9]+$/',
-						                         'verificarValorNumerico'=>false,
-						          			     'valorAbsolutoMinimo'=>0,
-						         		 	     'valorAbsolutoMaximo'=>0],
-
-						            'entrada'=>['obligatorio'=>false,
-						                        'longitudMinima'=>0,
-						                        'longitudMaxima'=>1,
-						                        'caracteresPermitidos'=>'/^[a-zA-Z0-9]+$/',
-						                        'verificarValorNumerico'=>false,
-						          			    'valorAbsolutoMinimo'=>0,
-						         		 	    'valorAbsolutoMaximo'=>0],
-
-						            'piso'=>['obligatorio'=>false,
-						                     'longitudMinima'=>0,
-						                     'longitudMaxima'=>2,
-						                     'caracteresPermitidos'=>'/^[a-zA-Z0-9]+$/',
-						                     'verificarValorNumerico'=>false,
-						          			 'valorAbsolutoMinimo'=>0,
-						         		 	 'valorAbsolutoMaximo'=>0],
-
-						            'departamentoHabitacion'=>['obligatorio'=>false,
-						         				               'longitudMinima'=>0,
-						         				               'longitudMaxima'=>3,
-						         				               'caracteresPermitidos'=>'/^[a-zA-Z0-9]+$/',
-						         				               'verificarValorNumerico'=>false,
-						          			                   'valorAbsolutoMinimo'=>0,
-						         		 	                   'valorAbsolutoMaximo'=>0],
-
-						       		'casaLote'=>['obligatorio'=>false,
-						         				 'longitudMinima'=>0,
-						         				 'longitudMaxima'=>3,
-						         				 'caracteresPermitidos'=>'/^[a-zA-Z0-9]+$/',
-						         				 'verificarValorNumerico'=>true,
-						          			     'valorAbsolutoMinimo'=>0,
-						         		 	     'valorAbsolutoMaximo'=>999],
-
-						         	'tipoDeUsuario'=>['obligatorio'=>false,
-						         				      'longitudMinima'=>4,
-						         				      'longitudMaxima'=>20,
-						         				      'caracteresPermitidos'=>'/^[a-zA-Z0-9]+$/',
-						         				      'verificarValorNumerico'=>false,
-						          			          'valorAbsolutoMinimo'=>0,
-						         		 	          'valorAbsolutoMaximo'=>0],
-
-						            'numeroDeVivienda'=>['obligatorio'=>true,
-						         			             'longitudMinima'=>4,
-						         			             'longitudMaxima'=>4,
-						         		                 'caracteresPermitidos'=>'/^[0-9]+$/',
-						         		                 'verificarValorNumerico'=>true,
-						         		 	             'valorAbsolutoMinimo'=>1,
-						         		 	             'valorAbsolutoMaximo'=>9999],
-
-						            'manzana'=>['obligatorio'=>true,
-						         	            'longitudMinima'=>3,
-						         	            'longitudMaxima'=>3,
-						         	            'caracteresPermitidos'=>'/^[0-9]+$/',
-						         	            'verificarValorNumerico'=>true,
-						         	            'valorAbsolutoMinimo'=>1,
-						         	            'valorAbsolutoMaximo'=>999],
-
-						            'lado'=>['obligatorio'=>true,
-						                     'longitudMinima'=>1,
-						                     'longitudMaxima'=>2,
-						                     'caracteresPermitidos'=>'/^[0-9]+$/',
-						                     'verificarValorNumerico'=>true,
-						                     'valorAbsolutoMinimo'=>1,
-						                     'valorAbsolutoMaximo'=>99],
-
-						            'codigoDeCalle'=>['obligatorio'=>true,
-						                     		  'longitudMinima'=>1,
-						                     		  'longitudMaxima'=>5,
-						                     		  'caracteresPermitidos'=>'/^[0-9]+$/',
-						                     		  'verificarValorNumerico'=>false,
-						                     		  'valorAbsolutoMinimo'=>0,
-						                     		  'valorAbsolutoMaximo'=>0],
-
-						            'idNombreDeCalle'=>['obligatorio'=>true,
-						         		         		'longitudMinima'=>1,
-						         		         		'longitudMaxima'=>6,
-						         		         		'caracteresPermitidos'=>'/^[0-9]+$/',
-						         		         		'verificarValorNumerico'=>true,
-						         		         		'valorAbsolutoMinimo'=>1,
-						         		         		'valorAbsolutoMaximo'=>999999],
-
-						            'idSesion'=>['obligatorio'=>true,
-						         		         'longitudMinima'=>1,
-						         		         'longitudMaxima'=>3,
-						         		         'caracteresPermitidos'=>'/^[0-9]+$/',
-						         		         'verificarValorNumerico'=>true,
-						         		         'valorAbsolutoMinimo'=>1,
-						         		         'valorAbsolutoMaximo'=>999],
-
-						            'idCodigoCalle'=>['obligatorio'=>true,
-						         		              'longitudMinima'=>1,
-						         		              'longitudMaxima'=>8,
-						         		              'caracteresPermitidos'=>'/^[0-9]+$/',
-						         		              'verificarValorNumerico'=>true,
-						         		              'valorAbsolutoMinimo'=>1,
-						         		              'valorAbsolutoMaximo'=>99999999],
-
-						            'idTipoDeVivienda'=>['obligatorio'=>true,
-						         		                 'longitudMinima'=>1,
-						         		                 'longitudMaxima'=>2,
-						         		                 'caracteresPermitidos'=>'/^[0-9]+$/',
-						         		                 'verificarValorNumerico'=>true,
-						         		  	             'valorAbsolutoMinimo'=>1,
-						         		  	             'valorAbsolutoMaximo'=>25],
-
-						            'idActividadEconomica'=>['obligatorio'=>true,
-						         		                     'longitudMinima'=>1,
-						         		                     'longitudMaxima'=>2,
-						         		                     'caracteresPermitidos'=>'/^[0-9]+$/',
-						         		                     'verificarValorNumerico'=>true,
-						         		  	 	             'valorAbsolutoMinimo'=>1,
-						         		  	 	             'valorAbsolutoMaximo'=>8],
-
-						            'idPlanilla'=>['obligatorio'=>true,
-						         	               'longitudMinima'=>1,
-						         	               'longitudMaxima'=>11,
-						         	               'caracteresPermitidos'=>'/^[0-9]+$/',
-						         	               'verificarValorNumerico'=>true,
-						         	               'valorAbsolutoMinimo'=>1,
-						         	               'valorAbsolutoMaximo'=>99999999999],
-
-									'idVivienda'=>['obligatorio'=>true,
-						         	               'longitudMinima'=>1,
-						         	               'longitudMaxima'=>11,
-						         	               'caracteresPermitidos'=>'/^[0-9]+$/',
-						         	               'verificarValorNumerico'=>true,
-						         	               'valorAbsolutoMinimo'=>1,
-						         	               'valorAbsolutoMaximo'=>99999999999],
-
-						         	'idProvincia'=>['obligatorio'=>true,
-						         					'longitudMinima'=>1,
-						         	                'longitudMaxima'=>2,
-						         	                'caracteresPermitidos'=>'/^[0-9]+$/',
-						         	                'verificarValorNumerico'=>true,
-						         	                'valorAbsolutoMinimo'=>1,
-						         	                'valorAbsolutoMaximo'=>99],
-
-						         	'idDepartamento'=>['obligatorio'=>true,
-						         					   'longitudMinima'=>1,
-						         	                   'longitudMaxima'=>1,
-						         	                   'caracteresPermitidos'=>'/^[0-9]+$/',
-						         	                   'verificarValorNumerico'=>true,
-						         	                   'valorAbsolutoMinimo'=>1,
-						         	                   'valorAbsolutoMaximo'=>9],
-
-						         	'idLocalidad'=>['obligatorio'=>true,
-						         					'longitudMinima'=>1,
-						         	                'longitudMaxima'=>3,
-						         	                'caracteresPermitidos'=>'/^[0-9]+$/',
-						         	                'verificarValorNumerico'=>true,
-						         	                'valorAbsolutoMinimo'=>1,
-						         	                'valorAbsolutoMaximo'=>999],
-
-						         	'idActualizador'=>['obligatorio'=>true,
-						         					   'longitudMinima'=>1,
-						         	                   'longitudMaxima'=>3,
-						         	                   'caracteresPermitidos'=>'/^[0-9]+$/',
-						         	                   'verificarValorNumerico'=>true,
-						         	                   'valorAbsolutoMinimo'=>1,
-						         	                   'valorAbsolutoMaximo'=>999],
-
-						         	'idSupervisor'=>['obligatorio'=>true,
-						         					 'longitudMinima'=>1,
-						         	                 'longitudMaxima'=>3,
-						         	                 'caracteresPermitidos'=>'/^[0-9]+$/',
-						         	                 'verificarValorNumerico'=>true,
-						         	                 'valorAbsolutoMinimo'=>1,
-						         	                 'valorAbsolutoMaximo'=>999],
-
-						         	'fraccion'=>['obligatorio'=>true,
-						         				 'longitudMinima'=>1,
-						         	             'longitudMaxima'=>2,
-						         	             'caracteresPermitidos'=>'/^[0-9]+$/',
-						         	             'verificarValorNumerico'=>true,
-						         	             'valorAbsolutoMinimo'=>1,
-						         	             'valorAbsolutoMaximo'=>99],
-
-						         	'radio'=>['obligatorio'=>true,
-						         			  'longitudMinima'=>1,
-						         	          'longitudMaxima'=>2,
-						         	          'caracteresPermitidos'=>'/^[0-9]+$/',
-						         	          'verificarValorNumerico'=>true,
-						         	          'valorAbsolutoMinimo'=>1,
-						         	          'valorAbsolutoMaximo'=>99]
+						         		 	  'valorAbsolutoMaximo'=>0]
 
 					                ];
 
-private const PROPIEDADES = ['destruirSesion'=>['idSesion', 
-	                            			    'usuario',
-	                            			    'tipoDeUsuario'],
-
-	                         'buscarTodosLosRadiosCargados'=>['idSesion', 
-	                            			    			  'usuario',
-	                            			    			  'tipoDeUsuario'],
+	private const PROPIEDADES = ['destruirSesion'=>['idSesion', 
+	                            			    	'usuario',
+	                            			    	'tipoDeUsuario'],
 					
-							 'buscarDatosDeUsuarioPorNombreYClave'=>['usuario', 
-									  		   						 'clave'],
+							 	 'buscarDatosDeUsuarioPorNombreYClave'=>['usuario', 
+									  		   						 	 'clave'],
 
-					         'buscarPlanilla'=>['idSesion',
-							 					'usuario',
-	                            				'tipoDeUsuario',
-							 					'idProvincia',	
-					                    		'idDepartamento',	
-					                    		'idLocalidad',	
-					                    		'fraccion',	
-					                    		'radio'],
+								 'obtenerDatosPorNombreDeCivilizacion'=>['civilizacion'],
 
-					         'buscarIdDePlanilla'=>['idSesion',
-							 					    'usuario',
-	                            				    'tipoDeUsuario',
-							 					    'idProvincia',	
-					                    		    'idDepartamento',	
-					                    		    'idLocalidad',	
-					                    		    'fraccion',	
-					                    		    'radio'],
+						         'obtenerDatosPorNombreDeUnidad'=>['nombreDeUnidad'],
 
-					         'buscarViviendasPorIdDePlanilla'=>['idSesion', 
-	                            								'usuario',
-	                            								'tipoDeUsuario',
-	                            								'idPlanilla'],
-
-	                         'buscarTodasLasPlanillas'=>['idSesion', 
-	                            						 'usuario',
-	                            						 'tipoDeUsuario'],
-
-	                         'buscarCantidadDeViviendasPorPlanilla'=>['idSesion', 
-	                            						              'usuario',
-	                            						              'tipoDeUsuario',
-	                            						          	  'idPlanilla'],
-
-	                         'buscarDatosDeProvincia'=>['idSesion', 
-	                            						'usuario',
-	                            						'tipoDeUsuario'],
-	                            						
-	                         'buscarDatosDeDepartamento'=>['idSesion', 
-	                            						   'usuario',
-	                            						   'tipoDeUsuario'],
-	                            						   
-	                         'buscarDatosDeLocalidad'=>['idSesion', 
-	                            						'usuario',
-	                            						'tipoDeUsuario'],
-	                            						
-	                         'buscarDatosDeActualizador'=>['idSesion', 
-	                            						   'usuario',
-	                            						   'tipoDeUsuario'],
-	                            						   
-	                         'buscarDatosDeActualizadorPorNombreYApellido'=>['idSesion', 
-	                            						   				     'usuario',
-	                            						                     'tipoDeUsuario',
-	                            						                     'apellido',
-	                            						                     'nombre'],
-	                            						                     
-	                         'buscarDatosDeSupervisor'=>['idSesion', 
-	                            						 'usuario',
-	                            						 'tipoDeUsuario'],
-	                            						 
-	                         'buscarDatosDeSupervisorPorNombreYApellido'=>['idSesion', 
-	                            						                   'usuario',
-	                            						                   'tipoDeUsuario',
-	                            						                   'apellido',
-	                            						                   'nombre'],
-	                            						                   
-	                         'buscarDatosDeCodigoDeCalle'=>['idSesion', 
-	                            						    'usuario',
-	                            						    'tipoDeUsuario'],
-	                            						    
-	                         'buscarDatosDeTipoDeVivienda'=>['idSesion', 
-	                            						     'usuario',
-	                            						     'tipoDeUsuario'],
-	                            						     
-	            	         'buscarDatosDeTipoDeActividadEconomica'=>['idSesion', 
-	                            						               'usuario',
-	                            						               'tipoDeUsuario'],
-	                            						               
-	            	         'buscarDatosDeNombreDeCalle'=>['idSesion', 
-	                            						    'usuario',
-	                            						    'tipoDeUsuario'],
-	                            						    
-	                         'buscarCallePorNombre'=>['idSesion', 
-	                            					  'usuario',
-	                            				      'tipoDeUsuario',
-	                            				      'nombreDeCalle'],
-
-	                         'buscarFraccionesPorIdProvinciaIdDepartamentoIdLocalidad'=>['idSesion', 
-	                            					  								     'usuario',
-	                            				      									 'tipoDeUsuario',
-	                            				      									 'idProvincia',	
-					                    												 'idDepartamento',	
-					                    												 'idLocalidad'],
-
-					         'buscarRadiosPorIdProvinciaIdDepartamentoIdLocalidadFraccion'=>['idSesion', 
-	                            					  								         'usuario',
-	                            				      									     'tipoDeUsuario',
-	                            				      									     'idProvincia',	
-					                    												     'idDepartamento',	
-					                    												     'idLocalidad',
-					                    												     'fraccion'],
-
-					         'buscarViviendaPorIdDePlanillaYNumeroDeVivienda'=>['idSesion', 
-	                            												'usuario',
-	                            												'tipoDeUsuario', 
-																				'idPlanilla', 
-																				'numeroDeVivienda'],
-
-							 'buscarViviendaPorIdDeVivienda'=>['idSesion', 
-	                            							   'usuario',
-	                            							   'tipoDeUsuario', 
-															   'idVivienda'],
-
-							 'buscarDatosDeViviendaAModificar'=>['idSesion', 
-	                            							     'usuario',
-	                            							     'tipoDeUsuario',
-	                            							     'idPlanilla', 
-																 'numeroDeVivienda'],
-
-							 'guardarPlanilla'=>['idSesion', 
-	                            				 'usuario',
-	                            				 'tipoDeUsuario',
-							                     'idProvincia', 
-										 		 'idDepartamento', 
-										 		 'idLocalidad', 
-										 		 'fraccion', 
-										 		 'radio', 
-										 		 'idActualizador', 
-										 		 'idSupervisor', 
-										 		 'fecha'],
-
-							 'guardarVivienda'=>['idSesion',
-							 					 'usuario',
-	                            				 'tipoDeUsuario',
-							                     'idPlanilla',
-	                            				 'numeroDeVivienda',
-	                            				 'manzana',
-	                            				 'lado',
-	                            				 'idCodigoCalle',
-	                            				 'altura',
-	                            				 'manzanaSector',
-	                            				 'edificio',
-	                            				 'entrada',
-	                            				 'piso',
-	                            				 'departamentoHabitacion',
-	                            				 'casaLote',
-	                            				 'idTipoDeVivienda',
-	                            				 'idActividadEconomica',
-	                            				 'descripcion'],
-
-	                         'guardarActualizador'=>['idSesion',
-							 					     'usuario',
-	                            				     'tipoDeUsuario',
-	                            				     'apellido',
-	                            				     'nombre'],
-
-	                         'guardarSupervisor'=>['idSesion',
-							 					   'usuario',
-	                            				   'tipoDeUsuario',
-	                            				   'apellido',
-	                            				   'nombre'],
-
-	                         'guardarCodigoDeCalle'=>['idSesion',
-							 					      'usuario',
-	                            				      'tipoDeUsuario',
-	                            				      'codigoDeCalle',
-	                            				      'idNombreDeCalle'],
-
-	                         'guardarNombreDeCalle'=>['idSesion',
-							 					      'usuario',
-	                            				      'tipoDeUsuario',
-	                            				      'nombreDeCalle'],
-
-	                         'eliminarActualizador'=>['idSesion',
-							 					      'usuario',
-	                            				      'tipoDeUsuario',
-	                            				  	  'idActualizador'],
-
-	                         'eliminarSupervisor'=>['idSesion',
-							 					    'usuario',
-	                            				    'tipoDeUsuario',
-	                            				  	'idSupervisor'],
-
-	                         'eliminarCodigoDeCalle'=>['idSesion',
-							 				           'usuario',
-	                            			           'tipoDeUsuario',
-	                            			           'idCodigoCalle'],
-
-	                         'eliminarNombreDeCalle'=>['idSesion',
-							 				           'usuario',
-	                            			           'tipoDeUsuario',
-	                            			           'idNombreDeCalle'],
-
-	                         'eliminarViviendaPorIdDeVivienda'=>['idSesion',
-							 				           			 'usuario',
-	                            			           			 'tipoDeUsuario',
-	                            			           			 'idVivienda'],
-
-	                         'eliminarPlanillaPorIdDePlanilla'=>['idSesion',
-							 				           			 'usuario',
-	                            			           			 'tipoDeUsuario',
-	                            			           			 'idPlanilla'],
-
-	                         'modificarRelaPlanilla'=>['idSesion',
-							 				           'usuario',
-	                            			           'tipoDeUsuario',
-	                            			           'idPlanilla',
-	                            			           'idPlanilla'],
-
-	                         'modificarDatosDePlanillaPorIdDePlanilla'=>['idSesion',
-							 				           					 'usuario',
-	                            			           					 'tipoDeUsuario',
-	                         											 'idProvincia',
-	                        											 'idDepartamento',
-	                            										 'idLocalidad',
-	                            										 'fraccion',
-	                            										 'radio',
-	                            		 								 'idActualizador',
-	                            										 'idSupervisor',
-	                            										 'fecha',
-	                            										 'idPlanilla'],
-
-	                         'modificarDatosDeViviendaPorIdDeVivienda'=>['numeroDeVivienda',
-	                            										 'manzana',
-	                            										 'lado',
-	                            										 'idCodigoCalle',
-	                            										 'altura',
-	                            										 'manzanaSector',
-	                            										 'edificio',
-	                            										 'entrada',
-	                            										 'piso',
-	                            										 'departamentoHabitacion',
-	                            										 'casaLote',
-	                            										 'idTipoDeVivienda',
-	                            										 'idActividadEconomica',
-	                            										 'descripcion',
-	                            										 'idVivienda' ]
-
-							];
+						         'obtenerDatosPorTipoDeUnidad'=>['tipoDeUnidad']
+	];
 
 	private const METODOS_PERMITIDOS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'];
 
@@ -657,17 +182,6 @@ private const PROPIEDADES = ['destruirSesion'=>['idSesion',
 
 		$this->validarPropiedades();
 
-		//Verificamos si el json no esta vacío.
-		/*$this->json = json_decode($mensaje, true);
-
-		$this->validarJson();
-
-		$this->validarSeccion();
-
-	    $this->validarPropiedades();
-
-	    $this->verificarFecha();*/
-
 	}//fin validarPeticion
 
 
@@ -755,72 +269,41 @@ private const PROPIEDADES = ['destruirSesion'=>['idSesion',
 
 		foreach($this->propiedades as $propiedad) {
 
-        	$restricciones = self::RESTRICCIONES[$propiedad];
-
-        	// Usamos $valor directamente, sin llamar a $this->json
+			// Usamos $valor directamente, sin llamar a $this->json
         	$this->validarPropiedadEnArray($propiedad);
-        	
-        	//Verificamos si la variable está vacía.
-        	$variableVacia = empty($this->datosRecibidos[$propiedad]);
 
-        	if($restricciones['obligatorio']){
-
-        		$variableVacia ? throw new Exception("La propiedad obligatoria: $propiedad " . self::MENSAJE_DE_ERROR['propiedadObligatoriaVacia']) : continue(2);
-        	}
-
-        	// Si es obligatoria, validamos que no esté vacía
-        	if ($restricciones['obligatorio'] === true) {
-            	$this->validarValoresVacios($this->datosRecibidos[$propiedad]);
-        	}
-
-        	// Si NO es obligatoria y está vacía → no tiene sentido validar el contenido
-        	if ($restricciones['obligatorio'] === false && empty($this->json[$propiedad])) {
-            	continue;
-        	}
-
-        	//validarValoresVacios(string $propiedad);
-
-		}//fin bucle forEach
-
-/*---------------------------------------------------------------------------------*/
-		//Obtenemos la cantidad de propiedades.
-		$this->cantidadDePropiedades = count($this->propiedades);
-
-		//Recorremos las propiedades
-		for($i=0; $i < $this->cantidadDePropiedades; $i++) { 
-
-        	$propiedad = $this->propiedades[$i];
+			$valor = $this->datosRecibidos[$propiedad] ?? null;
 
         	$restricciones = self::RESTRICCIONES[$propiedad];
 
-        	// Validamos que exista la propiedad en el JSON
-        	$this->validarPropiedadEnArray($propiedad);
+        	$estaVacio = ($valor === null || $valor === '');
 
-        	// Si es obligatoria, validamos que no esté vacía
-        	if ($restricciones['obligatorio'] === true) {
-            	$this->validarValoresVacios($propiedad);
-        	}
+        	if ($estaVacio) {
 
-        	// Si NO es obligatoria y está vacía → no tiene sentido validar el contenido
-        	if ($restricciones['obligatorio'] === false && empty($this->json[$propiedad])) {
-            	continue;
-        	}
+        		if ($restricciones['obligatorio'] === true) {
+            		throw new Exception("La propiedad $propiedad ". self::MENSAJE_DE_ERROR['propiedadObligatoriaVacia']);
+        		}
+
+        		// Si no es obligatorio y está vacío, no hay nada más que hacer.
+        		continue;
+    		}
 
         	// Validamos el string según las restricciones
         	$this->validarString($propiedad,
-            					 $this->json[$propiedad],
+            					 $this->datosRecibidos[$propiedad],
             					 $restricciones['caracteresPermitidos'],
             				     $restricciones['longitudMinima'],
             					 $restricciones['longitudMaxima'] );
 
         	// Si corresponde, validamos el valor numérico
         	$this->validarValorNumericoAbsoluto($propiedad,
-            									$this->json[$propiedad],
+            									$this->datosRecibidos[$propiedad],
             									$restricciones['verificarValorNumerico'],
             									$restricciones['valorAbsolutoMinimo'],
             									$restricciones['valorAbsolutoMaximo'] );
 
-		}//fin bucle for
+
+		}//fin bucle forEach
 
 	}//fin function validarPropiedades
 
