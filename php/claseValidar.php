@@ -15,6 +15,8 @@ class Validar {
 
 	private array $datosRecibidos = [];
 
+	private array $datosSanitizados = [];
+
 	private const MENSAJE_DE_ERROR = [405=>'405 Metodo no permitido',
 									  406=>'406 El servidor solos puede proporcionar datos en formato application/json',
 									  415=>'415 El Content-Type debe ser application/json.',
@@ -24,6 +26,8 @@ class Validar {
 									  'propiedadNoEcontrada'=>'es una propiedad obligatoria y no se encuentra en la petición',
 									  'seccionInexistente'=>'no coincide con secciones permitidas',
 									  'caracteresInvalidos'=>'contiene caractéres invalidos',
+									  'valorNumericoEnteroInvalido'=>'El valor almacenado en la propiedad no es un valor numérico entero valido',
+									  'valorNumericoDecimalInvalido'=>'El valor almacenado en la propiedad no es un valor numérico decimal valido',
 									  'longitudMinima'=>'tiene una cantidad de caractéres inferior a la permitida',
 									  'longitudMaxima'=>'tiene una cantidad de caractéres superior a la permitida',
 									  'valorAbsolutoInferior'=>'tiene un valor absoluto inferior al permitido',
@@ -32,25 +36,90 @@ class Validar {
 
 	private const RESTRICCIONES = [	'seccion'=>['obligatorio'=>true,
 						           	 			'longitudMinima'=>8,
-						           	 			'longitudMaxima'=>28,
+						           	 			'longitudMaxima'=>50,
 						           	 			'caracteresPermitidos'=>'/^[a-zA-Z]+$/',
-						           	 			'verificarValorNumerico'=>false,
+						           	 			'tipoDeDatoAValidar'=>'string',
 						          			    'valorAbsolutoMinimo'=>0,
 						         		 	    'valorAbsolutoMaximo'=>0],
+
+						            'civilizacion'=>['obligatorio'=>true,
+						           	 				 'longitudMinima'=>4,
+						           	 				 'longitudMaxima'=>40,
+						           	 				 'caracteresPermitidos'=>'#^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s\n/.,\-()\'°]+$#u',
+						           	 				 'tipoDeDatoAValidar'=>'string',
+						          			    	 'valorAbsolutoMinimo'=>0,
+						         		 	    	 'valorAbsolutoMaximo'=>0],
+
+						         	'nombreDeUnidad'=>['obligatorio'=>true,
+						           	 				   'longitudMinima'=>4,
+						           	 				   'longitudMaxima'=>30,
+						           	 				   'caracteresPermitidos'=>'#^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s\n/.,\-()\'°]+$#u',
+						           	 				   'tipoDeDatoAValidar'=>'string',
+						          			    	   'valorAbsolutoMinimo'=>0,
+						         		 	    	   'valorAbsolutoMaximo'=>0],
+
+						         	'tipoDeUnidad'=>['obligatorio'=>true,
+						           	 				 'longitudMinima'=>4,
+						           	 				 'longitudMaxima'=>30,
+						           	 				 'caracteresPermitidos'=>'#^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s\n/.,\-()\'°]+$#u',
+						           	 				 'tipoDeDatoAValidar'=>'string',
+						          			    	 'valorAbsolutoMinimo'=>0,
+						         		 	    	 'valorAbsolutoMaximo'=>0],
+
+						         	'costoDeAlimento'=>['obligatorio'=>true,
+						           	 				 	'longitudMinima'=>1,
+						           	 				 	'longitudMaxima'=>3,
+						           	 				 	'caracteresPermitidos'=>'#^[1-9]$#',
+						           	 				 	'tipoDeDatoAValidar'=>'int',
+						          			    	 	'valorAbsolutoMinimo'=>1,
+						         		 	    	 	'valorAbsolutoMaximo'=>500],
+
+						     		'costoDeMadera'=>['obligatorio'=>true,
+						           	 				  'longitudMinima'=>1,
+						           	 				  'longitudMaxima'=>3,
+						           	 				  'caracteresPermitidos'=>'#^[1-9]$#',
+						           	 				  'tipoDeDatoAValidar'=>'int',
+						          			    	  'valorAbsolutoMinimo'=>1,
+						         		 	    	  'valorAbsolutoMaximo'=>500],
+
+						     		'costoDeOro'=>['obligatorio'=>true,
+						           	 			   'longitudMinima'=>4,
+						           	 			   'longitudMaxima'=>30,
+						           	 			   'caracteresPermitidos'=>'#^[1-9]$#',
+						           	 			   'tipoDeDatoAValidar'=>'string',
+						          			       'valorAbsolutoMinimo'=>1,
+						         		 	       'valorAbsolutoMaximo'=>500],
+						         	/*// Permite dígitos, comas (miles) y punto (decimal)
+										 $regexFloatConMiles = '#^[0-9]{1,3}(,[0-9]{3})*(\.[0-9]+)?$#';*/
+						         	'velocidad'=>['obligatorio'=>true,
+						           	 			  'longitudMinima'=>4,
+						           	 			  'longitudMaxima'=>4,
+						           	 			  'caracteresPermitidos'=>'#^[0-9]+(\.[0-9]+)?$#',
+						           	 			  'tipoDeDatoAValidar'=>'float',
+						          			      'valorAbsolutoMinimo'=>0.50,
+						         		 	      'valorAbsolutoMaximo'=>1.90],
+
+						         	'valorBoleano'=>['obligatorio'=>true,
+						           	 			  	 'longitudMinima'=>1,
+						           	 			  	 'longitudMaxima'=>1,
+						           	 			  	 'caracteresPermitidos'=>'',
+						           	 			  	 'tipoDeDatoAValidar'=>'bool',
+						          			      	 'valorAbsolutoMinimo'=>0,
+						         		 	      	 'valorAbsolutoMaximo'=>0],
 
 									'usuario'=>['obligatorio'=>true,
 						           			   'longitudMinima'=>4,
 						           			   'longitudMaxima'=>25,
 						           			   'caracteresPermitidos'=>'/^[a-zA-Z0-9]+$/',
-						           			   'verificarValorNumerico'=>false,
+						           			   'tipoDeDatoAValidar'=>'string',
 						           			   'valorAbsolutoMinimo'=>0,
 						         		 	   'valorAbsolutoMaximo'=>0],
 
 									'nombre'=>['obligatorio'=>true,
 						           			   'longitudMinima'=>2,
 						           			   'longitudMaxima'=>30,
-						           			   'caracteresPermitidos'=>'/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s\n\/.,\-()"' . "'°]+$/u",
-						           			   'verificarValorNumerico'=>false,
+						           			   'caracteresPermitidos'=>'#^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s\n/.,\-()\'°]+$#u',
+						           			   'tipoDeDatoAValidar'=>'string',
 						          			   'valorAbsolutoMinimo'=>0,
 						         		 	   'valorAbsolutoMaximo'=>0],
 
@@ -58,7 +127,7 @@ class Validar {
 						           			  'longitudMinima'=>8,
 						           			  'longitudMaxima'=>10,
 						           			  'caracteresPermitidos'=>'/^[0-9-]+$/',
-						           			  'verificarValorNumerico'=>false,
+						           			  'tipoDeDatoAValidar'=>'date',
 						          			  'valorAbsolutoMinimo'=>0,
 						         		 	  'valorAbsolutoMaximo'=>0]
 
@@ -71,11 +140,17 @@ class Validar {
 							 	 'buscarDatosDeUsuarioPorNombreYClave'=>['usuario', 
 									  		   						 	 'clave'],
 
-								 'obtenerDatosPorNombreDeCivilizacion'=>['civilizacion'],
+								 'buscarDatosPorNombreDeCivilizacion'=>['civilizacion'],
 
-						         'obtenerDatosPorNombreDeUnidad'=>['nombreDeUnidad'],
+						         'buscarDatosPorNombreDeUnidad'=>['nombreDeUnidad'],
 
-						         'obtenerDatosPorTipoDeUnidad'=>['tipoDeUnidad']
+						         'buscarDatosPorTipoDeUnidad'=>['tipoDeUnidad'],
+
+						         'buscarUnidadesPorCosto'=>['costoDeAlimento',
+						     								'costoDeMadera',
+						     							    'costoDeOro'],
+
+						         'buscarUnidadesPorVelocidad'=>['velocidad']
 	];
 
 	private const METODOS_PERMITIDOS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'];
@@ -295,12 +370,15 @@ class Validar {
             				     $restricciones['longitudMinima'],
             					 $restricciones['longitudMaxima'] );
 
+        	//Se valida el dato recibído, segú el 'tipoDeDatoAValidar' almacenado en $restricciones[$propiedad]['tipoDeDatoAValidar'] (int, float, bool, etc.)
+        	$this->validarDatoPorTipo($propiedad, $this->datosSanitizados[$propiedad], $restricciones);
+
         	// Si corresponde, validamos el valor numérico
-        	$this->validarValorNumericoAbsoluto($propiedad,
+        	/*$this->validarValorNumericoAbsoluto($propiedad,
             									$this->datosRecibidos[$propiedad],
             									$restricciones['verificarValorNumerico'],
             									$restricciones['valorAbsolutoMinimo'],
-            									$restricciones['valorAbsolutoMaximo'] );
+            									$restricciones['valorAbsolutoMaximo'] );*/
 
 
 		}//fin bucle forEach
@@ -360,19 +438,17 @@ class Validar {
 	}//fin  function validarSeccion
 
 
-	private function verificarCaracteresEspeciales(string $propiedad, string $cadena, string $caracteresPermitidos){
+	private function verificarCaracteresEspeciales(string $propiedad, string $cadena, string $caracteresPermitidos):void{
 
 		//Aplicamos configuracion de validacion en base a los caracteres permitidos.
-		$this->disparador = boolval(preg_match($caracteresPermitidos, $cadena));
-
-		if($this->disparador === false) {
-			throw new Exception("La propiedad: $propiedad con valor: $cadena " . self::MENSAJE_DE_ERROR['caracteresInvalidos']);
-		}
+		if (preg_match($caracteresPermitidos, $cadena) !== 1) {
+        	throw new Exception("La propiedad: {$propiedad} " . self::MENSAJE_DE_ERROR['caracteresInvalidos']);
+    	}
 
 	}//fin function verificarCaracteresEspeciales
 
 
-	private function validarLongitudDeCadena(string $propiedad, string $cadena, int $longitudMinima, int $longitudMaxima) {
+	private function validarLongitudDeCadena(string $propiedad, string $cadena, int $longitudMinima, int $longitudMaxima):void {
 
 		//Almacenamos cantidad de caracteres de la cadena.
 		$longitudDeCadena = strlen($cadena);
@@ -389,68 +465,122 @@ class Validar {
 	}//fin function validarLongitudDeCadena
 
 
-	private function validarString(string $propiedad, string $cadena, string $caracteresPermitidos, int $longitudMinima, int $longitudMaxima) {
+	private function validarString(string $propiedad, string $cadena, string $caracteresPermitidos, int $longitudMinima, int $longitudMaxima):void {
 
 		//Limpiamos espacios en blanco al principio y al final de la cadena.
-		$cadena = trim($cadena);
+		$cadenaLimpia = trim($cadena);
 
 		/*Verifica que la cadena contenga solo caracteres permitidos. Almacena "true" en "$this->disparador" si la cadena es valida, de lo contrario, almacena "false".*/
-		$this->verificarCaracteresEspeciales($propiedad, $cadena, $caracteresPermitidos);
+		$this->verificarCaracteresEspeciales($propiedad, $cadenaLimpia, $caracteresPermitidos);
 
 		//Validámos la longitud de la cadena;
-		$this->validarLongitudDeCadena($propiedad, $cadena, $longitudMinima, $longitudMaxima);
-		//$this->llamarFuncion('validarLongitudDeCadena', [$cadena, $longitudMinima, $longitudMaxima]);
+		$this->validarLongitudDeCadena($propiedad, $cadenaLimpia, $longitudMinima, $longitudMaxima);
+
+		$this->datosSanitizados[$propiedad] = $cadenaLimpia;
 
 	}//fin function validarString	
 
 
-	private function validarLimitesAbsolutosEnteros(string $numeroAComparar, string $propiedad, int $limiteMinimo, int $limiteMaximo) {
-
-		//Almacenamos el valor entero.
-		$valorAbsolutoDeNumeroAComparar = intval($numeroAComparar);
+	private function validarLimitesAbsolutos(mixed $numeroAComparar, string $propiedad, float $limiteMinimo, float $limiteMaximo):void {
 
 		//Comparamos si el valor absoluto del numero a comparar es inferior al minimo permitido.
-		if($valorAbsolutoDeNumeroAComparar < $limiteMinimo) {
+		if($numeroAComparar < $limiteMinimo) {
 		   throw new Exception("El valor: $numeroAComparar almacenado en la propiedad: $propiedad " . self::MENSAJE_DE_ERROR['valorAbsolutoInferior'] . ". Limite permitido: $limiteMinimo");	
 		}
 
 		//Comparamos si el valor absoluto del numero a comparar es superior al minimo permitido.
-		if($valorAbsolutoDeNumeroAComparar > $limiteMaximo){
-		   throw new Exception("El valor: $numeroAComparar almacenado en la propiedad: $propiedad " . self::MENSAJE_DE_ERROR['valorAbsolutoSuperior'] . ". Limite permitido: $limiteMinimo");  
+		if($numeroAComparar > $limiteMaximo){
+		   throw new Exception("El valor: $numeroAComparar almacenado en la propiedad: $propiedad " . self::MENSAJE_DE_ERROR['valorAbsolutoSuperior'] . ". Limite permitido: $limiteMaximo");  
 		}
+
+		$this->datosSanitizados[$propiedad] = $numeroAComparar;
 
 	}//fin function validarLimitesAbsolutosEnteros
 
 
-	private function validarValorNumericoAbsoluto(string $propiedad, string $cadena, bool $verificarValorNumerico, int $valorAbsolutoMinimo, int $valorAbsolutoMaximo){
+	private function validarNumeroEntero(mixed $numeroAComparar, string $propiedad, int $valorAbsolutoMinimo, int $valorAbsolutoMaximo):void{
 
-		if($verificarValorNumerico) {
-			$this->validarLimitesAbsolutosEnteros($cadena, $propiedad, $valorAbsolutoMinimo, $valorAbsolutoMaximo); 
-		}//fin if($this->restricciones['verificarValorNumerico'])
+		$numeroSanitizado = filter_var($numeroAComparar, FILTER_SANITIZE_NUMBER_INT);
+
+		//Almacenamos el valor entero.
+		$valorEnteroAComparar = filter_var($numeroSanitizado, FILTER_VALIDATE_INT);
+
+		if ($valorEnteroAComparar === false) {
+        	throw new Exception("El valor de $propiedad " . self::MENSAJE_DE_ERROR['valorNumericoEnteroInvalido']);
+    	}
+
+		$this->validarLimitesAbsolutos($valorEnteroAComparar, $propiedad, $valorAbsolutoMinimo, $valorAbsolutoMaximo); 
 
 	}//fin function validarValorNumericoAbsoluto
 
 
-	public function devolverRespuesta(){
-		return $this->json;
-	}//fin function devolverRespuesta
+	private function validarNumeroDecimal(mixed $valor, string $propiedad, float $valorAbsolutoMinimo, float $valorAbsolutoMaximo):void{
+
+		$numeroSanitizado = filter_var($valor, FILTER_SANITIZE_NUMBER_FLOAT);
+
+		//Se valida el valor decimal recibído.
+    	$valorDecimal = filter_var($numeroSanitizado, FILTER_VALIDATE_FLOAT);
+    
+    	if ($valorDecimal === false) {
+        	throw new Exception("El valor de $propiedad " . self::MENSAJE_DE_ERROR['valorNumericoDecimalInvalido']);
+    	}
+
+    	$this->validarLimitesAbsolutos($valorEnteroAComparar, $propiedad, $valorAbsolutoMinimo, $valorAbsolutoMaximo);
+
+	}//fin function validarNumeroDecimal
 
 
-	public function devolverValidarDatosEnArrayDeSesion(array $respuesta){
-		return $this->validarDatosEnArrayDeSesion($respuesta);
+	private function validarBooleano($valor, string $propiedad): bool {
+    	// filter_var con FILTER_VALIDATE_BOOLEAN acepta "1", "true", "on", "yes"
+    	// y los convierte a true. Muy útil para parámetros de URL.
+    	$valorBool = filter_var($valor, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+    
+    	if ($valorBool === null) {
+        	throw new Exception("La propiedad $propiedad debe ser un booleano (true/false).");
+    	}
+    	return $valorBool;
+	}
+
+
+	private function validarDatoPorTipo(mixed $valor, string $propiedad, array $restricciones):void{
+
+		switch ($restricciones['tipoDeDatoAValidar']) {
+
+        	case 'int':
+            	$this->validarNumeroEntero($valor, $propiedad, $restricciones['valorAbsolutoMinimo'], $restricciones['valorAbsolutoMaximo']);
+            break;
+        	case 'float':
+            	$this->validarNumeroDecimal($valor, $propiedad, $restricciones['valorAbsolutoMinimo'], $restricciones['valorAbsolutoMaximo']);
+            break;
+        	case 'bool':
+            	//$this->validarBooleano($valor, $propiedad);
+            break;
+
+    	}//fin switch
+
+	}//fin function validarDatoPorTipo
+
+
+	public function devolverValidarDatosEnArrayDeSesion(array $respuesta):void{
+		$this->validarDatosEnArrayDeSesion($respuesta);
 	}//fin function devolverValidarDatosEnArrayDeSesion
 
-	public function devolverValidarPeticion(){
-		return $this->validarPeticion();
+	public function devolverValidarPeticion():void{
+		$this->validarPeticion();
 	}//fin function devolverValidarPeticion
 
-	public function devolverAlmacenarError(array $rastreoDeError, string $mensajeDeError) {
+	public function devolverAlmacenarError(array $rastreoDeError, string $mensajeDeError):array {
 		return $this->almacenarError($rastreoDeError, $mensajeDeError);
 	}
 
 	public function devolverCodigoHTTP():int{
 		return $this->codigoHTTP;
 	}//fin function devolverCodigoHTTP
+
+	public function devolverDatosSanitizados(): array {
+    	// Si ninguna excepción es lanzada, se devuelve el array con los datos sanitizados.
+    	return $this->datosSanitizados;
+	}//fin function devolverDatosSanitizados
 
 }//fin class validar
 
