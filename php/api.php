@@ -5,18 +5,28 @@ class ApiControlador{
 
     private object $Validar;
 
+    private object $MysqliDB;
+
+    private object $CRUD;
+
     private array $respuesta = ['seccion'=>'',
                                 'error'=>[] ];
 
-    public function __construct(object $Validar){
+    private string $seccion = '';
+
+    private array $datosDeConsulta = [];
+
+    public function __construct(Validar $Validar, MysqliDB $MysqliDB, CRUD $CRUD){
 
         $this->Validar = $Validar;
+
+        $this->MysqliDB = $MysqliDB;
+
+        $this->CRUD = $CRUD;
 
     }//fin constructor
 
     public function gestionarRespuesta(){
-
-        header("Content-Type: application/json; charset=UTF-8");
 
         try {
 
@@ -26,13 +36,21 @@ class ApiControlador{
             header("Access-Control-Allow-Headers: Content-Type, Authorization");
             header("Content-Type: application/json; charset=UTF-8");
             $this->Validar->devolverValidarPeticion();
+            //Si no se lanza una excepción, se devuelven los datos sanitizados.
             $this->respuesta = $this->Validar->devolverDatosSanitizados();
+            //Almacenamos la seccion recibída y previamente validada dentro de la función validar.
+            $this->seccion = $this->Validar->devolverSeccion();
+            //Se almacenan los datos de consulta por seccion.
+            $this->$datosDeConsulta = $this->CRUD->asignarConsultasPorSeccion($this->seccion);
+
+            $this->respuesta = $MysqliDB->devolverEjecutarConsulta($this->$datosDeConsulta['consulta'], $this->respuesta, $this->$datosDeConsulta['tipos']);
+
         } catch (Exception $e) { //fin try
             $this->respuesta = $this->Validar->devolverAlmacenarError($e->getTrace(), $e->getMessage());
         } finally { //fin catch
             $this->codigoHTTP = $this->Validar->devolverCodigoHTTP();
             http_response_code($this->codigoHTTP);
-            //echo json_encode($this->respuesta);
+            echo json_encode($this->respuesta);
         }//fin finally
 
     }//fin function gestionarRespuesta

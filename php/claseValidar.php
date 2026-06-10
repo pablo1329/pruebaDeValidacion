@@ -123,6 +123,14 @@ class Validar {
 						          			   'valorAbsolutoMinimo'=>0,
 						         		 	   'valorAbsolutoMaximo'=>0],
 
+						         	'id_civilizacion'=>['obligatorio'=>true,
+						           	 			   		'longitudMinima'=>1,
+						           	 			   		'longitudMaxima'=>99,
+						           	 			   		'caracteresPermitidos'=>'#^[1-9]$#',
+						           	 			   		'tipoDeDatoAValidar'=>'int',
+						          			       		'valorAbsolutoMinimo'=>1,
+						         		 	       		'valorAbsolutoMaximo'=>99],
+
 						         	'fecha'=>['obligatorio'=>true,
 						           			  'longitudMinima'=>8,
 						           			  'longitudMaxima'=>10,
@@ -140,7 +148,7 @@ class Validar {
 							 	 'buscarDatosDeUsuarioPorNombreYClave'=>['usuario', 
 									  		   						 	 'clave'],
 
-								 'buscarDatosPorNombreDeCivilizacion'=>['civilizacion'],
+								 'buscarDatosPorNombreDeCivilizacion'=>['id_civilizacion'],
 
 						         'buscarDatosPorNombreDeUnidad'=>['nombreDeUnidad'],
 
@@ -156,9 +164,7 @@ class Validar {
 	private const METODOS_PERMITIDOS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'];
 
 
-	public function __construct(){
-
-	}//fin constructor
+	public function __construct(){}//fin constructor
 
 
 	private function almacenarError(array $rastreoDeError, string $mensajeDeError):array {
@@ -202,12 +208,16 @@ class Validar {
 
 	private function validarContentType():void{
 
-		if(!isset($_SERVER['HTTP_CONTENT_TYPE']) || $this->metodoHTTP !== 'GET'){
-			if($_SERVER['HTTP_CONTENT_TYPE'] !== 'application/json') {
-				$this->codigoHTTP = 415;
-       		 throw new Exception(self::MENSAJE_DE_ERROR[415]);
-    		}
-		}
+		// Si es GET, no necesitamos validar Content-Type, así que retornamos inmediatamente
+    	if ($this->metodoHTTP === 'GET') {
+        	return;
+    	}
+
+    	// Si NO es GET, entonces sí validamos obligatoriamente que sea application/json
+    	if (!isset($_SERVER['HTTP_CONTENT_TYPE']) || $_SERVER['HTTP_CONTENT_TYPE'] !== 'application/json') {
+        	$this->codigoHTTP = 415;
+        	throw new Exception(self::MENSAJE_DE_ERROR[415]);
+    	}
 
 	}//fin function validarContentType
 
@@ -500,13 +510,13 @@ class Validar {
 
 	private function validarNumeroEntero(mixed $numeroAComparar, string $propiedad, int $valorAbsolutoMinimo, int $valorAbsolutoMaximo):void{
 
-		$numeroSanitizado = filter_var($numeroAComparar, FILTER_SANITIZE_NUMBER_INT);
+		//$numeroSanitizado = filter_var($numeroAComparar, FILTER_SANITIZE_NUMBER_INT);
 
 		//Almacenamos el valor entero.
-		$valorEnteroAComparar = filter_var($numeroSanitizado, FILTER_VALIDATE_INT);
-
+		//$valorEnteroAComparar = filter_var($numeroSanitizado, FILTER_VALIDATE_INT);
+		$valorEnteroAComparar = filter_var($numeroAComparar, FILTER_VALIDATE_INT);
 		if ($valorEnteroAComparar === false) {
-        	throw new Exception("El valor de $propiedad " . self::MENSAJE_DE_ERROR['valorNumericoEnteroInvalido']);
+        	throw new Exception("El valor de $this->datosRecibidos[$propiedad] " . self::MENSAJE_DE_ERROR['valorNumericoEnteroInvalido']);
     	}
 
 		$this->validarLimitesAbsolutos($valorEnteroAComparar, $propiedad, $valorAbsolutoMinimo, $valorAbsolutoMaximo); 
@@ -581,6 +591,10 @@ class Validar {
     	// Si ninguna excepción es lanzada, se devuelve el array con los datos sanitizados.
     	return $this->datosSanitizados;
 	}//fin function devolverDatosSanitizados
+
+	public function devolverSeccion(): string{
+		return $this->datosRecibidos['seccion'];
+	}//fin function devolverSeccion
 
 }//fin class validar
 
