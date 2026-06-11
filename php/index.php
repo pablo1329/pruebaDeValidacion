@@ -15,9 +15,4 @@ $api = new ApiControlador($Validar, $MysqliDB, $CRUD);
 
 $api->gestionarRespuesta();
 
-$res = filter_var("1", FILTER_SANITIZE_NUMBER_INT);
-var_dump($res);
-
-
-var_dump(filter_var($res, FILTER_VALIDATE_INT));
 ?>

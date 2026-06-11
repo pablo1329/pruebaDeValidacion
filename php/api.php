@@ -1,4 +1,5 @@
 <?php
+require_once 'transformador.php';
 class ApiControlador{
 
     private int $codigoHTTP = 200;
@@ -15,6 +16,8 @@ class ApiControlador{
     private string $seccion = '';
 
     private array $datosDeConsulta = [];
+
+    private $resultado;
 
     public function __construct(Validar $Validar, MysqliDB $MysqliDB, CRUD $CRUD){
 
@@ -37,22 +40,25 @@ class ApiControlador{
             header("Content-Type: application/json; charset=UTF-8");
             $this->Validar->devolverValidarPeticion();
             //Si no se lanza una excepción, se devuelven los datos sanitizados.
-            $this->respuesta = $this->Validar->devolverDatosSanitizados();
+            $this->resultado = $this->Validar->devolverDatosSanitizados();
             //Almacenamos la seccion recibída y previamente validada dentro de la función validar.
             $this->seccion = $this->Validar->devolverSeccion();
+            //Almacenamos el valor de las propiedades.
+            $this->resultado = Transformador::devolverDatosParaConsultar($this->resultado);
             //Se almacenan los datos de consulta por seccion.
-            $this->$datosDeConsulta = $this->CRUD->asignarConsultasPorSeccion($this->seccion);
-
-            $this->respuesta = $MysqliDB->devolverEjecutarConsulta($this->$datosDeConsulta['consulta'], $this->respuesta, $this->$datosDeConsulta['tipos']);
-
+            $this->datosDeConsulta = $this->CRUD->asignarConsultasPorSeccion($this->seccion);
+            $this->resultado = $this->MysqliDB->devolverEjecutarConsulta($this->datosDeConsulta['consulta'], $this->resultado, $this->datosDeConsulta['tipos']);
+            $this->resultado = Transformador::devolverArrayEstructurado($this->resultado);
         } catch (Exception $e) { //fin try
-            $this->respuesta = $this->Validar->devolverAlmacenarError($e->getTrace(), $e->getMessage());
+            $this->resultado = $this->Validar->devolverAlmacenarError($e->getTrace(), $e->getMessage());
         } finally { //fin catch
             $this->codigoHTTP = $this->Validar->devolverCodigoHTTP();
             http_response_code($this->codigoHTTP);
-            echo json_encode($this->respuesta);
+            echo json_encode($this->resultado);
+
         }//fin finally
 
     }//fin function gestionarRespuesta
 
 }//fin class ApiControlador
+?>

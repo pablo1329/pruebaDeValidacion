@@ -19,24 +19,25 @@ class MysqliDB {
   }//fin constructor
 
 
-  private function ejecutar(string $sql, array $params = [], string $types = ""): mysqli_result|int {
+  public function ejecutar(string $sql, array $params = [], string $types = ""): mysqli_result|bool {
 
-    $stmt = $this->enlace->prepare($sql);  
-    if (!empty($params)) {
-      $stmt->bind_param($types, ...$params);
-    }
+    $stmt = $this->enlace->prepare($sql);
+    if (!empty($params)) $stmt->bind_param($types, ...$params);
     $stmt->execute();
-    // Si es un SELECT, devolvemos el resultado; si es INSERT/UPDATE, filas afectadas
-    $result = $stmt->get_result();
-    $stmt->close();
-    return ($result instanceof mysqli_result) ? $result : $stmt->affected_rows;
     
-  }
+    $result = $stmt->get_result();
+    $status = ($result instanceof mysqli_result) ? $result : $stmt->affected_rows > 0;
+    
+    $stmt->close();
+    return ($result instanceof mysqli_result) ? $result : $status;
+
+  }//fin function ejecutar
 
 
   public function devolverEjecutarConsulta(string $sql, array $params = [], string $types = ""): mysqli_result|int{
     return $this->ejecutar($sql, $params, $types);
   }//fin function devolverEjecutarConsulta
+  
 
   public function __destruct() {
     if (isset($this->enlace) && $this->enlace instanceof mysqli) {

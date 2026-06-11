@@ -381,8 +381,8 @@ class Validar {
             					 $restricciones['longitudMaxima'] );
 
         	//Se valida el dato recibído, segú el 'tipoDeDatoAValidar' almacenado en $restricciones[$propiedad]['tipoDeDatoAValidar'] (int, float, bool, etc.)
-        	$this->validarDatoPorTipo($propiedad, $this->datosSanitizados[$propiedad], $restricciones);
-
+        	$this->validarDatoPorTipo($this->datosSanitizados[$propiedad], $propiedad, $restricciones);
+        	
         	// Si corresponde, validamos el valor numérico
         	/*$this->validarValorNumericoAbsoluto($propiedad,
             									$this->datosRecibidos[$propiedad],
@@ -510,17 +510,17 @@ class Validar {
 
 	private function validarNumeroEntero(mixed $numeroAComparar, string $propiedad, int $valorAbsolutoMinimo, int $valorAbsolutoMaximo):void{
 
-		//$numeroSanitizado = filter_var($numeroAComparar, FILTER_SANITIZE_NUMBER_INT);
+		$numeroSanitizado = filter_var($numeroAComparar, FILTER_SANITIZE_NUMBER_INT);
 
 		//Almacenamos el valor entero.
-		//$valorEnteroAComparar = filter_var($numeroSanitizado, FILTER_VALIDATE_INT);
-		$valorEnteroAComparar = filter_var($numeroAComparar, FILTER_VALIDATE_INT);
+		$valorEnteroAComparar = filter_var($numeroSanitizado, FILTER_VALIDATE_INT);
+		
 		if ($valorEnteroAComparar === false) {
-        	throw new Exception("El valor de $this->datosRecibidos[$propiedad] " . self::MENSAJE_DE_ERROR['valorNumericoEnteroInvalido']);
+        	throw new Exception("El valor de $propiedad " . self::MENSAJE_DE_ERROR['valorNumericoEnteroInvalido']);
     	}
 
 		$this->validarLimitesAbsolutos($valorEnteroAComparar, $propiedad, $valorAbsolutoMinimo, $valorAbsolutoMaximo); 
-
+	
 	}//fin function validarValorNumericoAbsoluto
 
 
