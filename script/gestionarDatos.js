@@ -13,10 +13,12 @@
                 lineaDeVision: 3
 }//fin datos*/
 
-const datos = { nombreDeUnidad:'Guerrero Jaguar'
+const datos = { 'seccion':'buscarDatosPorNombreDeCivilizacion',
+                'id_civilizacion': 2
 }//fin datos
+
+solicitarDatosConParametros(datos)
+    .then(respuesta=>{ console.log(respuesta)});
 
 /*solicitarDatosSinParametros()
  .then(respuesta=>{console.log( JSON.parse(respuesta))});*/
-solicitarDatosConParametros(datos)
-    .then(respuesta=>{ console.log(respuesta)});
