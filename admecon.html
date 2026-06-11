@@ -30,7 +30,7 @@
 </header>
 <section class="container d-flex justify-content-center">
   <div class="row mt-5">
-    <div class="col-4">
+    <div class="col-3">
       <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
         <div class="card-header"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cash" viewBox="0 0 16 16">
   <path d="M8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4"/>
@@ -38,11 +38,11 @@
 </svg> Ingreso Carol</div>
         <div class="card-body">
           <h5 class="card-title">$100.99</h5>
-          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+          <p class="card-text">Junio 2026</p>
         </div>
       </div>
     </div>
-    <div class="col-4">
+    <div class="col-3">
       <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
         <div class="card-header"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cash" viewBox="0 0 16 16">
   <path d="M8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4"/>
@@ -50,11 +50,23 @@
 </svg> Ingreso Pablo</div>
         <div class="card-body">
           <h5 class="card-title">$100.99</h5>
-          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+          <p class="card-text">Junio 2026</p>
         </div>
       </div>
     </div>
-    <div class="col-4">
+    <div class="col-3">
+      <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
+        <div class="card-header"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cash" viewBox="0 0 16 16">
+  <path d="M8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4"/>
+  <path d="M0 4a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1zm3 0a2 2 0 0 1-2 2v4a2 2 0 0 1 2 2h10a2 2 0 0 1 2-2V6a2 2 0 0 1-2-2z"/>
+</svg> Ingreso Alquiler</div>
+        <div class="card-body">
+          <h5 class="card-title">$100.99</h5>
+          <p class="card-text">Junio 2026</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-3">
         <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
         <div class="card-header"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cash" viewBox="0 0 16 16">
   <path d="M8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4"/>
@@ -62,7 +74,7 @@
 </svg> Ingreso total</div>
         <div class="card-body">
           <h5 class="card-title">$201.98</h5>
-          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+          <p class="card-text">Junio 2026</p>
         </div>
       </div>
     </div>
@@ -100,6 +112,112 @@
         </div>
       </div>
     </div>
+  </div>
+</section>
+<section class="container d-flex justify-content-center">
+  <div class="row mt-5">
+    <h2 class="text-center">Consultar Gastos</h2>
+    <!--CONTENEDOR FORMULARIO-->
+    <div class="col-12">
+      <form>
+        <div class="mb-3">
+          <legend class="text-center">Buscar Gastos</legend>
+        </div>
+        <div class="mb-3">
+          <label for="inputFecha" class="form-label">Fecha</label>
+          <input id="inputFecha" type="date" class="form-control">
+        </div>
+        <div class="mb-3">
+          <label for="inputFechaMA" class="form-label">Fecha</label>
+          <input id="inputFechaMA" type="month" class="form-control">
+        </div>
+        <div class="mb-3">
+          <label for="inputGastoPorOrigen" class="form-label">Gasto por origen</label>
+          <select id="inputGastoPorOrigen" class="form-select">
+            <option disabled>Seleccionar origen</option>
+            <option value="GastoDePablo">Gasto de Pablo</option>
+            <option value="GastoDeCarol">Gasto de Carol</option>
+            <option value="TodosLosGastos">Todos los gastos</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="inputTipoDeGasto" class="form-label">Tipo de gasto</label>
+          <select id="inputTipoDeGasto" class="form-select">
+            <option disabled>Seleccionar gasto</option>
+            <option value="1">Nafta</option>
+            <option value="2">Internet</option>
+            <option value="3">Luz</option>
+            <option value="4">Youtube</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="inputDetalleDelGasto" class="form-label">Detalle del gasto</label>
+          <input id="inputDetalleDelGasto" class="form-control" type="text" placeholder="1kg pollo... 1 Docena...">
+        </div>
+        <div class="mb-3">
+          <label for="inputOrigenDeOrigen" class="form-label">Origen de Ingreso</label>
+          <select id="inputOrigenDeOrigen" class="form-select">
+            <option disabled>Seleccionar origen</option>
+            <option value="Pablo">Pablo</option>
+            <option value="Carol">Carol</option>
+            <option value="Alquiler">Alquiler</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="inputImporte" class="form-label">Importe</label>
+          <input id="inputImporte" class="form-control" type="number" step="any" />
+        </div>
+        <div class="mb-3  text-center">
+          <button class="btn">Buscar</button>
+        </div>
+      </form>
+    </div>
+    <!--CONTENEDOR FORMULARIO-->
+    <!--CONTENEDOR TABLA-->
+    <div class="col-12">
+      <table class="table">
+        <thead class="text-center">
+          <tr>
+            <th>ORIGEN</th>
+            <th>FECHA</th>
+            <th>GASTO</th>
+            <th>IMPORTE</th>
+            <th>DETALLE</th>
+          </tr>
+        </thead>
+        <tbody class="text-center">
+          <tr>
+            <td>PABLO</td>
+            <td>08/06/2026</td>
+            <td>Saldo CABAL</td>
+            <td>$83.149,90</td>
+            <td>Pago minimo.</td>
+          </tr>
+          <tr>
+            <td>PABLO</td>
+            <td>08/06/2026</td>
+            <td>Empanadas</td>
+            <td>$25.000</td>
+            <td>Una docena de Il Viale.</td>
+          </tr>
+          <tr>
+            <td>CAROL</td>
+            <td>08/06/2026</td>
+            <td>Leche</td>
+            <td>$128.000</td>
+            <td>5 Lastas de Nan.</td>
+          </tr>
+          <tr>
+            <td>CAROL</td>
+            <td>08/06/2026</td>
+            <td>Pollo</td>
+            <td>$34.500</td>
+            <td>1kg de pechuga.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!--CONTENEDOR FORMULARIO-->
   </div>
 </section>
 
