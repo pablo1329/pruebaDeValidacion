@@ -39,11 +39,44 @@ class MysqliDB {
   }//fin function devolverEjecutarConsulta
   
 
-  public function __destruct() {
-    if (isset($this->enlace) && $this->enlace instanceof mysqli) {
-      $this->enlace->close();
+  /**
+   * Cierra la conexión a la base de datos de forma segura
+   * @return void
+   */
+  public function cerrarConexion(): void {
+    try {
+      // Cerrar statement si existe
+      if ($this->sentencia instanceof mysqli_stmt) {
+        @$this->sentencia->close();
+        $this->sentencia = null;
+      }
+      
+      // Cerrar conexión a BD
+      if ($this->enlace instanceof mysqli) {
+        if ($this->enlace->ping()) {
+          $this->enlace->close();
+        }
+      }
+    } catch (Exception $e) {
+      // Log del error (opcional)
+      error_log("Error al cerrar conexión BD: " . $e->getMessage());
     }
-  }
+  }//fin function cerrarConexion
+
+
+  /**
+   * Destructor seguro: Se ejecuta automáticamente al finalizar
+   * Atrapa excepciones para evitar que rompan el script
+   * @return void
+   */
+  public function __destruct() {
+    try {
+      $this->cerrarConexion();
+    } catch (Throwable $e) {
+      // En destructores no se pueden lanzar excepciones
+      error_log("Error fatal en destructor de MysqliDB: " . $e->getMessage());
+    }
+  }//fin function __destruct
 
 
 }//fin class MysqliDB
