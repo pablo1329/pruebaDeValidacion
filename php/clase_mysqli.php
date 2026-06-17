@@ -85,14 +85,19 @@ class MysqliDB {
 	/**
 	 * Destructor seguro: Se ejecuta automáticamente al finalizar
 	 * Atrapa excepciones para evitar que rompan el script
+	 * Los destructores no pueden lanzar excepciones
 	 * @return void
 	 */
 	public function __destruct() {
     	try {
         	$this->cerrarConexion();
     	} catch (Throwable $e) {
-        	// Los destructores no pueden lanzar excepciones
-        	error_log("Error fatal en destructor de MysqliDB [HTTP " . $this->codigoHTTP . "]: " . $e->getMessage());
+        	// Registrar error en Logger
+        	Logger::registrarError(
+        	    $e->getMessage(),
+        	    'MYSQLI_DESTRUCTOR_ERROR',
+        	    'ERROR'
+        	);
     	}
 	}
 
