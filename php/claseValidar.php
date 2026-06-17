@@ -382,14 +382,6 @@ class Validar {
 
         	//Se valida el dato recibído, segú el 'tipoDeDatoAValidar' almacenado en $restricciones[$propiedad]['tipoDeDatoAValidar'] (int, float, bool, etc.)
         	$this->validarDatoPorTipo($this->datosSanitizados[$propiedad], $propiedad, $restricciones);
-        	
-        	// Si corresponde, validamos el valor numérico
-        	/*$this->validarValorNumericoAbsoluto($propiedad,
-            									$this->datosRecibidos[$propiedad],
-            									$restricciones['verificarValorNumerico'],
-            									$restricciones['valorAbsolutoMinimo'],
-            									$restricciones['valorAbsolutoMaximo'] );*/
-
 
 		}//fin bucle forEach
 
@@ -535,7 +527,7 @@ class Validar {
         	throw new Exception("El valor de $propiedad " . self::MENSAJE_DE_ERROR['valorNumericoDecimalInvalido']);
     	}
 
-    	$this->validarLimitesAbsolutos($valorEnteroAComparar, $propiedad, $valorAbsolutoMinimo, $valorAbsolutoMaximo);
+    	$this->validarLimitesAbsolutos($valorDecimal, $propiedad, $valorAbsolutoMinimo, $valorAbsolutoMaximo);
 
 	}//fin function validarNumeroDecimal
 
