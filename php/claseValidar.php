@@ -18,21 +18,22 @@ class Validar {
 	private array $datosSanitizados = [];
 
 	private const MENSAJE_DE_ERROR = [405=>'405 Metodo no permitido',
-									  406=>'406 El servidor solos puede proporcionar datos en formato application/json',
-									  415=>'415 El Content-Type debe ser application/json.',
-									  'arrayVacio'=>'El array recivido en la solicitud está vacío',
-									  'jsonInvalido'=>'es un json invalido',
-									  'propiedadObligatoriaVacia'=>'el valor de la propiedad está vacío',
-									  'propiedadNoEcontrada'=>'es una propiedad obligatoria y no se encuentra en la petición',
-									  'seccionInexistente'=>'no coincide con secciones permitidas',
-									  'caracteresInvalidos'=>'contiene caractéres invalidos',
-									  'valorNumericoEnteroInvalido'=>'El valor almacenado en la propiedad no es un valor numérico entero valido',
-									  'valorNumericoDecimalInvalido'=>'El valor almacenado en la propiedad no es un valor numérico decimal valido',
-									  'longitudMinima'=>'tiene una cantidad de caractéres inferior a la permitida',
-									  'longitudMaxima'=>'tiene una cantidad de caractéres superior a la permitida',
-									  'valorAbsolutoInferior'=>'tiene un valor absoluto inferior al permitido',
-									  'valorAbsolutoSuperior'=>'tiene un valor absoluto superior al permitido',
-									  'errorAlIniciarSesion'=>'El usuario y/o la clave son incorrectos'];
+								  406=>'406 El servidor solos puede proporcionar datos en formato application/json',
+								  415=>'415 El Content-Type debe ser application/json.',
+								  'arrayVacio'=>'El array recivido en la solicitud está vacío',
+								  'jsonInvalido'=>'es un json invalido',
+								  'propiedadObligatoriaVacia'=>'el valor de la propiedad está vacío',
+								  'propiedadNoEcontrada'=>'es una propiedad obligatoria y no se encuentra en la petición',
+								  'seccionInexistente'=>'no coincide con secciones permitidas',
+								  'caracteresInvalidos'=>'contiene caractéres invalidos',
+								  'valorNumericoEnteroInvalido'=>'El valor almacenado en la propiedad no es un valor numérico entero valido',
+								  'valorNumericoDecimalInvalido'=>'El valor almacenado en la propiedad no es un valor numérico decimal valido',
+								  'valorBooleanoInvalido'=>'debe ser un valor booleano (true/false o 1/0)',
+								  'longitudMinima'=>'tiene una cantidad de caractéres inferior a la permitida',
+								  'longitudMaxima'=>'tiene una cantidad de caractéres superior a la permitida',
+								  'valorAbsolutoInferior'=>'tiene un valor absoluto inferior al permitido',
+								  'valorAbsolutoSuperior'=>'tiene un valor absoluto superior al permitido',
+								  'errorAlIniciarSesion'=>'El usuario y/o la clave son incorrectos'];
 
 	private const RESTRICCIONES = [	'seccion'=>['obligatorio'=>true,
 						           	 			'longitudMinima'=>8,
@@ -90,7 +91,7 @@ class Validar {
 						          			       'valorAbsolutoMinimo'=>1,
 						         		 	       'valorAbsolutoMaximo'=>500],
 						         	/*// Permite dígitos, comas (miles) y punto (decimal)
-										 $regexFloatConMiles = '#^[0-9]{1,3}(,[0-9]{3})*(\.[0-9]+)?$#';*/
+									 $regexFloatConMiles = '#^[0-9]{1,3}(,[0-9]{3})*(\.[0-9]+)?$#';*/
 						         	'velocidad'=>['obligatorio'=>true,
 						           	 			  'longitudMinima'=>4,
 						           	 			  'longitudMaxima'=>4,
@@ -107,7 +108,7 @@ class Validar {
 						          			      	 'valorAbsolutoMinimo'=>0,
 						         		 	      	 'valorAbsolutoMaximo'=>0],
 
-									'usuario'=>['obligatorio'=>true,
+								'usuario'=>['obligatorio'=>true,
 						           			   'longitudMinima'=>4,
 						           			   'longitudMaxima'=>25,
 						           			   'caracteresPermitidos'=>'/^[a-zA-Z0-9]+$/',
@@ -115,7 +116,7 @@ class Validar {
 						           			   'valorAbsolutoMinimo'=>0,
 						         		 	   'valorAbsolutoMaximo'=>0],
 
-									'nombre'=>['obligatorio'=>true,
+								'nombre'=>['obligatorio'=>true,
 						           			   'longitudMinima'=>2,
 						           			   'longitudMaxima'=>30,
 						           			   'caracteresPermitidos'=>'#^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s\n/.,\-()\'°]+$#u',
@@ -144,21 +145,21 @@ class Validar {
 	private const PROPIEDADES = ['destruirSesion'=>['idSesion', 
 	                            			    	'usuario',
 	                            			    	'tipoDeUsuario'],
-					
-							 	 'buscarDatosDeUsuarioPorNombreYClave'=>['usuario', 
-									  		   						 	 'clave'],
+				
+						 	 'buscarDatosDeUsuarioPorNombreYClave'=>['usuario', 
+								  		   						 	 'clave'],
 
-								 'buscarDatosPorNombreDeCivilizacion'=>['id_civilizacion'],
+							 'buscarDatosPorNombreDeCivilizacion'=>['id_civilizacion'],
 
-						         'buscarDatosPorNombreDeUnidad'=>['nombreDeUnidad'],
+					         'buscarDatosPorNombreDeUnidad'=>['nombreDeUnidad'],
 
-						         'buscarDatosPorTipoDeUnidad'=>['tipoDeUnidad'],
+					         'buscarDatosPorTipoDeUnidad'=>['tipoDeUnidad'],
 
-						         'buscarUnidadesPorCosto'=>['costoDeAlimento',
-						     								'costoDeMadera',
-						     							    'costoDeOro'],
+					         'buscarUnidadesPorCosto'=>['costoDeAlimento',
+					     								'costoDeMadera',
+					     							    'costoDeOro'],
 
-						         'buscarUnidadesPorVelocidad'=>['velocidad']
+					         'buscarUnidadesPorVelocidad'=>['velocidad']
 	];
 
 	private const METODOS_PERMITIDOS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'];
@@ -239,14 +240,14 @@ class Validar {
 		//Se almacena el array de la petición, en base al metodo http.
 		if ($this->metodoHTTP === 'GET') {
         	$this->datosRecibidos = $_GET;
-    	} else {
+     	} else {
         	$this->datosRecibidos = json_decode(file_get_contents('php://input'), true, 512, JSON_THROW_ON_ERROR);
-    	}
+     	}
 
-    	//Se valída que el array recibído en la solicitud no esté vacío, de lo contrario, se lanza una excepción.
-    	$this->validarArrayVacio($this->datosRecibidos);
+     	//Se valída que el array recibído en la solicitud no esté vacío, de lo contrario, se lanza una excepción.
+     	$this->validarArrayVacio($this->datosRecibidos);
 
-    	return $this->datosRecibidos;
+     	return $this->datosRecibidos;
 
 	}//fin function obtenerDatosSegunMetodoHTTP
 
@@ -321,11 +322,11 @@ class Validar {
 		//Se almacena la zona horaria.
 		$zonaArgentina = new DateTimeZone('America/Argentina/Buenos_Aires');
 		
-		//Si la llave 'fecha' se encuentra en el json, se procede a verificar la validez de la misma.
-		if(array_key_exists('fecha', $this->json)) {
+		//Si la llave 'fecha' se encuentra en los datosRecibidos, se procede a verificar la validez de la misma.
+		if(array_key_exists('fecha', $this->datosRecibidos)) {
 
 			//Almacenamos la fecha con formato.
-			$d = DateTime::createFromFormat('Y-m-d', $this->json['fecha'], $zonaArgentina);
+			$d = DateTime::createFromFormat('Y-m-d', $this->datosRecibidos['fecha'], $zonaArgentina);
 
 			//Almacenamos los errores.
      		$controlDeErroresDeFecha = DateTimeImmutable::getLastErrors();
@@ -355,33 +356,33 @@ class Validar {
 		foreach($this->propiedades as $propiedad) {
 
 			// Usamos $valor directamente, sin llamar a $this->json
-        	$this->validarPropiedadEnArray($propiedad);
+         	$this->validarPropiedadEnArray($propiedad);
 
 			$valor = $this->datosRecibidos[$propiedad] ?? null;
 
-        	$restricciones = self::RESTRICCIONES[$propiedad];
+         	$restricciones = self::RESTRICCIONES[$propiedad];
 
-        	$estaVacio = ($valor === null || $valor === '');
+         	$estaVacio = ($valor === null || $valor === '');
 
-        	if ($estaVacio) {
+         	if ($estaVacio) {
 
-        		if ($restricciones['obligatorio'] === true) {
-            		throw new Exception("La propiedad $propiedad ". self::MENSAJE_DE_ERROR['propiedadObligatoriaVacia']);
-        		}
+         		if ($restricciones['obligatorio'] === true) {
+             		throw new Exception("La propiedad $propiedad ". self::MENSAJE_DE_ERROR['propiedadObligatoriaVacia']);
+         		}
 
-        		// Si no es obligatorio y está vacío, no hay nada más que hacer.
-        		continue;
-    		}
+         		// Si no es obligatorio y está vacío, no hay nada más que hacer.
+         		continue;
+     		}
 
-        	// Validamos el string según las restricciones
-        	$this->validarString($propiedad,
-            					 $this->datosRecibidos[$propiedad],
-            					 $restricciones['caracteresPermitidos'],
-            				     $restricciones['longitudMinima'],
-            					 $restricciones['longitudMaxima'] );
+         	// Validamos el string según las restricciones
+         	$this->validarString($propiedad,
+             					 $this->datosRecibidos[$propiedad],
+             					 $restricciones['caracteresPermitidos'],
+             				     $restricciones['longitudMinima'],
+             					 $restricciones['longitudMaxima'] );
 
-        	//Se valida el dato recibído, segú el 'tipoDeDatoAValidar' almacenado en $restricciones[$propiedad]['tipoDeDatoAValidar'] (int, float, bool, etc.)
-        	$this->validarDatoPorTipo($this->datosSanitizados[$propiedad], $propiedad, $restricciones);
+         	//Se valida el dato recibído, según el 'tipoDeDatoAValidar' almacenado en $restricciones[$propiedad]['tipoDeDatoAValidar'] (int, float, bool, etc.)
+         	$this->validarDatoPorTipo($this->datosSanitizados[$propiedad], $propiedad, $restricciones);
 
 		}//fin bucle forEach
 
@@ -393,24 +394,24 @@ class Validar {
 		//Verificamos si el valor de la propiedad esta vacío.
 		if(empty($propiedad) ) {
 
-			//Si la propiedad boligatorio es true, se almacena un error por qué las propiedades obligatorias no deben estar vacías.
+			//Si la propiedad obligatorio es true, se almacena un error por qué las propiedades obligatorias no deben estar vacías.
 			if($this->restricciones['obligatorio']) {
 			   throw new Exception("La propiedad obligatoria: $propiedad " . self::MENSAJE_DE_ERROR['propiedadObligatoriaVacia']);
 			}//fin if($this->restricciones['obligatorio'])
 
-		}//fin if(empty($this->json[$this->propiedades[$i]]) )
+		}//fin if(empty($this->datosRecibidos[$this->propiedades[$i]]) )
 
 	}//fin function validarValoresVacios
 
 
 	private function validarPropiedadEnArray(string $propiedad):void{
 
-		//Verificamos si el json contiene todas las propiedades obligatorias en base a la seccion.
+		//Verificamos si los datosRecibidos contienen todas las propiedades obligatorias en base a la seccion.
 		if(array_key_exists($propiedad, $this->datosRecibidos) === false) {
 			throw new Exception("La propiedad: $propiedad " . self::MENSAJE_DE_ERROR['propiedadNoEcontrada']);
 		}
 
-	}//fin function validarPropiedadEnJson
+	}//fin function validarPropiedadEnArray
 
 
 	private function validarPropiedadesPorSeccion(array $datosRecibidos):void{
@@ -419,7 +420,7 @@ class Validar {
 			throw new Exception('Seccion invalida: ' . $datosRecibidos['seccion'] .' '. self::MENSAJE_DE_ERROR['seccionInexistente']);
 		}
 
-	}//fin function validarLlaveDeSeccion
+	}//fin function validarPropiedadesPorSeccion
 
 
 	private function validarSeccion(array $datosRecibidos):void {
@@ -444,8 +445,8 @@ class Validar {
 
 		//Aplicamos configuracion de validacion en base a los caracteres permitidos.
 		if (preg_match($caracteresPermitidos, $cadena) !== 1) {
-        	throw new Exception("La propiedad: {$propiedad} " . self::MENSAJE_DE_ERROR['caracteresInvalidos']);
-    	}
+         	throw new Exception("La propiedad: {$propiedad} " . self::MENSAJE_DE_ERROR['caracteresInvalidos']);
+     	}
 
 	}//fin function verificarCaracteresEspeciales
 
@@ -497,7 +498,7 @@ class Validar {
 
 		$this->datosSanitizados[$propiedad] = $numeroAComparar;
 
-	}//fin function validarLimitesAbsolutosEnteros
+	}//fin function validarLimitesAbsolutos
 
 
 	private function validarNumeroEntero(mixed $numeroAComparar, string $propiedad, int $valorAbsolutoMinimo, int $valorAbsolutoMaximo):void{
@@ -508,12 +509,12 @@ class Validar {
 		$valorEnteroAComparar = filter_var($numeroSanitizado, FILTER_VALIDATE_INT);
 		
 		if ($valorEnteroAComparar === false) {
-        	throw new Exception("El valor de $propiedad " . self::MENSAJE_DE_ERROR['valorNumericoEnteroInvalido']);
-    	}
+         	throw new Exception("El valor de $propiedad " . self::MENSAJE_DE_ERROR['valorNumericoEnteroInvalido']);
+     	}
 
 		$this->validarLimitesAbsolutos($valorEnteroAComparar, $propiedad, $valorAbsolutoMinimo, $valorAbsolutoMaximo); 
 	
-	}//fin function validarValorNumericoAbsoluto
+	}//fin function validarNumeroEntero
 
 
 	private function validarNumeroDecimal(mixed $valor, string $propiedad, float $valorAbsolutoMinimo, float $valorAbsolutoMaximo):void{
@@ -521,44 +522,55 @@ class Validar {
 		$numeroSanitizado = filter_var($valor, FILTER_SANITIZE_NUMBER_FLOAT);
 
 		//Se valida el valor decimal recibído.
-    	$valorDecimal = filter_var($numeroSanitizado, FILTER_VALIDATE_FLOAT);
-    
-    	if ($valorDecimal === false) {
-        	throw new Exception("El valor de $propiedad " . self::MENSAJE_DE_ERROR['valorNumericoDecimalInvalido']);
-    	}
+     	$valorDecimal = filter_var($numeroSanitizado, FILTER_VALIDATE_FLOAT);
+     
+     	if ($valorDecimal === false) {
+         	throw new Exception("El valor de $propiedad " . self::MENSAJE_DE_ERROR['valorNumericoDecimalInvalido']);
+     	}
 
-    	$this->validarLimitesAbsolutos($valorDecimal, $propiedad, $valorAbsolutoMinimo, $valorAbsolutoMaximo);
+     	$this->validarLimitesAbsolutos($valorDecimal, $propiedad, $valorAbsolutoMinimo, $valorAbsolutoMaximo);
 
 	}//fin function validarNumeroDecimal
 
 
-	private function validarBooleano($valor, string $propiedad): bool {
+	/**
+	 * Valida y sanitiza valores booleanos
+	 * Acepta: true, false, 1, 0, "true", "false", "on", "off", "yes", "no"
+	 * @param mixed $valor El valor a validar
+	 * @param string $propiedad El nombre de la propiedad
+	 * @return void
+	 * @throws Exception Si el valor no es un booleano válido
+	 */
+	private function validarBooleano(mixed $valor, string $propiedad): void {
     	// filter_var con FILTER_VALIDATE_BOOLEAN acepta "1", "true", "on", "yes"
     	// y los convierte a true. Muy útil para parámetros de URL.
     	$valorBool = filter_var($valor, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
     
     	if ($valorBool === null) {
-        	throw new Exception("La propiedad $propiedad debe ser un booleano (true/false).");
+        	$this->codigoHTTP = 422; // Unprocessable Entity
+        	throw new Exception("La propiedad $propiedad " . self::MENSAJE_DE_ERROR['valorBooleanoInvalido']);
     	}
-    	return $valorBool;
-	}
+    	
+    	// Guardamos el valor sanitizado en el array de datos sanitizados
+    	$this->datosSanitizados[$propiedad] = $valorBool;
+	}//fin function validarBooleano
 
 
 	private function validarDatoPorTipo(mixed $valor, string $propiedad, array $restricciones):void{
 
 		switch ($restricciones['tipoDeDatoAValidar']) {
 
-        	case 'int':
-            	$this->validarNumeroEntero($valor, $propiedad, $restricciones['valorAbsolutoMinimo'], $restricciones['valorAbsolutoMaximo']);
-            break;
-        	case 'float':
-            	$this->validarNumeroDecimal($valor, $propiedad, $restricciones['valorAbsolutoMinimo'], $restricciones['valorAbsolutoMaximo']);
-            break;
-        	case 'bool':
-            	//$this->validarBooleano($valor, $propiedad);
-            break;
+         	case 'int':
+             	$this->validarNumeroEntero($valor, $propiedad, $restricciones['valorAbsolutoMinimo'], $restricciones['valorAbsolutoMaximo']);
+             break;
+         	case 'float':
+             	$this->validarNumeroDecimal($valor, $propiedad, $restricciones['valorAbsolutoMinimo'], $restricciones['valorAbsolutoMaximo']);
+             break;
+         	case 'bool':
+             	$this->validarBooleano($valor, $propiedad);
+             break;
 
-    	}//fin switch
+     	}//fin switch
 
 	}//fin function validarDatoPorTipo
 
@@ -573,21 +585,21 @@ class Validar {
 
 	public function devolverAlmacenarError(array $rastreoDeError, string $mensajeDeError):array {
 		return $this->almacenarError($rastreoDeError, $mensajeDeError);
-	}
+	}//fin function devolverAlmacenarError
 
 	public function devolverCodigoHTTP():int{
 		return $this->codigoHTTP;
 	}//fin function devolverCodigoHTTP
 
 	public function devolverDatosSanitizados(): array {
-    	// Si ninguna excepción es lanzada, se devuelve el array con los datos sanitizados.
-    	return $this->datosSanitizados;
+     	// Si ninguna excepción es lanzada, se devuelve el array con los datos sanitizados.
+     	return $this->datosSanitizados;
 	}//fin function devolverDatosSanitizados
 
 	public function devolverSeccion(): string{
 		return $this->datosRecibidos['seccion'];
 	}//fin function devolverSeccion
 
-}//fin class validar
+}//fin class Validar
 
 ?>
