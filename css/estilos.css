@@ -16,6 +16,10 @@ form{
 	border: 2px solid #000a1a;
 }
 
+.botonFormulario{
+	border: 2px solid #000a1a;
+} 
+
 .encabezadoAcordeon{
 	background-color: #3385ff;
 	color:#000a1a;
