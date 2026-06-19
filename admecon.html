@@ -8,8 +8,8 @@
   <title></title>
 </head>
 <body>
-<header>
-  <h1 class="text-center">ADMENCON</h1>
+<header class="encabezado">
+  <h1 class="text-center mt-3">ADMENCON</h1>
 </header>
 
 <section class="container d-flex justify-content-center">
@@ -25,10 +25,10 @@
           <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
             <div class="accordion-body">
               <ul class="nav flex-column">
-                <li class="nav-item">
+                <li id="itemGuardarIngreso" class="nav-item">
                   <a class="nav-link active colorDeLista" aria-current="page" href="#">Guardar Ingreso</a>
                 </li>
-                <li class="nav-item">
+                <li id="itemGuardarGasto" class="nav-item">
                   <a class="nav-link colorDeLista" href="#">Guardar Gasto</a>
                 </li>
               </ul>
@@ -42,10 +42,10 @@
           <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
             <div class="accordion-body">
               <ul class="nav flex-column">
-                <li class="nav-item" >
+                <li id="itemBuscarIngreso" class="nav-item" >
                   <a class="nav-link active colorDeLista"  aria-current="page" href="#">Buscar Ingreso</a>
                 </li>
-                <li class="nav-item">
+                <li id="itemBuscarGastos" class="nav-item">
                   <a class="nav-link colorDeLista" href="#">Buscar Gasto</a>
                 </li>
               </ul>
@@ -149,59 +149,43 @@
     <h2 class="text-center">Consultar Gastos</h2>
     <!--CONTENEDOR FORMULARIO-->
     <div class="col-7 m-auto my-5">
-      <form class="p-5 rounded-3">
+      <form id="formGestionDeDatos" class="p-5 rounded-3">
         <div class="mb-3">
           <legend class="text-center fw-bold">Buscar Gastos</legend>
         </div>
-        <div class="mb-3">
+        <div id="cajaFecha" class="mb-3">
           <label for="inputFecha" class="form-label">Fecha</label>
           <input id="inputFecha" type="date" class="form-control inputForm">
         </div>
-        <div class="mb-3">
-          <label for="inputGastoPorOrigen" class="form-label">Gasto por origen</label>
-          <select id="inputGastoPorOrigen" class="form-select inputForm">
-            <option disabled>Seleccionar origen</option>
-            <option value="GastoDePablo">Gasto de Pablo</option>
-            <option value="GastoDeCarol">Gasto de Carol</option>
-            <option value="TodosLosGastos">Todos los gastos</option>
+        <div id="cajaOrigen" class="mb-3">
+          <label for="inputOrigenDeIngreso" class="form-label">Origen</label>
+          <select id="inputOrigenDeIngreso" class="form-select inputForm">
+            <option disabled selected>Seleccionar origen</option>
           </select>
         </div>
-        <div class="mb-3">
-          <label for="inputTipoDeGasto" class="form-label">Tipo de gasto</label>
-          <select id="inputTipoDeGasto" class="form-select inputForm">
+        <div id="cajaCategoriaGasto" class="mb-3">
+          <label for="inputCategoriaDeGasto" class="form-label">Categoría de gasto</label>
+          <select id="inputCategoriaDeGasto" class="form-select inputForm">
             <option disabled selected>Seleccionar gasto</option>
-            <option value="1">Nafta</option>
-            <option value="2">Internet</option>
-            <option value="3">Luz</option>
-            <option value="4">Youtube</option>
           </select>
         </div>
-        <div class="mb-3">
+        <div id="cajaDetalleDeGasto" class="mb-3">
           <label for="inputDetalleDelGasto" class="form-label">Detalle del gasto</label>
           <input id="inputDetalleDelGasto" class="form-control inputForm" type="text" placeholder="1kg pollo... 1 Docena...">
         </div>
-        <div class="mb-3">
-          <label for="inputOrigenDeOrigen" class="form-label">Origen de Ingreso</label>
-          <select id="inputOrigenDeOrigen" class="form-select inputForm">
-            <option disabled selected>Seleccionar origen</option>
-            <option value="Pablo">Pablo</option>
-            <option value="Carol">Carol</option>
-            <option value="Alquiler">Alquiler</option>
-          </select>
-        </div>
-        <div class="mb-3">
+        <div id="cajaImporte" class="mb-3">
           <label for="inputImporte" class="form-label">Importe</label>
           <input id="inputImporte" class="form-control inputForm" type="number" step="any" />
         </div>
         <div class="mb-3  text-center">
-          <button class="btn w-100 fw-bold" style="border: 2px solid #000a1a;">Buscar</button>
+          <button id="botonFormulario" class="btn w-100 fw-bold botonFormulario" name="buscarGastos">Buscar</button>
         </div>
       </form>
     </div>
     <!--CONTENEDOR FORMULARIO-->
     <!--CONTENEDOR TABLA-->
     <div class="col-12">
-      <table class="table">
+      <table class="table my-5 tabla">
         <thead class="text-center">
           <tr>
             <th>ORIGEN</th>
@@ -257,6 +241,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous" defer></script>
   <script type="text/javascript" src="script/fetch.js" defer></script>
   <script type="text/javascript" src="script/gestionarDatos.js" defer></script>
+  <script type="text/javascript" src="script/inicio.js" defer></script>
 </footer>
 </body>
 </html>
