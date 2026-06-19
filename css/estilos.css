@@ -1,1 +1,31 @@
+body{
+	background-color: #000a1a;
+}
 
+h1, h2{
+	color:#3385ff;
+}
+
+form{
+	background-color: #3385ff;
+	color: #000a1a;
+	font-weight: bolder;
+}
+
+.inputForm{
+	border: 2px solid #000a1a;
+}
+
+.encabezadoAcordeon{
+	background-color: #3385ff;
+	color:#000a1a;
+}
+
+.colorDeLista{
+	color:#000a1a;
+}
+
+.tarjeta{
+	background-color: #66ff66;
+	color: #006600;
+}
