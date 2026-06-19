@@ -1,5 +1,6 @@
 body{
 	background-color: #000a1a;
+	font-size: 16px;
 }
 
 h1, h2{
@@ -10,6 +11,23 @@ form{
 	background-color: #3385ff;
 	color: #000a1a;
 	font-weight: bolder;
+}
+
+.tabla{
+	border: 2px solid #3385ff;
+}
+
+.tabla tr th{ 
+	background-color: #000a1a;
+	color: #3385ff;
+ }
+
+ .tabla tr td{
+ 	color: #000a1a;
+ }
+
+.encabezado{
+	min-height: 5rem;	
 }
 
 .inputForm{
