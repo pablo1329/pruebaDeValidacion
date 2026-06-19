@@ -4,20 +4,20 @@ function almacenarDatosEnSessionStorage(llave, datos){
 
 
 function mostrarCamposDeFormularioPorId(idDeLista){
-	['cajaFecha', 'cajaOrigen', 'cajaCategoriaGasto', 'cajaDetalleDeGasto', 'cajaImporte']
+	let configuracion = [];
 	switch(idDeLista){
 
 		case'itemGuardarIngreso':
-
+			configuracion = ['cajaFecha', 'cajaImporte', 'cajaOrigen'];
 		break;
 		case'itemGuardarGasto':
-			
+			configuracion = ['cajaFecha', 'cajaCategoriaGasto', 'cajaOrigen', 'cajaImporte', 'cajaDetalleDeGasto'];
 		break;
 		case'itemBuscarIngreso':
-			
+			configuracion = ['cajaFecha', 'cajaOrigen'];
 		break;
 		case'itemBuscarGastos':
-			
+			configuracion = ['cajaFecha', 'cajaCategoriaGasto', 'cajaOrigen', 'cajaImporte', 'cajaDetalleDeGasto'];
 		break;
 
 	}//fin switch
