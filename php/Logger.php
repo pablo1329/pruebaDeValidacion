@@ -27,7 +27,8 @@ class Logger {
                                       'longitudMaxima'=>'tiene una cantidad de caractéres superior a la permitida',
                                       'valorAbsolutoInferior'=>'tiene un valor absoluto inferior al permitido',
                                       'valorAbsolutoSuperior'=>'tiene un valor absoluto superior al permitido',
-                                      'errorAlIniciarSesion'=>'El usuario y/o la clave son incorrectos'];
+                                      'errorAlIniciarSesion'=>'El usuario y/o la clave son incorrectos',
+                                      'errorAlEjecutarConsulta'=>'Error al ejecutar la sonsulta'];
 
     /**
      * Registra un error en archivo y en memoria
@@ -36,6 +37,23 @@ class Logger {
      * @param string $tipo Tipo de error (ERROR, WARNING, INFO, DEBUG)
      * @return void
      */
+
+
+    /*private function almacenarError(array $rastreoDeError, string $mensajeDeError):array {
+
+        $cantidadDeErrores = count($rastreoDeError);
+
+        $respuesta['error']['Mensaje'] = $mensajeDeError;
+
+        for ($i=0; $i < $cantidadDeErrores; $i++) { 
+            $respuesta['error'][] = "[$i]" . ' LINEA: ' . $rastreoDeError[$i]["line"] . ' CLASE: ' . $rastreoDeError[$i]["class"] . ' FUNCIÓN: ' . $rastreoDeError[$i]["function"];
+        }//fin bucle for.
+
+        return $respuesta;
+
+    }//fin function almacenarError*/
+
+
     public static function registrarError(string $mensaje, string $contexto = '', string $tipo = 'ERROR'): void {
         
         // Crear carpeta logs si no existe
@@ -91,7 +109,7 @@ class Logger {
      * Obtiene el último error registrado
      * @return array|null Array con el error o null si no hay
      */
-    public static function obtenerUltimo(): ?array {
+    public static function obtenerUltimoError(): ?array {
         
         // end() devuelve el último elemento del array
         $ultimoError = end(self::$errores);
@@ -105,7 +123,7 @@ class Logger {
      * @param int $cantidad Cantidad de errores a obtener
      * @return array Array con los errores
      */
-    public static function obtenerUltimos(int $cantidad = 10): array {
+    public static function obtenerUltimosErrores(int $cantidad = 10): array {
         
         // Si no existe el archivo, devolver array vacío
         if (!file_exists(self::$rutaLog)) {

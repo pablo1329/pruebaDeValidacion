@@ -13,14 +13,29 @@ class MysqliDB {
 
 	public function ejecutar(string $sql, array $params = [], string $types = ""): mysqli_result|bool {
     	$stmt = $this->enlace->prepare($sql);
-    	if (!empty($params)) $stmt->bind_param($types, ...$params);
-    	$stmt->execute();
-    	
+    
+    	// Solo vinculamos si hay parámetros Y si se enviaron los tipos
+    	if (!empty($params) && !empty($types)) {
+        	$stmt->bind_param($types, ...$params);
+    	}
+    
+    	if (!$stmt->execute()) {
+        	Logger::registrarError('errorAlEjecutarConsulta', 'MysqliDB', 'ERROR');
+        	return false;
+    	}
+    
+    	// Para consultas SELECT, obtenemos el resultado
     	$result = $stmt->get_result();
-    	$status = ($result instanceof mysqli_result) ? $result : $stmt->affected_rows > 0;
-    	
-    	$stmt->close();
-    	return ($result instanceof mysqli_result) ? $result : $status;
+    
+    	// Si no es un SELECT (es un INSERT/UPDATE/DELETE), get_result() devuelve false
+    	if ($result === false) {
+        	$status = $stmt->affected_rows > 0;
+        	$stmt->close();
+        	return $status;
+    	}
+    
+    	// Si es un SELECT, devolvemos el resultado
+    	return $result;
 	}
 
 	public function devolverEjecutarConsulta(string $sql, array $params = [], string $types = ""): mysqli_result|int {

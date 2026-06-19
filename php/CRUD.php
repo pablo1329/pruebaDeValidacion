@@ -1,8 +1,12 @@
 <?php 
 class CRUD {
 	
-	private const CONSULTAS = ['buscarDatosPorNombreDeCivilizacion'=>['consulta'=>'SELECT * FROM unidad WHERE RELA_CIVILIZACION = ?',
-        															  'tipos'=>'i']
+	private const CONSULTAS = ['buscarDatosPorNombreDeCivilizacion'=>['consulta'=>'SELECT * FROM unidad WHERE FK_ID_CIVILIZACION  = ?',
+        															  'tipos'=>'i'],
+        					   'obtenerTodosLosOrigenesDeIngreso'=>['consulta'=>'SELECT * FROM origen_ingreso',
+        															'tipos'=>''],
+        					   'obtenerTodasLasCategoriasDeGastos'=>['consulta'=>'SELECT * FROM categoria_gasto',
+        															 'tipos'=>'']
     ];
 	
 	public function __construct(){}//fin constructor

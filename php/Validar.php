@@ -126,41 +126,18 @@ class Validar {
 	                            			    	'usuario',
 	                            			    	'tipoDeUsuario'],
 				
-						 	 'buscarDatosDeUsuarioPorNombreYClave'=>['usuario', 
-								  		   						 	 'clave'],
+						 	 	 'buscarDatosDeUsuarioPorNombreYClave'=>['usuario', 
+								  		   						 	 	 'clave'],
 
-							 'buscarDatosPorNombreDeCivilizacion'=>['id_civilizacion'],
+							 	 'obtenerTodosLosOrigenesDeIngreso'=>['seccion'],
 
-					         'buscarDatosPorNombreDeUnidad'=>['nombreDeUnidad'],
-
-					         'buscarDatosPorTipoDeUnidad'=>['tipoDeUnidad'],
-
-					         'buscarUnidadesPorCosto'=>['costoDeAlimento',
-					     								'costoDeMadera',
-					     							    'costoDeOro'],
-
-					         'buscarUnidadesPorVelocidad'=>['velocidad']
+							 	 'obtenerTodasLasCategoriasDeGastos'=>['seccion']
 	];
 
 	private const METODOS_PERMITIDOS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'];
 
 
 	public function __construct(){}//fin constructor
-
-
-	private function almacenarError(array $rastreoDeError, string $mensajeDeError):array {
-
-		$cantidadDeErrores = count($rastreoDeError);
-
-		$respuesta['error']['Mensaje'] = $mensajeDeError;
-
-		for ($i=0; $i < $cantidadDeErrores; $i++) { 
-			$respuesta['error'][] = "[$i]" . ' LINEA: ' . $rastreoDeError[$i]["line"] . ' CLASE: ' . $rastreoDeError[$i]["class"] . ' FUNCIÓN: ' . $rastreoDeError[$i]["function"];
-		}//fin bucle for.
-
-		return $respuesta;
-
-	}//fin function almacenarError
 
 
 	private function validarMetodoDeRespuesta():void{
@@ -556,10 +533,6 @@ class Validar {
 	public function devolverValidarPeticion():void{
 		$this->validarPeticion();
 	}//fin function devolverValidarPeticion
-
-	public function devolverAlmacenarError(array $rastreoDeError, string $mensajeDeError):array {
-		return $this->almacenarError($rastreoDeError, $mensajeDeError);
-	}//fin function devolverAlmacenarError
 
 	public function devolverDatosSanitizados(): array {
      	// Si ninguna excepción es lanzada, se devuelve el array con los datos sanitizados.
