@@ -1,9 +1,49 @@
-function obtenerIdsDeInputsDeFormularioPorSolicitud(){}//fin function obtenerIdsDeInputsDeFormularioPorSolicitud
+function almacenarDatosPorId(idsDeInputsDeFormulario){
+
+	let datosDeFormulario = {};
+
+	idsDeInputsDeFormulario.forEach((element) => {
+		datosDeFormulario.element = document.getElementById(element).value;
+	});
+
+	return datosDeFormulario;
+
+}//fin function almacenarDatosPorId
+
+
+function obtenerIdsDeInputsDeFormularioPorSolicitud(solicitud){
+
+	let idsDeInputs = [];
+
+	switch(solicitud){
+
+		case'itemGuardarIngreso':
+			idsDeInputs = ['inputFecha', 'inputOrigenDeIngreso', 'inputImporte'];
+		break;
+		case'itemGuardarGasto':
+			idsDeInputs = ['inputFecha', 'inputOrigenDeIngreso', 'inputCategoriaDeGasto', 'inputDetalleDelGasto', 'inputImporte'];
+		break;
+		case'itemBuscarIngreso':
+			idsDeInputs = ['inputFecha', 'inputOrigenDeIngreso'];
+		break;
+		case'itemBuscarGastos':
+			idsDeInputs = ['inputFecha', 'inputOrigenDeIngreso', 'inputCategoriaDeGasto', 'inputDetalleDelGasto', 'inputImporte'];
+		break;
+
+	}//fin switch
+
+	return idsDeInputs;
+
+}//fin function obtenerIdsDeInputsDeFormularioPorSolicitud
 
 
 function obtenerDatosDeFormularioPorSolicitud(solicitud){
 
-	let inputFormulario = ['inputFecha', 'inputOrigenDeIngreso', 'inputImporte'];
+	let idsDeInputsDeFormulario = obtenerIdsDeInputsDeFormularioPorSolicitud(solicitud);
+
+	let datosDeFormulario = almacenarDatosPorId(idsDeInputsDeFormulario);
+
+	console.log(datosDeFormulario);
 
 }//fin function obtenerDatosPorNombreDeBotonDeFormulario
 
