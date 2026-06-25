@@ -1,3 +1,35 @@
+function llenarSelect(selectId, ids, nombres) {
+    const select = document.getElementById(selectId);
+    
+    // Limpiamos el select por si ya tenía opciones previas
+    select.innerHTML = '<option value="">Seleccione una opción</option>';
+
+    // Recorremos los arrays
+    for (let i = 0; i < ids.length; i++) {
+        // Creamos un elemento option
+        const option = document.createElement('option');
+        
+        // Asignamos el value y el texto
+        option.value = ids[i];
+        option.textContent = nombres[i];
+        
+        // Añadimos la opción al select
+        select.appendChild(option);
+    }
+}
+
+
+function almacenarDatosEnSelect(){
+
+	datosDeSessionStorage = JSON.parse(sessionStorage.getItem('origenesDeIngreso'));
+	llenarSelect('inputOrigenDeIngreso', datosDeSessionStorage.datos.ID_ORIGEN, datosDeSessionStorage.datos.ORIGEN);
+
+	datosDeSessionStorage = JSON.parse(sessionStorage.getItem('categoriasDeGastos'));
+	llenarSelect('inputCategoriaDeGasto', datosDeSessionStorage.datos.ID_CATEGORIA_GASTO, datosDeSessionStorage.datos.CATEGORIA);
+		
+}//fin function almacenarDatosEnSelect
+
+
 function obtenerConfiguracionDeFormulario(idDeLista){
 
 	let configuracion = {	cajasAMostrar:[],

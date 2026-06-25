@@ -1,38 +1,30 @@
+const CONFIGURACION_FORMULARIOS = {
+    'itemGuardarIngreso': ['inputFecha', 'inputOrigenDeIngreso', 'inputImporte'],
+    'itemGuardarGasto': ['inputFecha', 'inputOrigenDeIngreso', 'inputCategoriaDeGasto', 'inputDetalleDelGasto', 'inputImporte']
+};
+
+
 function almacenarDatosPorId(idsDeInputsDeFormulario){
 
 	let datosDeFormulario = {};
 
-	idsDeInputsDeFormulario.forEach((element) => {
-		datosDeFormulario.element = document.getElementById(element).value;
-	});
+    idsDeInputsDeFormulario.forEach((id) => {
+        // Usamos [id] para que la clave sea, por ejemplo, "inputFecha" 
+        // y no la palabra literal "element"
+        const inputElement = document.getElementById(id);
+        
+        // Es buena práctica verificar si el elemento existe antes de acceder a .value
+        datosDeFormulario[id] = inputElement ? inputElement.value : null;
+    });
 
-	return datosDeFormulario;
+    return datosDeFormulario;
 
 }//fin function almacenarDatosPorId
 
 
 function obtenerIdsDeInputsDeFormularioPorSolicitud(solicitud){
 
-	let idsDeInputs = [];
-
-	switch(solicitud){
-
-		case'itemGuardarIngreso':
-			idsDeInputs = ['inputFecha', 'inputOrigenDeIngreso', 'inputImporte'];
-		break;
-		case'itemGuardarGasto':
-			idsDeInputs = ['inputFecha', 'inputOrigenDeIngreso', 'inputCategoriaDeGasto', 'inputDetalleDelGasto', 'inputImporte'];
-		break;
-		case'itemBuscarIngreso':
-			idsDeInputs = ['inputFecha', 'inputOrigenDeIngreso'];
-		break;
-		case'itemBuscarGastos':
-			idsDeInputs = ['inputFecha', 'inputOrigenDeIngreso', 'inputCategoriaDeGasto', 'inputDetalleDelGasto', 'inputImporte'];
-		break;
-
-	}//fin switch
-
-	return idsDeInputs;
+	return CONFIGURACION_FORMULARIOS[solicitud] || [];
 
 }//fin function obtenerIdsDeInputsDeFormularioPorSolicitud
 
@@ -43,17 +35,43 @@ function obtenerDatosDeFormularioPorSolicitud(solicitud){
 
 	let datosDeFormulario = almacenarDatosPorId(idsDeInputsDeFormulario);
 
+	datosDeFormulario.seccion = solicitud;
+
 	console.log(datosDeFormulario);
+	return datosDeFormulario; 
 
 }//fin function obtenerDatosPorNombreDeBotonDeFormulario
+
+
+function procesarSolicitudAlServidor(solicitud){
+
+	switch(solicitud){
+		case'itemGuardarIngreso':
+			guardarDatos(solicitud).then(resultado=>console.log(resultado));	
+		break;
+		case'itemGuardarGasto':
+			
+		break;
+		case'itemBuscarIngreso':
+			
+		break;
+		case'itemBuscarGastos':
+		break;
+	}
+
+}//fin function procesarSolicitudAlServidor
 
 
 function detectarEnvioDeFormulario(solicitud){
 
 	let botonDeFormulario = document.getElementById('botonForm');
 
-	botonDeFormulario.addEventListener('click', ()=>{
-		obtenerDatosDeFormularioPorSolicitud(solicitud);
+	let datosDeFormulario = {};
+
+	botonDeFormulario.addEventListener('click', (event)=>{
+		event.preventDefault();
+		//datosDeFormulario = obtenerDatosDeFormularioPorSolicitud(solicitud);
+		procesarSolicitudAlServidor(solicitud);
 	});
 
 }//fin function detectarEnvioDeFormulario

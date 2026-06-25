@@ -1,33 +1,28 @@
 const url = 'php/index.php';
 
-function devolverConfiguracionDeEnvio(metodo) {
-
-  let configuracion = {};
-
-  if(metodo === 'GET'){
-    configuracion = { method: metodo, // *GET, POST, PUT, DELETE, etc.
-                      mode: 'cors', // no-cors, *cors, same-origin
-                      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-                      credentials: 'same-origin', // include, *same-origin, omit
-                      headers: { 'Accept': 'application/json'}
-    };
-  } else {
-    configuracion = { method: metodo, // *POST, PUT, DELETE, etc.
-                      mode: 'cors', // no-cors, *cors, same-origin
-                      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-                      credentials: 'same-origin', // include, *same-origin, omit
-                      headers: { 'Content-Type': 'application/json', /* 'Content-Type': 'application/x-www-form-urlencoded',*/
-                                 'Accept': 'application/json'
-                      },
-                      redirect: 'follow', /* manual, *follow, error*/
-                      referrerPolicy: 'no-referrer', /* no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url*/
-                      body: '' /* body data type must match "Content-Type" header */
+function devolverConfiguracionDeEnvio(metodo, solicitud='') {
+    let headers = { 'Accept': 'application/json' };
+    
+    if (metodo !== 'GET') {
+        headers['Content-Type'] = 'application/json';
     }
-  }
 
-  return configuracion;
-  
-}//fin function devolverConfiguracionDeEnvio
+    let configuracion = {
+        method: metodo,
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: headers
+    };
+
+    if (solicitud) {
+        configuracion.body = JSON.stringify(obtenerDatosDeFormularioPorSolicitud(solicitud));
+        configuracion.redirect = 'follow';
+        configuracion.referrerPolicy = 'no-referrer';
+    }
+    //console.log(configuracion);
+    return configuracion;
+}
 
 function devolverURLConParametros(datos){
 
@@ -45,7 +40,7 @@ async function enviarDatos(url = '', configuracion) {
   if(!respuesta.ok){
     // Aquí es donde está el cambio: debes esperar al texto
     const mensajeError = await respuesta.text();
-    console.error("Detalle del error del servidor:", mensajeError); // Verás el error real aquí
+    //console.error("Detalle del error del servidor:", mensajeError); // Verás el error real aquí
     throw new Error(mensajeError);
   }
 
@@ -72,6 +67,13 @@ function solicitarDatosConParametros(datos){
   return enviarDatos(nuevaURL, configuracion);
   
 }//fin function solicitarDatosConParametros
+
+
+function guardarDatos(solicitud) {
+  // Pasamos los datos directamente aquí
+  let configuracion = devolverConfiguracionDeEnvio('POST', solicitud);
+  return enviarDatos(url, configuracion);
+}
 
 
 
