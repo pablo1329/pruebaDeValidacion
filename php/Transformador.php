@@ -11,8 +11,12 @@ class Transformador {
 		$datosParaConsultar = [];
 
 		// Recorrer y agregar valores
-		foreach ($datosSanitizados as $value) {
-			$datosParaConsultar[] = $value;
+		foreach ($datosSanitizados as $key => $value) {
+
+			if($key !=='seccion') {
+				$datosParaConsultar[] = $value;	
+			}
+			
 		}
 
 		return $datosParaConsultar;
@@ -49,6 +53,17 @@ class Transformador {
 		];
 
 	}//fin function devolverArrayEstructurado
+
+
+	public static function devolverRespuesta(mixed $resultado): array|string {
+
+		if($resultado instanceof mysqli_result) {
+			return self::devolverArrayEstructurado($resultado);
+		} else {
+			return "Filas afectadas: " . $resultado;
+		}
+		
+	}//fin function devolverRespuesta
 
 }//fin class Transformador
 ?>

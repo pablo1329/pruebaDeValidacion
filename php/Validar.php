@@ -16,69 +16,28 @@ class Validar {
 	private array $datosSanitizados = [];
 
 	private const RESTRICCIONES = [	'seccion'=>['obligatorio'=>true,
-						           	 			'longitudMinima'=>8,
+						           	 			'longitudMinima'=>2,
 						           	 			'longitudMaxima'=>50,
 						           	 			'caracteresPermitidos'=>'/^[a-zA-Z]+$/',
 						           	 			'tipoDeDatoAValidar'=>'string',
 						          			    'valorAbsolutoMinimo'=>0,
 						         		 	    'valorAbsolutoMaximo'=>0],
+						         		 	   
+						         	'inputImporte'=>['obligatorio'=>true,
+						           	 			     'longitudMinima'=>1,
+						           	 			     'longitudMaxima'=>15,
+						           	 			     'caracteresPermitidos'=>'/^\d+(\.\d+)?$/',
+						           	 			     'tipoDeDatoAValidar'=>'float',
+						          			         'valorAbsolutoMinimo'=>0.00,
+						         		 	         'valorAbsolutoMaximo'=>999999999.99],
 
-						            'civilizacion'=>['obligatorio'=>true,
-						           	 				 'longitudMinima'=>4,
-						           	 				 'longitudMaxima'=>40,
-						           	 				 'caracteresPermitidos'=>'#^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s\n/.,\-()\'°]+$#u',
-						           	 				 'tipoDeDatoAValidar'=>'string',
-						          			    	 'valorAbsolutoMinimo'=>0,
-						         		 	    	 'valorAbsolutoMaximo'=>0],
-
-						         	'nombreDeUnidad'=>['obligatorio'=>true,
-						           	 				   'longitudMinima'=>4,
-						           	 				   'longitudMaxima'=>30,
-						           	 				   'caracteresPermitidos'=>'#^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s\n/.,\-()\'°]+$#u',
-						           	 				   'tipoDeDatoAValidar'=>'string',
-						          			    	   'valorAbsolutoMinimo'=>0,
-						         		 	    	   'valorAbsolutoMaximo'=>0],
-
-						         	'tipoDeUnidad'=>['obligatorio'=>true,
-						           	 				 'longitudMinima'=>4,
-						           	 				 'longitudMaxima'=>30,
-						           	 				 'caracteresPermitidos'=>'#^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s\n/.,\-()\'°]+$#u',
-						           	 				 'tipoDeDatoAValidar'=>'string',
-						          			    	 'valorAbsolutoMinimo'=>0,
-						         		 	    	 'valorAbsolutoMaximo'=>0],
-
-						         	'costoDeAlimento'=>['obligatorio'=>true,
-						           	 				 	'longitudMinima'=>1,
-						           	 				 	'longitudMaxima'=>3,
-						           	 				 	'caracteresPermitidos'=>'#^[1-9]$#',
-						           	 				 	'tipoDeDatoAValidar'=>'int',
-						          			    	 	'valorAbsolutoMinimo'=>1,
-						         		 	    	 	'valorAbsolutoMaximo'=>500],
-
-						     		'costoDeMadera'=>['obligatorio'=>true,
-						           	 				  'longitudMinima'=>1,
-						           	 				  'longitudMaxima'=>3,
-						           	 				  'caracteresPermitidos'=>'#^[1-9]$#',
-						           	 				  'tipoDeDatoAValidar'=>'int',
-						          			    	  'valorAbsolutoMinimo'=>1,
-						         		 	    	  'valorAbsolutoMaximo'=>500],
-
-						     		'costoDeOro'=>['obligatorio'=>true,
-						           	 			   'longitudMinima'=>4,
-						           	 			   'longitudMaxima'=>30,
-						           	 			   'caracteresPermitidos'=>'#^[1-9]$#',
-						           	 			   'tipoDeDatoAValidar'=>'string',
-						          			       'valorAbsolutoMinimo'=>1,
-						         		 	       'valorAbsolutoMaximo'=>500],
-						         	/*// Permite dígitos, comas (miles) y punto (decimal)
-									 $regexFloatConMiles = '#^[0-9]{1,3}(,[0-9]{3})*(\.[0-9]+)?$#';*/
-						         	'velocidad'=>['obligatorio'=>true,
-						           	 			  'longitudMinima'=>4,
-						           	 			  'longitudMaxima'=>4,
-						           	 			  'caracteresPermitidos'=>'#^[0-9]+(\.[0-9]+)?$#',
-						           	 			  'tipoDeDatoAValidar'=>'float',
-						          			      'valorAbsolutoMinimo'=>0.50,
-						         		 	      'valorAbsolutoMaximo'=>1.90],
+						         	'inputOrigenDeIngreso'=>['obligatorio'=>true,
+						           	 			             'longitudMinima'=>1,
+						           	 			             'longitudMaxima'=>11,
+						           	 			             'caracteresPermitidos'=>'/^[0-9]+$/',
+						           	 			             'tipoDeDatoAValidar'=>'int',
+						          			                 'valorAbsolutoMinimo'=>1,
+						         		 	                 'valorAbsolutoMaximo'=>9],
 
 						         	'valorBoleano'=>['obligatorio'=>true,
 						           	 			  	 'longitudMinima'=>1,
@@ -88,15 +47,15 @@ class Validar {
 						          			      	 'valorAbsolutoMinimo'=>0,
 						         		 	      	 'valorAbsolutoMaximo'=>0],
 
-								'usuario'=>['obligatorio'=>true,
-						           			   'longitudMinima'=>4,
-						           			   'longitudMaxima'=>25,
-						           			   'caracteresPermitidos'=>'/^[a-zA-Z0-9]+$/',
-						           			   'tipoDeDatoAValidar'=>'string',
-						           			   'valorAbsolutoMinimo'=>0,
-						         		 	   'valorAbsolutoMaximo'=>0],
+									'usuario'=>['obligatorio'=>true,
+						           			    'longitudMinima'=>4,
+						           			    'longitudMaxima'=>25,
+						           			    'caracteresPermitidos'=>'/^[a-zA-Z0-9]+$/',
+						           			    'tipoDeDatoAValidar'=>'string',
+						           			    'valorAbsolutoMinimo'=>0,
+						         		 	    'valorAbsolutoMaximo'=>0],
 
-								'nombre'=>['obligatorio'=>true,
+								    'nombre'=>['obligatorio'=>true,
 						           			   'longitudMinima'=>2,
 						           			   'longitudMaxima'=>30,
 						           			   'caracteresPermitidos'=>'#^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s\n/.,\-()\'°]+$#u',
@@ -104,13 +63,13 @@ class Validar {
 						          			   'valorAbsolutoMinimo'=>0,
 						         		 	   'valorAbsolutoMaximo'=>0],
 
-						         	'id_civilizacion'=>['obligatorio'=>true,
-						           	 			   		'longitudMinima'=>1,
-						           	 			   		'longitudMaxima'=>99,
-						           	 			   		'caracteresPermitidos'=>'#^[1-9]$#',
-						           	 			   		'tipoDeDatoAValidar'=>'int',
-						          			       		'valorAbsolutoMinimo'=>1,
-						         		 	       		'valorAbsolutoMaximo'=>99],
+						         	'inputFecha'=>['obligatorio'=>true,
+						           			  	   'longitudMinima'=>8,
+						           			  	   'longitudMaxima'=>15,
+						           			       'caracteresPermitidos'=>'/^[0-9-]+$/',
+						           			       'tipoDeDatoAValidar'=>'date',
+						          			       'valorAbsolutoMinimo'=>0,
+						         		 	       'valorAbsolutoMaximo'=>0],
 
 						         	'fecha'=>['obligatorio'=>true,
 						           			  'longitudMinima'=>8,
@@ -131,7 +90,12 @@ class Validar {
 
 							 	 'obtenerTodosLosOrigenesDeIngreso'=>['seccion'],
 
-							 	 'obtenerTodasLasCategoriasDeGastos'=>['seccion']
+							 	 'obtenerTodasLasCategoriasDeGastos'=>['seccion'],
+							 	 
+							 	 'itemGuardarIngreso'=>['seccion',
+							 							'inputFecha',
+							 							'inputImporte',
+							 							'inputOrigenDeIngreso']
 	];
 
 	private const METODOS_PERMITIDOS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'];
@@ -170,7 +134,8 @@ class Validar {
     	}
 
     	// Si NO es GET, entonces sí validamos obligatoriamente que sea application/json
-    	if (!isset($_SERVER['HTTP_CONTENT_TYPE']) || $_SERVER['HTTP_CONTENT_TYPE'] !== 'application/json') {
+    	//if (!isset($_SERVER['HTTP_CONTENT_TYPE']) || $_SERVER['HTTP_CONTENT_TYPE'] !== 'application/json') {
+    	if (!isset($_SERVER['CONTENT_TYPE']) || $_SERVER['CONTENT_TYPE'] !== 'application/json') {
     		Logger::registrarError('415', 'claseValidar');
     	}
 
@@ -234,66 +199,25 @@ class Validar {
 	}//fin function validarDatosEnArrayDeSesion
 
 
-	private function almacenarAdvertenciasDeFecha(array $controlDeErroresDeFecha): string{
+	private function verificarFecha(mixed $fechaAComparar, string $propiedad):void{
 
-		$advertencias = '';
+		// 1. Limpiar errores de sesiones anteriores de DateTime
+    	// Esto es crucial si vas a llamar a esta función varias veces
+    	DateTime::createFromFormat('Y-m-d', 'dummy'); 
 
-		if($controlDeErroresDeFecha["warning_count"]) {
-     	   foreach ($controlDeErroresDeFecha["warnings"] as $key => $value) {
-     	   	$advertencias .= ' ADVERTENCIA ' .  $value;
-     	   }
-     	}
+    	$zonaArgentina = new DateTimeZone('America/Argentina/Buenos_Aires');
+    	$d = DateTime::createFromFormat('Y-m-d', (string)$fechaAComparar, $zonaArgentina);
 
-     	return $advertencias;
+    	// 2. Comprobar si el objeto se creó correctamente Y no tiene errores de sintaxis
+    	$control = DateTime::getLastErrors();
+    
+    	if (!$d || ($control["warning_count"] > 0 || $control["error_count"] > 0)) {
+        	Logger::registrarError('Fecha invalida', 'claseValidar');
+       	 
+    	}
 
-	}//fin function almacenarAdvertenciasDeFecha
-
-
-	private function almacenarErrorDeFecha(array $controlDeErroresDeFecha): string{
-
-		$errores = '';
-
-		if($controlDeErroresDeFecha["error_count"]) {
-     		foreach ($controlDeErroresDeFecha["errors"] as $key => $value) {
-     			$errores .= ' ADVERTENCIA ' .  $value;
-     		}
-     		
-     	}
-
-     	return $errores;
-
-	}//fin function almacenarErrorDeFecha
-
-
-	private function verificarFecha(){
-
-		$advertencias = '';
-
-		$error = '';
-
-		//Se almacena la zona horaria.
-		$zonaArgentina = new DateTimeZone('America/Argentina/Buenos_Aires');
-		
-		//Si la llave 'fecha' se encuentra en los datosRecibidos, se procede a verificar la validez de la misma.
-		if(array_key_exists('fecha', $this->datosRecibidos)) {
-
-			//Almacenamos la fecha con formato.
-			$d = DateTime::createFromFormat('Y-m-d', $this->datosRecibidos['fecha'], $zonaArgentina);
-
-			//Almacenamos los errores.
-     		$controlDeErroresDeFecha = DateTimeImmutable::getLastErrors();
-     		
-     		if($controlDeErroresDeFecha["warning_count"] OR $controlDeErroresDeFecha["error_count"]) {
-
-     			$advertencias = $this->almacenarAdvertenciasDeFecha($controlDeErroresDeFecha);	
-
-     			$error = $this->almacenarErrorDeFecha($controlDeErroresDeFecha);
-
-     			throw new Exception("La fecha es invalida. ADVERTENCIA: $advertencias ERRORES: $error");
-
-     		}
-
-		}
+    	// 3. Guardamos el objeto DateTime limpio
+    	$this->datosSanitizados[$propiedad] = $d->format('Y-m-d');
 
 	}//fin function verificarFecha
 
@@ -348,7 +272,7 @@ class Validar {
 
 			//Si la propiedad obligatorio es true, se almacena un error por qué las propiedades obligatorias no deben estar vacías.
 			if($this->restricciones['obligatorio']) {
-				Logger::registrarError('propiedadObligatoriaVacia', 'claseValidar');
+				Logger::registrarError($propiedad, 'propiedadObligatoriaVacia', 'claseValidar');
 			}//fin if($this->restricciones['obligatorio'])
 
 		}//fin if(empty($this->datosRecibidos[$this->propiedades[$i]]) )
@@ -360,7 +284,7 @@ class Validar {
 
 		//Verificamos si los datosRecibidos contienen todas las propiedades obligatorias en base a la seccion.
 		if(array_key_exists($propiedad, $this->datosRecibidos) === false) {
-			Logger::registrarError('propiedadNoEcontrada', 'claseValidar');
+			Logger::registrarError($propiedad, 'propiedadNoEcontrada', 'claseValidar');
 		}
 
 	}//fin function validarPropiedadEnArray
@@ -397,7 +321,7 @@ class Validar {
 
 		//Aplicamos configuracion de validacion en base a los caracteres permitidos.
 		if (preg_match($caracteresPermitidos, $cadena) !== 1) {
-			Logger::registrarError('caracteresInvalidos', 'claseValidar');
+			Logger::registrarError($propiedad, 'caracteresInvalidos', 'claseValidar');
      	}
 
 	}//fin function verificarCaracteresEspeciales
@@ -410,11 +334,11 @@ class Validar {
 
 		//Si la longitud de la cadena es menor a la longitud minima o mayor a la longitud maxima, se estable el disparador a false.
 		if($longitudDeCadena < $longitudMinima) {
-			Logger::registrarError('longitudMinima', 'claseValidar');
+			Logger::registrarError($propiedad, 'longitudMinima', 'claseValidar');
 		}
 
 		if($longitudDeCadena > $longitudMaxima) {
-			Logger::registrarError('longitudMaxima', 'claseValidar');
+			Logger::registrarError($propiedad, 'longitudMaxima', 'claseValidar');
 		}
 
 	}//fin function validarLongitudDeCadena
@@ -431,8 +355,8 @@ class Validar {
 		//Validámos la longitud de la cadena;
 		$this->validarLongitudDeCadena($propiedad, $cadenaLimpia, $longitudMinima, $longitudMaxima);
 
-		$this->datosSanitizados[$propiedad] = $cadenaLimpia;
-
+		$this->datosSanitizados[$propiedad] = $cadenaLimpia;	
+		
 	}//fin function validarString	
 
 
@@ -440,12 +364,12 @@ class Validar {
 
 		//Comparamos si el valor absoluto del numero a comparar es inferior al minimo permitido.
 		if($numeroAComparar < $limiteMinimo) {
-			Logger::registrarError('valorAbsolutoInferior', 'claseValidar');	
+			Logger::registrarError($propiedad,  'valorAbsolutoInferior', 'claseValidar');	
 		}
 
 		//Comparamos si el valor absoluto del numero a comparar es superior al minimo permitido.
 		if($numeroAComparar > $limiteMaximo){
-			Logger::registrarError('valorAbsolutoSuperior', 'claseValidar');
+			Logger::registrarError($propiedad, 'valorAbsolutoSuperior', 'claseValidar');
 		}
 
 		$this->datosSanitizados[$propiedad] = $numeroAComparar;
@@ -471,13 +395,13 @@ class Validar {
 
 	private function validarNumeroDecimal(mixed $valor, string $propiedad, float $valorAbsolutoMinimo, float $valorAbsolutoMaximo):void{
 
-		$numeroSanitizado = filter_var($valor, FILTER_SANITIZE_NUMBER_FLOAT);
+		$numeroSanitizado = filter_var($valor, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
 
 		//Se valida el valor decimal recibído.
      	$valorDecimal = filter_var($numeroSanitizado, FILTER_VALIDATE_FLOAT);
      
      	if ($valorDecimal === false) {
-     		Logger::registrarError('valorNumericoDecimalInvalido', 'claseValidar');
+     		Logger::registrarError($propiedad, 'valorNumericoDecimalInvalido', 'claseValidar');
      	}
 
      	$this->validarLimitesAbsolutos($valorDecimal, $propiedad, $valorAbsolutoMinimo, $valorAbsolutoMaximo);
@@ -499,7 +423,7 @@ class Validar {
     	$valorBool = filter_var($valor, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
     
     	if ($valorBool === null) {
-    		Logger::registrarError('valorBooleanoInvalido', 'claseValidar');
+    		Logger::registrarError($propiedad, 'valorBooleanoInvalido', 'claseValidar');
     	}
     	
     	// Guardamos el valor sanitizado en el array de datos sanitizados
@@ -519,6 +443,9 @@ class Validar {
             break;
          	case 'bool':
              	$this->validarBooleano($valor, $propiedad);
+            break;
+            case 'date':
+            	$this->verificarFecha($valor, $propiedad);
             break;
 
      	}//fin switch

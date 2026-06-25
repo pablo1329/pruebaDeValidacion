@@ -47,11 +47,12 @@ class ApiControlador{
             //Se almacenan los datos de consulta por seccion.
             $this->datosDeConsulta = $this->CRUD->asignarConsultasPorSeccion($this->seccion);
             $this->resultado = $this->MysqliDB->devolverEjecutarConsulta($this->datosDeConsulta['consulta'], $this->resultado, $this->datosDeConsulta['tipos']);
-            $this->resultado = Transformador::devolverArrayEstructurado($this->resultado);
+            $this->resultado = Transformador::devolverRespuesta($this->resultado);  //devolverArrayEstructurado($this->resultado);
         } catch (Exception $e) { //fin try
             $this->codigoHTTP = 400;
             //$this->resultado = $this->Validar->devolverAlmacenarError($e->getTrace(), $e->getMessage());
             $this->resultado = Logger::obtenerUltimoError();
+            //$this->resultado[] = $_SERVER;
         } finally { //fin catch
             http_response_code($this->codigoHTTP);
             echo json_encode($this->resultado);

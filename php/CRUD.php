@@ -1,12 +1,12 @@
 <?php 
 class CRUD {
 	
-	private const CONSULTAS = ['buscarDatosPorNombreDeCivilizacion'=>['consulta'=>'SELECT * FROM unidad WHERE FK_ID_CIVILIZACION  = ?',
-        															  'tipos'=>'i'],
-        					   'obtenerTodosLosOrigenesDeIngreso'=>['consulta'=>'SELECT * FROM origen_ingreso',
+	private const CONSULTAS = ['obtenerTodosLosOrigenesDeIngreso'=>['consulta'=>'SELECT * FROM origen_ingreso',
         															'tipos'=>''],
         					   'obtenerTodasLasCategoriasDeGastos'=>['consulta'=>'SELECT * FROM categoria_gasto',
-        															 'tipos'=>'']
+        															 'tipos'=>''],
+        					   'itemGuardarIngreso'=>['consulta'=>'INSERT INTO ingreso(FECHA, IMPORTE, FK_INGRESO_ORIGEN_INGRESO) VALUES (?,?,?)',
+        											  'tipos'=>'sdi']
     ];
 	
 	public function __construct(){}//fin constructor
