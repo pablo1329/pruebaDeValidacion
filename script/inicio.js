@@ -15,7 +15,10 @@ async function almacenarDatos(){
 
 
 addEventListener("DOMContentLoaded", (event) => {
-	
+	let obj = {valor1: 1, valor2: 2, valor3: 3};
+	Object.entries(obj).forEach(([propiedad, valor]) => {
+		console.log(`${propiedad} -> ${valor}`);
+	});
 	try	{
 
 		/*let obtenerTodosLosOrigenesDeIngreso = {'seccion':'obtenerTodosLosOrigenesDeIngreso'}

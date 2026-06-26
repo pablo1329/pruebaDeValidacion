@@ -12,7 +12,7 @@ function almacenarDatosPorId(idsDeInputsDeFormulario){
         // Usamos [id] para que la clave sea, por ejemplo, "inputFecha" 
         // y no la palabra literal "element"
         const inputElement = document.getElementById(id);
-        
+        console.log(inputElement);
         // Es buena práctica verificar si el elemento existe antes de acceder a .value
         datosDeFormulario[id] = inputElement ? inputElement.value : null;
     });
@@ -34,6 +34,8 @@ function obtenerDatosDeFormularioPorSolicitud(solicitud){
 	let idsDeInputsDeFormulario = obtenerIdsDeInputsDeFormularioPorSolicitud(solicitud);
 
 	let datosDeFormulario = almacenarDatosPorId(idsDeInputsDeFormulario);
+
+	validarDatos(datosDeFormulario);
 
 	datosDeFormulario.seccion = solicitud;
 
@@ -70,7 +72,6 @@ function detectarEnvioDeFormulario(solicitud){
 
 	botonDeFormulario.addEventListener('click', (event)=>{
 		event.preventDefault();
-		//datosDeFormulario = obtenerDatosDeFormularioPorSolicitud(solicitud);
 		procesarSolicitudAlServidor(solicitud);
 	});
 
