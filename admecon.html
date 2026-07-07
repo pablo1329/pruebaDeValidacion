@@ -61,50 +61,50 @@
       <section class="container d-flex justify-content-center">
   <div class="row mt-5">
     <div class="col-3">
-      <div class="card mb-3 tarjeta" style="max-width: 18rem;">
+      <div class="card mb-3 tarjeta">
         <div class="card-header fw-bold"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cash" viewBox="0 0 16 16">
   <path d="M8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4"/>
   <path d="M0 4a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1zm3 0a2 2 0 0 1-2 2v4a2 2 0 0 1 2 2h10a2 2 0 0 1 2-2V6a2 2 0 0 1-2-2z"/>
-</svg> Ingreso Carol</div>
+</svg> <span id="encabezadoIngresoCarol"></span></div>
         <div class="card-body">
-          <h5 class="card-title fs-4">$1.000.000.99</h5>
-          <p class="card-text">Junio 2026</p>
+          <h5 id="importeIngresoCarol" class="card-title fs-4"></h5>
+          <p id="fechaIngresoCarol" class="card-text"></p>
         </div>
       </div>
     </div>
     <div class="col-3">
-      <div class="card mb-3 tarjeta" style="max-width: 18rem;">
+      <div class="card mb-3 tarjeta">
         <div class="card-header fw-bold"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cash" viewBox="0 0 16 16">
   <path d="M8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4"/>
   <path d="M0 4a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1zm3 0a2 2 0 0 1-2 2v4a2 2 0 0 1 2 2h10a2 2 0 0 1 2-2V6a2 2 0 0 1-2-2z"/>
-</svg> Ingreso Pablo</div>
+</svg> <span id="encabezadoIngresoPablo"></span></div>
         <div class="card-body">
-          <h5 class="card-title fs-4">$100.99</h5>
-          <p class="card-text">Junio 2026</p>
+          <h5 id="importeIngresoPablo" class="card-title fs-4"></h5>
+          <p id="fechaIngresoPablo" class="card-text"></p>
         </div>
       </div>
     </div>
     <div class="col-3">
-      <div class="card mb-3 tarjeta" style="max-width: 18rem;">
+      <div class="card mb-3 tarjeta">
         <div class="card-header fw-bold"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cash" viewBox="0 0 16 16">
   <path d="M8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4"/>
   <path d="M0 4a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1zm3 0a2 2 0 0 1-2 2v4a2 2 0 0 1 2 2h10a2 2 0 0 1 2-2V6a2 2 0 0 1-2-2z"/>
-</svg> Ingreso Alquiler</div>
+</svg> <span id="encabezadoIngresoAlquiler"></span></div>
         <div class="card-body">
-          <h5 class="card-title fs-4">$100.99</h5>
-          <p class="card-text">Junio 2026</p>
+          <h5 id="importeIngresoAlquiler" class="card-title fs-4"></h5>
+          <p id="fechaIngresoAlquiler" class="card-text"></p>
         </div>
       </div>
     </div>
     <div class="col-3">
-        <div class="card mb-3 tarjeta" style="max-width: 18rem;">
+        <div class="card mb-3 tarjeta">
         <div class="card-header fw-bold"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cash" viewBox="0 0 16 16">
   <path d="M8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4"/>
   <path d="M0 4a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1zm3 0a2 2 0 0 1-2 2v4a2 2 0 0 1 2 2h10a2 2 0 0 1 2-2V6a2 2 0 0 1-2-2z"/>
-</svg> Ingreso total</div>
+</svg> <span id="encabezadoIngresoTotal">Ingreso total</span></div>
         <div class="card-body">
-          <h5 class="card-title fs-4">$201.98</h5>
-          <p class="card-text">Junio 2026</p>
+          <h5 id="importeIngresoTotal" class="card-title fs-4">$201.98</h5>
+          <p id="fechaIngresoTotal" class="card-text">Junio 2026</p>
         </div>
       </div>
     </div>
@@ -196,6 +196,9 @@
       </form>
     </div>
     <!--CONTENEDOR FORMULARIO-->
+    <div id="cajaMensajeDelServidor" class="col-7 m-auto my-3 text-center p-4 fw-bold d-none">
+      <p></p>
+    </div>
     <!--CONTENEDOR TABLA-->
     <div class="col-12">
       <table class="table my-5 tabla">
@@ -252,6 +255,7 @@
 
 <footer>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous" defer></script>
+  <script type="text/javascript" src="script/utilidades.js" defer></script>
   <script type="text/javascript" src="script/manejarError.js" defer></script>
   <script type="text/javascript" src="script/validarDatos.js" defer></script>
   <script type="text/javascript" src="script/modificarVista.js" defer></script>
