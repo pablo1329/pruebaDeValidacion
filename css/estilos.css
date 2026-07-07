@@ -50,4 +50,30 @@ form{
 .tarjeta{
 	background-color: #66ff66;
 	color: #006600;
+	max-width: 18rem;
+}
+
+.mensajeDeError{
+	color:#990000;
+	-webkit-text-stroke: 0.1px #000a1a;
+}
+
+.cajaDeMensajeDeError{
+	border: 2px solid #990000;
+	background-color: #ffb3b3;
+	min-height: 5rem;
+}
+
+.cajaDeMensajeDeError p{
+	color: #990000;
+}
+
+.cajaDeMensajeDeExito{
+	border: 2px solid #006600;
+	background-color: #66ff66;
+	min-height: 5rem;
+}
+
+.cajaDeMensajeDeExito p{
+	color: #006600;
 }
