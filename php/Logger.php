@@ -14,6 +14,7 @@ class Logger {
     private const MENSAJE_DE_ERROR = ['405'=>'405 Metodo no permitido',
                                       '406'=>'406 El servidor solos puede proporcionar datos en formato application/json',
                                       '415'=>'415 El Content-Type debe ser application/json.',
+                                      '500'=>'Error interno en la base de datos',
                                       'arrayVacio'=>'El array recibído en la solicitud está vacío',
                                       'jsonInvalido'=>'es un json invalido',
                                       'propiedadObligatoriaVacia'=>'el valor de la propiedad está vacío',
@@ -54,24 +55,33 @@ class Logger {
 
     }//fin function almacenarError*/
 
+    public static function devolverMensajeDeError($llaveDeMensaje): array|string {
+
+        if(array_key_exists($llaveDeMensaje, self::MENSAJE_DE_ERROR)) {
+            return self::MENSAJE_DE_ERROR[$llaveDeMensaje];
+        } else {
+            return $llaveDeMensaje;
+        }
+
+    }//fin 
 
     public static function registrarError(mixed $propiedad = '', string $mensaje, string $contexto = '', string $tipo = 'ERROR'): void {
         
-        // Crear carpeta logs si no existe
-        self::crearCarpetaLogsSiNoExiste();
-        
+        $mensajeDeError = self::devolverMensajeDeError($mensaje);
+
         // Almacenar en memoria
         self::$errores[] = [
             'timestamp' => date('Y-m-d H:i:s'),
             'tipo' => $tipo,
-            'mensaje' => $propiedad . ' ' . self::MENSAJE_DE_ERROR[$mensaje],
+            'mensaje' => $propiedad . ' ' . $mensajeDeError,
             'contexto' => $contexto
         ];
         
         // Escribir en archivo
-        self::escribirEnArchivo(self::MENSAJE_DE_ERROR[$mensaje], $contexto, $tipo);
+        //self::crearCarpetaLogsSiNoExiste();
+        //self::escribirEnArchivo(self::MENSAJE_DE_ERROR[$mensaje], $contexto, $tipo);
 
-        throw new Exception(self::MENSAJE_DE_ERROR[$mensaje]);
+        throw new Exception($mensajeDeError);
     }
     
     /**

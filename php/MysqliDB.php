@@ -13,27 +13,34 @@ class MysqliDB {
 
 	public function ejecutar(string $sql, array $params = [], string $types = ""): mysqli_result|bool {
     	$stmt = $this->enlace->prepare($sql);
-    
+
     	// Solo vinculamos si hay parámetros Y si se enviaron los tipos
     	if (!empty($params) && !empty($types)) {
         	$stmt->bind_param($types, ...$params);
     	}
     
-    	if (!$stmt->execute()) {
-        	Logger::registrarError('errorAlEjecutarConsulta', 'MysqliDB', 'ERROR');
-        	return false;
+    	try {
+        	// execute() lanzará mysqli_sql_exception si falla debido a MYSQLI_REPORT_STRICT
+        	$stmt->execute();
+    	} catch (mysqli_sql_exception $e) {
+        	$this->codigoHTTP = 400; // Marcamos como Bad Request por el error del cliente (ej: duplicado)
+        
+        	// Enviamos el mensaje nativo de la BD (como 'Duplicate entry...') al Logger.
+        	// Como tu Logger original tiene el "throw new Exception()", el Logger se encargará
+        	// de lanzar la excepción que detendrá el bloque try de prueba.php.
+        	Logger::registrarError('', $e->getMessage(), 'MysqliDB', 'DATABASE_ERROR');
     	}
     
     	// Para consultas SELECT, obtenemos el resultado
     	$result = $stmt->get_result();
-    
+
     	// Si no es un SELECT (es un INSERT/UPDATE/DELETE), get_result() devuelve false
     	if ($result === false) {
         	$status = $stmt->affected_rows > 0;
         	$stmt->close();
         	return $status;
     	}
-    
+
     	// Si es un SELECT, devolvemos el resultado
     	return $result;
 	}
@@ -109,11 +116,7 @@ class MysqliDB {
     	} catch (Throwable $e) {
         	// Registrar error en Logger
         	//registrarError(string $mensaje, string $contexto = '', string $tipo = 'ERROR')
-        	Logger::registrarError(
-        	    $e->getMessage(),
-        	    'MYSQLI_DESTRUCTOR_ERROR',
-        	    'ERROR'
-        	);
+        	Logger::registrarError('', $e->getMessage(), 'MYSQLI_DESTRUCTOR_ERROR', 'ERROR');
     	}
 	}
 

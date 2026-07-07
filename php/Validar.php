@@ -39,6 +39,30 @@ class Validar {
 						          			                 'valorAbsolutoMinimo'=>1,
 						         		 	                 'valorAbsolutoMaximo'=>9],
 
+						         	'dia'=>['obligatorio'=>true,
+						           	 		'longitudMinima'=>1,
+						           	 		'longitudMaxima'=>2,
+						           	 		'caracteresPermitidos'=>'/^[0-9]+$/',
+						           	 		'tipoDeDatoAValidar'=>'int',
+						          			'valorAbsolutoMinimo'=>1,
+						         		 	'valorAbsolutoMaximo'=>99],
+
+						         	'mes'=>['obligatorio'=>true,
+						           	 		'longitudMinima'=>1,
+						           	 		'longitudMaxima'=>2,
+						           	 		'caracteresPermitidos'=>'/^[0-9]+$/',
+						           	 		'tipoDeDatoAValidar'=>'int',
+						          			'valorAbsolutoMinimo'=>1,
+						         		 	'valorAbsolutoMaximo'=>99],
+
+						         	'año'=>['obligatorio'=>true,
+						           	 		'longitudMinima'=>4,
+						           	 		'longitudMaxima'=>4,
+						           	 		'caracteresPermitidos'=>'/^[0-9]+$/',
+						           	 		'tipoDeDatoAValidar'=>'int',
+						          			'valorAbsolutoMinimo'=>1990,
+						         		 	'valorAbsolutoMaximo'=>2999],
+
 						         	'valorBoleano'=>['obligatorio'=>true,
 						           	 			  	 'longitudMinima'=>1,
 						           	 			  	 'longitudMaxima'=>1,
@@ -63,13 +87,13 @@ class Validar {
 						          			   'valorAbsolutoMinimo'=>0,
 						         		 	   'valorAbsolutoMaximo'=>0],
 
-						         	'inputFecha'=>['obligatorio'=>true,
-						           			  	   'longitudMinima'=>8,
-						           			  	   'longitudMaxima'=>15,
-						           			       'caracteresPermitidos'=>'/^[0-9-]+$/',
-						           			       'tipoDeDatoAValidar'=>'date',
-						          			       'valorAbsolutoMinimo'=>0,
-						         		 	       'valorAbsolutoMaximo'=>0],
+						         	'fechaDelMesSiguiente'=>['obligatorio'=>true,
+						           			  	   			 'longitudMinima'=>8,
+						           			  	   			 'longitudMaxima'=>15,
+						           			       			 'caracteresPermitidos'=>'/^[0-9-]+$/',
+						           			       			 'tipoDeDatoAValidar'=>'date',
+						          			       			 'valorAbsolutoMinimo'=>0,
+						         		 	       			 'valorAbsolutoMaximo'=>0],
 
 						         	'fecha'=>['obligatorio'=>true,
 						           			  'longitudMinima'=>8,
@@ -91,11 +115,21 @@ class Validar {
 							 	 'obtenerTodosLosOrigenesDeIngreso'=>['seccion'],
 
 							 	 'obtenerTodasLasCategoriasDeGastos'=>['seccion'],
-							 	 
+
+							 	 'obtenerUltimoIngresoPorOrigenDeIngreso'=>['seccion',
+							 												'inputOrigenDeIngreso'],
+
+							 	 'buscarIngresoDuplicado'=>['seccion',
+							 								'inputOrigenDeIngreso',
+							 								'mes',
+							 								'año'],
+							 									
 							 	 'itemGuardarIngreso'=>['seccion',
-							 							'inputFecha',
 							 							'inputImporte',
-							 							'inputOrigenDeIngreso']
+							 							'inputOrigenDeIngreso',
+							 							'dia',
+							 							'mes',
+							 							'año']
 	];
 
 	private const METODOS_PERMITIDOS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'];
@@ -109,7 +143,7 @@ class Validar {
 		$this->metodoHTTP = $_SERVER['REQUEST_METHOD'];
 		
 		if(!in_array($this->metodoHTTP, self::METODOS_PERMITIDOS)){
-			Logger::registrarError('405', 'claseValidar');
+			Logger::registrarError('', '405', 'claseValidar', '');
 		}
 
 	}//fin function validarMetodoDeRespuesta
@@ -120,7 +154,7 @@ class Validar {
 		//Validar CONTENT-TYPE (esperamos application/json)
 		if (empty($_SERVER['HTTP_ACCEPT']) || 
 	        $_SERVER['HTTP_ACCEPT'] !== 'application/json'){
-			Logger::registrarError('406', 'claseValidar');
+			Logger::registrarError('', '406', 'claseValidar', '');
 		}
 
 	}//fin function validarHTTPAcept
@@ -136,7 +170,7 @@ class Validar {
     	// Si NO es GET, entonces sí validamos obligatoriamente que sea application/json
     	//if (!isset($_SERVER['HTTP_CONTENT_TYPE']) || $_SERVER['HTTP_CONTENT_TYPE'] !== 'application/json') {
     	if (!isset($_SERVER['CONTENT_TYPE']) || $_SERVER['CONTENT_TYPE'] !== 'application/json') {
-    		Logger::registrarError('415', 'claseValidar');
+    		Logger::registrarError('', '415', 'claseValidar', '');
     	}
 
 	}//fin function validarContentType
@@ -146,7 +180,7 @@ class Validar {
 
 		//Se valida si el array está vacío.
     	if (empty($datosRecibidos)) {
-    		Logger::registrarError('arrayVacio', 'claseValidar');
+    		Logger::registrarError('', 'arrayVacio', 'claseValidar', '');
    	 	}
 
 	}//fin function validarArrayVacio
@@ -193,7 +227,7 @@ class Validar {
 		if(empty($respuesta['ID_USUARIO']) ||
 		   empty($respuesta['USUARIO']) || 
 		   empty($respuesta['TIPO_USUARIO']) ) {
-		   Logger::registrarError('errorAlIniciarSesion', 'claseValidar');
+		   Logger::registrarError('', 'errorAlIniciarSesion', 'claseValidar', '');
 		}
 
 	}//fin function validarDatosEnArrayDeSesion
@@ -212,8 +246,7 @@ class Validar {
     	$control = DateTime::getLastErrors();
     
     	if (!$d || ($control["warning_count"] > 0 || $control["error_count"] > 0)) {
-        	Logger::registrarError('Fecha invalida', 'claseValidar');
-       	 
+        	Logger::registrarError('', 'Fecha invalida', 'claseValidar', '');
     	}
 
     	// 3. Guardamos el objeto DateTime limpio
@@ -243,7 +276,7 @@ class Validar {
          	if ($estaVacio) {
 
          		if ($restricciones['obligatorio'] === true) {
-         			Logger::registrarError('propiedadObligatoriaVacia', 'claseValidar');
+         			Logger::registrarError($propiedad, 'propiedadObligatoriaVacia', 'claseValidar', '');
          		}
 
          		// Si no es obligatorio y está vacío, no hay nada más que hacer.
@@ -272,7 +305,7 @@ class Validar {
 
 			//Si la propiedad obligatorio es true, se almacena un error por qué las propiedades obligatorias no deben estar vacías.
 			if($this->restricciones['obligatorio']) {
-				Logger::registrarError($propiedad, 'propiedadObligatoriaVacia', 'claseValidar');
+				Logger::registrarError($propiedad, 'propiedadObligatoriaVacia', 'claseValidar', '');
 			}//fin if($this->restricciones['obligatorio'])
 
 		}//fin if(empty($this->datosRecibidos[$this->propiedades[$i]]) )
@@ -284,7 +317,7 @@ class Validar {
 
 		//Verificamos si los datosRecibidos contienen todas las propiedades obligatorias en base a la seccion.
 		if(array_key_exists($propiedad, $this->datosRecibidos) === false) {
-			Logger::registrarError($propiedad, 'propiedadNoEcontrada', 'claseValidar');
+			Logger::registrarError($propiedad, 'propiedadNoEcontrada', 'claseValidar', '');
 		}
 
 	}//fin function validarPropiedadEnArray
@@ -293,7 +326,7 @@ class Validar {
 	private function validarPropiedadesPorSeccion(array $datosRecibidos):void{
 
 		if(array_key_exists($datosRecibidos['seccion'], self::PROPIEDADES) === false){
-			Logger::registrarError('seccionInexistente', 'claseValidar');
+			Logger::registrarError($datosRecibidos, 'seccionInexistente', 'claseValidar', '');
 		}
 
 	}//fin function validarPropiedadesPorSeccion
@@ -303,12 +336,12 @@ class Validar {
 
 		//Se verifica que la key "seccion", se encuentre en el array de $datosRecibidos.
 		if(!array_key_exists('seccion', $datosRecibidos)){
-			Logger::registrarError('propiedadNoEcontrada', 'claseValidar');
+			Logger::registrarError('seccion', 'propiedadNoEcontrada', 'claseValidar', '');
 		}
 
 		//Verificamos si el valor contenido en la key "seccion", no está vacío, de lo contrario se lanza una excepción.
 		if(empty($datosRecibidos['seccion'])) {
-			Logger::registrarError('propiedadObligatoriaVacia', 'claseValidar');
+			Logger::registrarError($datosRecibidos, 'propiedadObligatoriaVacia', 'claseValidar', '');
 		} 
 
 		//Validamos si existen propiedades asociadas al valor contenido en "seccion", de lo contrario, se lanza una excepción.
@@ -321,7 +354,7 @@ class Validar {
 
 		//Aplicamos configuracion de validacion en base a los caracteres permitidos.
 		if (preg_match($caracteresPermitidos, $cadena) !== 1) {
-			Logger::registrarError($propiedad, 'caracteresInvalidos', 'claseValidar');
+			Logger::registrarError($propiedad, 'caracteresInvalidos', 'claseValidar', '');
      	}
 
 	}//fin function verificarCaracteresEspeciales
@@ -334,11 +367,11 @@ class Validar {
 
 		//Si la longitud de la cadena es menor a la longitud minima o mayor a la longitud maxima, se estable el disparador a false.
 		if($longitudDeCadena < $longitudMinima) {
-			Logger::registrarError($propiedad, 'longitudMinima', 'claseValidar');
+			Logger::registrarError($propiedad, 'longitudMinima', 'claseValidar', '');
 		}
 
 		if($longitudDeCadena > $longitudMaxima) {
-			Logger::registrarError($propiedad, 'longitudMaxima', 'claseValidar');
+			Logger::registrarError($propiedad, 'longitudMaxima', 'claseValidar', '');
 		}
 
 	}//fin function validarLongitudDeCadena
@@ -364,12 +397,12 @@ class Validar {
 
 		//Comparamos si el valor absoluto del numero a comparar es inferior al minimo permitido.
 		if($numeroAComparar < $limiteMinimo) {
-			Logger::registrarError($propiedad,  'valorAbsolutoInferior', 'claseValidar');	
+			Logger::registrarError($propiedad,  'valorAbsolutoInferior', 'claseValidar', '');	
 		}
 
 		//Comparamos si el valor absoluto del numero a comparar es superior al minimo permitido.
 		if($numeroAComparar > $limiteMaximo){
-			Logger::registrarError($propiedad, 'valorAbsolutoSuperior', 'claseValidar');
+			Logger::registrarError($propiedad, 'valorAbsolutoSuperior', 'claseValidar', '');
 		}
 
 		$this->datosSanitizados[$propiedad] = $numeroAComparar;
@@ -385,7 +418,7 @@ class Validar {
 		$valorEnteroAComparar = filter_var($numeroSanitizado, FILTER_VALIDATE_INT);
 		
 		if ($valorEnteroAComparar === false) {
-			Logger::registrarError('valorNumericoEnteroInvalido', 'claseValidar');
+			Logger::registrarError('', 'valorNumericoEnteroInvalido', 'claseValidar', '');
      	}
 
 		$this->validarLimitesAbsolutos($valorEnteroAComparar, $propiedad, $valorAbsolutoMinimo, $valorAbsolutoMaximo); 
@@ -401,7 +434,7 @@ class Validar {
      	$valorDecimal = filter_var($numeroSanitizado, FILTER_VALIDATE_FLOAT);
      
      	if ($valorDecimal === false) {
-     		Logger::registrarError($propiedad, 'valorNumericoDecimalInvalido', 'claseValidar');
+     		Logger::registrarError($propiedad, 'valorNumericoDecimalInvalido', 'claseValidar', '');
      	}
 
      	$this->validarLimitesAbsolutos($valorDecimal, $propiedad, $valorAbsolutoMinimo, $valorAbsolutoMaximo);
@@ -423,7 +456,7 @@ class Validar {
     	$valorBool = filter_var($valor, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
     
     	if ($valorBool === null) {
-    		Logger::registrarError($propiedad, 'valorBooleanoInvalido', 'claseValidar');
+    		Logger::registrarError($propiedad, 'valorBooleanoInvalido', 'claseValidar', '');
     	}
     	
     	// Guardamos el valor sanitizado en el array de datos sanitizados
