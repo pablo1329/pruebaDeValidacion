@@ -26,3 +26,17 @@ function devolverFechaEnMesDiaAnio(fechaString) {
     return objetoFecha;
 
 }//fin function devolverFechaEnMesDiaAnio
+
+
+function formatearNumero(numero) {
+    // Aseguramos que sea un número flotante
+    const num = parseFloat(numero);
+
+    // Si no es un número válido, retornamos una cadena vacía o manejo de error
+    if (isNaN(num)) return "0,00";
+
+    return new Intl.NumberFormat('es-AR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    }).format(num);
+}
