@@ -16,7 +16,10 @@ function devolverConfiguracionDeEnvio(metodo, solicitud='') {
     };
 
     if (solicitud) {
-        configuracion.body = JSON.stringify(obtenerDatosDeFormularioPorSolicitud(solicitud));
+        let datosDeFormulario = obtenerDatosDeFormularioPorSolicitud(solicitud);
+        datosDeFormulario.seccion = solicitud;
+        console.log(datosDeFormulario);
+        configuracion.body = JSON.stringify(datosDeFormulario);
         configuracion.redirect = 'follow';
         configuracion.referrerPolicy = 'no-referrer';
     }
@@ -58,6 +61,7 @@ function solicitarDatosSinParametros(){
   
 }
 
+
 function solicitarDatosConParametros(datos){
 
   let configuracion = devolverConfiguracionDeEnvio('GET');
@@ -69,8 +73,21 @@ function solicitarDatosConParametros(datos){
 }//fin function solicitarDatosConParametros
 
 
+function buscarIngresoDuplicado(){
+
+  //Almacenamos los datos del formulario (inputFecha, inputImporte).
+  let datosDeFormulario = obtenerDatosDeFormularioPorSolicitud('buscarIngresoDuplicado');
+
+  //Almacenamos la seccion.
+  datosDeFormulario.seccion = 'buscarIngresoDuplicado';
+  console.log(datosDeFormulario);
+  return solicitarDatosConParametros(datosDeFormulario);
+
+}//fin function buscarIngresoDuplicado
+
+
 function guardarDatos(solicitud) {
-  // Pasamos los datos directamente aquí
+  //Pasamos los datos directamente aquí
   let configuracion = devolverConfiguracionDeEnvio('POST', solicitud);
   return enviarDatos(url, configuracion);
 }

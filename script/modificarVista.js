@@ -1,3 +1,20 @@
+const DATOS_DE_TARJETAS_DE_INICIO = { 'Guzman Carol Isabel': { idEncabezadoDeTarjeta: 'encabezadoIngresoCarol',
+															   idImporteIngreso: 'importeIngresoCarol',
+															   idFechaIngreso: 'fechaIngresoCarol' },
+									  'Britez Pablo Fernando': { idEncabezadoDeTarjeta: 'encabezadoIngresoPablo',
+															   	 idImporteIngreso: 'importeIngresoPablo',
+															     idFechaIngreso: 'fechaIngresoPablo' },
+									  'Alquiler': { idEncabezadoDeTarjeta: 'encabezadoIngresoAlquiler',
+													idImporteIngreso: 'importeIngresoAlquiler',
+													idFechaIngreso: 'fechaIngresoAlquiler' },
+									  'Ingreso total': { idEncabezadoDeTarjeta: 'encabezadoIngresoTotal',
+													     idImporteIngreso: 'importeIngresoTotal',
+													     idFechaIngreso: 'fechaIngresoTotal' }
+    
+};
+
+const NOMBRE_DE_MESES = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+
 function llenarSelect(selectId, ids, nombres) {
     const select = document.getElementById(selectId);
     
@@ -127,3 +144,102 @@ function administrarVistaDeFormularioPorId(idDeLista){
 	mostrarIconoDeBotonDeFormulario(configuracion);
 
 }//fin function mostrarCamposDeFormularioPorId
+
+function reestablecerFormulario(){
+
+	let parrafosDeFormulario = document.getElementById('formGestionDeDatos').querySelectorAll('p');
+
+	parrafosDeFormulario.forEach(elemento => {elemento.classList.remove('mensajeDeError');
+											  elemento.textContent = '';});
+
+}//FIN function reestablecerFormulacio
+
+function imprimirErroresEnFormulario(idsDeParrafosRelacionadosAInputs, erroresPorCodigoDeError){
+
+	let cantidadDeElementos = idsDeParrafosRelacionadosAInputs.length;
+
+	let parrafosDeError = '';
+
+	for (let i = 0; i < cantidadDeElementos; i++) {
+
+		parrafosDeError = document.getElementById(idsDeParrafosRelacionadosAInputs[i]);
+
+		parrafosDeError.classList.add('mensajeDeError');
+
+		parrafosDeError.textContent = erroresPorCodigoDeError[i];
+
+	}
+
+}//FIN function imprimirErroresEnFormulario
+
+function reestablecerCajaDeMensaje() {
+	let cajaDeMensajeDelServidor = document.getElementById('cajaMensajeDelServidor');
+    let parrafoDeCajaDeMensajeDelServidor = cajaDeMensajeDelServidor.querySelector('p');
+    cajaDeMensajeDelServidor.classList.remove('cajaDeMensajeDeError');
+    cajaDeMensajeDelServidor.classList.add('d-none');
+    parrafoDeCajaDeMensajeDelServidor.textContent = '';
+}//fin function reestablecerCajaDeMensaje
+
+	// Comportamiento para formularios
+function imprimirErroresEnFormulario(idInput, message) {
+    const input = document.getElementById(idInput);
+    if (input) {
+        // Lógica para crear un span o párrafo debajo del input
+        const errorLabel = document.createElement('span');
+        errorLabel.className = 'error-message';
+        errorLabel.textContent = message;
+        input.parentNode.appendChild(errorLabel);
+    }
+}
+
+function imprimirMensajeDeErrorDelServidor(objetoError, mensajeDeError) {
+
+	let cajaDeMensajeDelServidor = document.getElementById('cajaMensajeDelServidor');
+	let parrafoDeCajaDeMensajeDelServidor = cajaDeMensajeDelServidor.querySelector('p');
+    
+
+    cajaDeMensajeDelServidor.classList.remove('d-none');
+    cajaDeMensajeDelServidor.classList.remove('cajaDeMensajeDeExito');
+    cajaDeMensajeDelServidor.classList.add('cajaDeMensajeDeError');
+    
+    // Accedemos correctamente a los datos:
+    parrafoDeCajaDeMensajeDelServidor.textContent = mensajeDeError;
+
+}
+
+function imprimerMensajeDeExito(mensajeDeExito){
+
+	let cajaDeMensajeDelServidor = document.getElementById('cajaMensajeDelServidor');
+	let parrafoDeCajaDeMensajeDelServidor = cajaDeMensajeDelServidor.querySelector('p');
+    
+    cajaDeMensajeDelServidor.classList.remove('d-none');
+    cajaDeMensajeDelServidor.classList.remove('cajaDeMensajeDeError');
+    cajaDeMensajeDelServidor.classList.add('cajaDeMensajeDeExito');
+
+    parrafoDeCajaDeMensajeDelServidor.textContent = mensajeDeExito;
+
+}//fin function imprimerMensajeDeExito
+
+
+function obtenerDatosDeTarjeta(origenDeIngreso){
+
+	if(origenDeIngreso === 'origenIngresoDeCarol'){
+		return DATOS_DE_TARJETAS_DE_INICIO['Guzman Carol Isabel'];
+	} else if(origenDeIngreso === 'origenIngresoDePablo'){
+		return DATOS_DE_TARJETAS_DE_INICIO['Britez Pablo Fernando'];
+	} else if(origenDeIngreso === 'origenIngresoDeAlquiler'){
+		return DATOS_DE_TARJETAS_DE_INICIO['Alquiler'];
+	}
+
+}//fin function obtenerDatosDeTarjeta
+
+
+function imprimirDatosDeIngresoPorOrigen(origenDeIngreso, datosDelServidor){
+	console.log(datosDelServidor.datos.MES[0]);
+	let datosDeTarjeta = obtenerDatosDeTarjeta(origenDeIngreso);
+
+	document.getElementById(datosDeTarjeta.idEncabezadoDeTarjeta).textContent = 'Ingreso ' + datosDelServidor.datos.ORIGEN[0];
+	document.getElementById(datosDeTarjeta.idImporteIngreso).textContent = datosDelServidor.datos.IMPORTE[0];
+	document.getElementById(datosDeTarjeta.idFechaIngreso).textContent = NOMBRE_DE_MESES[datosDelServidor.datos.MES[0]] + ' ' + datosDelServidor.datos.AÑO[0];
+
+}//fin function imprimirDatosDeIngresoPorOrigen

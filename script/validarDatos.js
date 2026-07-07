@@ -1,35 +1,35 @@
 const RESTRICCIONES = {	inputFecha:{obligatorio: true,
-						           	longitudMinima: 8,
-						           	longitudMaxima: 15,
-						           	caracteresPermitidos: '/^[0-9-]+$/',
-						           	tipoDeDatoAValidar: 'date',
-						          	valorAbsolutoMinimo: 0,
-						         	valorAbsolutoMaximo: 0},
+						           							longitudMinima: 8,
+						           							longitudMaxima: 15,
+						           							caracteresPermitidos: '/^[0-9-]+$/',
+						           							tipoDeDatoAValidar: 'date',
+						          							valorAbsolutoMinimo: 0,
+						         								valorAbsolutoMaximo: 0},
 
-						inputImporte:{obligatorio: true,
-						           	  longitudMinima: 1,
-						           	  longitudMaxima: 15,
-						           	  caracteresPermitidos: '/^\d+(\.\d+)?$/',
-						           	  tipoDeDatoAValidar: 'float',
-						          	  valorAbsolutoMinimo: 0.00,
-						         	  valorAbsolutoMaximo: 999999999.99},
+												inputImporte:{obligatorio: true,
+						           	  						longitudMinima: 1,
+						           	  						longitudMaxima: 15,
+						           	  						caracteresPermitidos: '/^\d+(\.\d+)?$/',
+						           	  						tipoDeDatoAValidar: 'float',
+						          	  						valorAbsolutoMinimo: 0.00,
+						         	  							valorAbsolutoMaximo: 999999999.99},
 
-						inputOrigenDeIngreso:{obligatorio: true,
-						           	 		  longitudMinima: 1,
-						           	 		  longitudMaxima: 11,
-						           	 		  caracteresPermitidos: '/^[0-9]+$/',
-						           	 		  tipoDeDatoAValidar: 'int',
-						          			  valorAbsolutoMinimo: 1,
-						         		 	  valorAbsolutoMaximo: 9}
+												inputOrigenDeIngreso:{obligatorio: true,
+						           	 		  								longitudMinima: 1,
+						           	 		  								longitudMaxima: 11,
+						           	 		  								caracteresPermitidos: '/^[0-9]+$/',
+						           	 		  								tipoDeDatoAValidar: 'int',
+						          			  								valorAbsolutoMinimo: 1,
+						         		 	  									valorAbsolutoMaximo: 9}
 
 }//FIN RESTRICCIONES
 
 
 const PARRAFOS_POR_INPUTS = {'inputFecha': 'mensajeInputFecha',
-							 'inputOrigenDeIngreso': 'mensajeInputOrigenDeIngreso',
-							 'inputCategoriaDeGasto': 'mensajeInputCategoriaDeGasto',
-							 'inputDetalleDelGasto': 'mensajeInputDetalleDelGasto',
-							 'inputImporte': 'mensajeInputImporte'};
+							 							 'inputOrigenDeIngreso': 'mensajeInputOrigenDeIngreso',
+							 							 'inputCategoriaDeGasto': 'mensajeInputCategoriaDeGasto',
+							 							 'inputDetalleDelGasto': 'mensajeInputDetalleDelGasto',
+							 							 'inputImporte': 'mensajeInputImporte'};
 
 
 function validarValoresVacios(valor) {
@@ -114,53 +114,38 @@ function validarNumeroEntero(valor, campo) {
 
 function validarDatos(datosDeFormulario) {
 	
-	let verificarValorVacio = false;
+	let almacenarError = {	propiedades:[],
+													codigosDeError:[] };
 
-	let restriccionPorInput = {};
+	for (const [propiedad, valor] of Object.entries(datosDeFormulario)) {
+    
+    restriccionPorInput = RESTRICCIONES[`${propiedad}`];
+    
+    verificarValorVacio = validarValoresVacios(`${valor}`);
+    
+    if (verificarValorVacio) {
+        // Asumiendo que verificarValorVacio es el objeto de restricción o tiene esa propiedad
+        if (restriccionPorInput.obligatorio) {
+        	almacenarError.propiedades.push(`${propiedad}`);
+        	almacenarError.codigosDeError.push('propiedadObligatoriaVacia');
+        } else {
+          continue; // Ahora sí funcionará perfectamente
+        }
+    }
+	}
 
-	Object.entries(datosDeFormulario).forEach(([propiedad, valor]) => {
-		console.log(`${propiedad} -> ${valor}`);
-		restriccionPorInput = RESTRICCIONES[`${propiedad}`];
-		verificarValorVacio = validarValoresVacios(`${valor}`);
-
-		if(verificarValorVacio) {
-
-			if(verificarValorVacio.obligatorio){
-				throw new ValidacionError(mensaje, campo);
-			}
-
-		}
-
-	});
-	
-	for(var i = 0; i < objeto.ids.length; i++) {
-
-		//La funcion "validarValoresVacios" recibe el valor actual, devuelve true si el valor esta vacío.
-		verificarValorVacio = validarValoresVacios(objeto.valores[i]);
-			
-		//Si el valor está vacío.
-		if(verificarValorVacio) {
-
-			//En caso de ser obligatorio, lanza una excepción.
-			if(RESTRICCIONES[objeto.ids[i]].obligatorio) {
-				throw new ValidacionError('El campo: ' + objeto.ids[i] + ' es obligatorio y no puede estar vacío o ser inválido.', objeto.ids[i]);
-			} else {
-				//Si el valor no es obligatorio, continua con la siguiente iteración.
-				continue;
-			}
-				
-		}
-
-		/*Llamamos a la función "validarString", si la cadena tiene algún error o caractéres no permitidos,
-		  lanza una excepción, de lo contrario, devuelve la cadena limpia.*/
-		objeto.valores[i] = validarString(objeto.valores[i], objeto.ids[i]);
-
-		if(RESTRICCIONES[objeto.ids[i]].verificarValorNumerico){
-			objeto.valores[i] = validarNumeroEntero(objeto.valores[i], objeto.ids[i]);
-		}
-
-	}//fin bucle for
-	
-	//let datos = almacenarDatosEnObjeto(objeto);
+	if(almacenarError.propiedades.length > 0){
+		throw new ValidacionError('inputFormulario', almacenarError);
+	}
+  
+	return datosDeFormulario;
 
 }//fin function validarDatos
+
+function validarDatosDuplicados(respuesta){
+	
+	if (respuesta.cantidadDeResultados > 0) {
+    // Al lanzar el error, el flujo se interrumpe y salta directamente al .catch
+    throw new ValidacionError('servidor', { codigosDeError: 'datosDuplicados' });
+  }
+}//fin function validarDatosDuplicados

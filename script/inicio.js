@@ -15,27 +15,13 @@ async function almacenarDatos(){
 
 
 addEventListener("DOMContentLoaded", (event) => {
-	let obj = {valor1: 1, valor2: 2, valor3: 3};
-	Object.entries(obj).forEach(([propiedad, valor]) => {
-		console.log(`${propiedad} -> ${valor}`);
-	});
+	//{inputFecha: '2026-06-01', inputOrigenDeIngreso: '3', inputImporte: '500', seccion: 'verificarIngresoDuplicado', fechaDelMesSiguiente: '2026-07-01'}
+	//devolverFechaEnMesDiaAnio('2026-07-01');
 	try	{
-
-		/*let obtenerTodosLosOrigenesDeIngreso = {'seccion':'obtenerTodosLosOrigenesDeIngreso'}
-		solicitarDatosConParametros(obtenerTodosLosOrigenesDeIngreso) 
-		 .then(resultado =>(almacenarDatosEnSessionStorage('origenesDeIngreso', resultado)));
-
-		let obtenerTodasLasCategoriasDeGastos = {'seccion':'obtenerTodasLasCategoriasDeGastos'}
-		solicitarDatosConParametros(obtenerTodasLasCategoriasDeGastos) 
-		 .then(resultado =>(almacenarDatosEnSessionStorage('categoriasDeGastos', resultado)));
-
-		almacenarDatosEnSelect();*/
 		almacenarDatos();
-
-		detectarInteraccionConBarraDeInicio();
-
+		procesarSolicitudAlServidor('obtenerDatosPorIngreso');
 	} catch(error) {
-        console.error('Error en la solicitud:', error);
+    	console.error('Error en la solicitud:', error);
     }
 
 });
