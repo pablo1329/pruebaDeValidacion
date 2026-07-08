@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 19-06-2026 a las 17:43:09
+-- Tiempo de generación: 08-07-2026 a las 17:57:27
 -- Versión del servidor: 10.4.25-MariaDB
 -- Versión de PHP: 8.1.10
 
@@ -71,10 +71,22 @@ CREATE TABLE `gasto` (
 
 CREATE TABLE `ingreso` (
   `ID_INGRESO` int(11) NOT NULL,
-  `FECHA` date NOT NULL,
   `IMPORTE` decimal(12,2) NOT NULL,
-  `FK_INGRESO_ORIGEN_INGRESO` int(1) NOT NULL
+  `FK_INGRESO_ORIGEN_INGRESO` int(1) NOT NULL,
+  `DIA` int(2) NOT NULL,
+  `MES` int(2) NOT NULL,
+  `AÑO` int(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
+
+--
+-- Volcado de datos para la tabla `ingreso`
+--
+
+INSERT INTO `ingreso` (`ID_INGRESO`, `IMPORTE`, `FK_INGRESO_ORIGEN_INGRESO`, `DIA`, `MES`, `AÑO`) VALUES
+(141, '500000.00', 3, 1, 5, 2026),
+(142, '2194343.22', 2, 1, 6, 2026),
+(143, '2300514.53', 1, 1, 6, 2026),
+(144, '500000.00', 3, 1, 6, 2026);
 
 -- --------------------------------------------------------
 
@@ -92,9 +104,10 @@ CREATE TABLE `origen_ingreso` (
 --
 
 INSERT INTO `origen_ingreso` (`ID_ORIGEN`, `ORIGEN`) VALUES
-(1, 'Guzman Carol Isabel'),
-(2, 'Britez Pablo Fernando'),
-(3, 'Alquiler');
+(1, 'Carol'),
+(2, 'Pablo'),
+(3, 'Alquiler'),
+(4, 'Todos los ingresos');
 
 --
 -- Índices para tablas volcadas
@@ -119,7 +132,7 @@ ALTER TABLE `gasto`
 --
 ALTER TABLE `ingreso`
   ADD PRIMARY KEY (`ID_INGRESO`),
-  ADD KEY `FK_INGRESO_ORIGEN_INGRESO` (`FK_INGRESO_ORIGEN_INGRESO`);
+  ADD UNIQUE KEY `uq_origen_mes_anio` (`FK_INGRESO_ORIGEN_INGRESO`,`MES`,`AÑO`);
 
 --
 -- Indices de la tabla `origen_ingreso`
@@ -147,13 +160,13 @@ ALTER TABLE `gasto`
 -- AUTO_INCREMENT de la tabla `ingreso`
 --
 ALTER TABLE `ingreso`
-  MODIFY `ID_INGRESO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `ID_INGRESO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=145;
 
 --
 -- AUTO_INCREMENT de la tabla `origen_ingreso`
 --
 ALTER TABLE `origen_ingreso`
-  MODIFY `ID_ORIGEN` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `ID_ORIGEN` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Restricciones para tablas volcadas
