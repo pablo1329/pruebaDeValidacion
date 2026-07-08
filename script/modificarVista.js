@@ -1,10 +1,13 @@
-const DATOS_DE_TARJETAS_DE_INICIO = { 'Guzman Carol Isabel': { idEncabezadoDeTarjeta: 'encabezadoIngresoCarol',
-															   idImporteIngreso: 'importeIngresoCarol',
-															   idFechaIngreso: 'fechaIngresoCarol' },
-									  'Britez Pablo Fernando': { idEncabezadoDeTarjeta: 'encabezadoIngresoPablo',
-															   	 idImporteIngreso: 'importeIngresoPablo',
-															     idFechaIngreso: 'fechaIngresoPablo' },
+const DATOS_DE_TARJETAS_DE_INICIO = { 'Carol': { idEncabezadoDeTarjeta: 'encabezadoIngresoCarol',
+												 idImporteIngresoSinFormatear: 'importeIngresoSinFormatearCarol',
+												 idImporteIngreso: 'importeIngresoCarol',
+												 idFechaIngreso: 'fechaIngresoCarol' },
+									  'Pablo': { idEncabezadoDeTarjeta: 'encabezadoIngresoPablo',
+									  			 idImporteIngresoSinFormatear: 'importeIngresoSinFormatearPablo',
+												 idImporteIngreso: 'importeIngresoPablo',
+												 idFechaIngreso: 'fechaIngresoPablo' },
 									  'Alquiler': { idEncabezadoDeTarjeta: 'encabezadoIngresoAlquiler',
+									  			    idImporteIngresoSinFormatear: 'importeIngresoSinFormatearAlquiler',
 													idImporteIngreso: 'importeIngresoAlquiler',
 													idFechaIngreso: 'fechaIngresoAlquiler' },
 									  'Ingreso total': { idEncabezadoDeTarjeta: 'encabezadoIngresoTotal',
@@ -224,22 +227,37 @@ function imprimerMensajeDeExito(mensajeDeExito){
 function obtenerDatosDeTarjeta(origenDeIngreso){
 
 	if(origenDeIngreso === 'origenIngresoDeCarol'){
-		return DATOS_DE_TARJETAS_DE_INICIO['Guzman Carol Isabel'];
+		return DATOS_DE_TARJETAS_DE_INICIO['Carol'];
 	} else if(origenDeIngreso === 'origenIngresoDePablo'){
-		return DATOS_DE_TARJETAS_DE_INICIO['Britez Pablo Fernando'];
+		return DATOS_DE_TARJETAS_DE_INICIO['Pablo'];
 	} else if(origenDeIngreso === 'origenIngresoDeAlquiler'){
 		return DATOS_DE_TARJETAS_DE_INICIO['Alquiler'];
+	} else {
+		return DATOS_DE_TARJETAS_DE_INICIO['Ingreso total'];
 	}
 
 }//fin function obtenerDatosDeTarjeta
 
 
 function imprimirDatosDeIngresoPorOrigen(origenDeIngreso, datosDelServidor){
-	console.log(datosDelServidor.datos.MES[0]);
 	let datosDeTarjeta = obtenerDatosDeTarjeta(origenDeIngreso);
 
+	let importeFormateado = formatearNumero(datosDelServidor.datos.IMPORTE[0]);
 	document.getElementById(datosDeTarjeta.idEncabezadoDeTarjeta).textContent = 'Ingreso ' + datosDelServidor.datos.ORIGEN[0];
-	document.getElementById(datosDeTarjeta.idImporteIngreso).textContent = datosDelServidor.datos.IMPORTE[0];
+	document.getElementById(datosDeTarjeta.idImporteIngreso).textContent = '$'+importeFormateado;
 	document.getElementById(datosDeTarjeta.idFechaIngreso).textContent = NOMBRE_DE_MESES[datosDelServidor.datos.MES[0]] + ' ' + datosDelServidor.datos.AÑO[0];
 
 }//fin function imprimirDatosDeIngresoPorOrigen
+
+
+function imprimirIngresoTotal(total){
+	
+	let datosDeTarjeta = obtenerDatosDeTarjeta('Ingreso total');
+
+	let importeFormateado = formatearNumero(total);
+
+	document.getElementById(datosDeTarjeta.idEncabezadoDeTarjeta).textContent = 'Ingreso Total';
+	document.getElementById(datosDeTarjeta.idImporteIngreso).textContent = '$'+ importeFormateado;
+	//document.getElementById(datosDeTarjeta.idFechaIngreso).textContent = NOMBRE_DE_MESES[objetoDeDatos.datos.MES[0]] + ' ' + objetoDeDatos.datos.AÑO[0];
+
+}//fin function imprimirIngresoTotal

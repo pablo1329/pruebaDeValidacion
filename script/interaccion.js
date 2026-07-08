@@ -111,23 +111,40 @@ function procesarSolicitudAlServidor(solicitud){
 		case'itemBuscarGastos':
 		break;
 		case 'obtenerDatosPorIngreso':
-			solicitarDatosConParametros({'seccion':'obtenerUltimoIngresoPorOrigenDeIngreso', 'inputOrigenDeIngreso':1})
-				.then(resultado => { almacenarDatosEnSessionStorage('origenIngresoDeCarol', resultado);
-									 return resultado;})
-				.then(datos=>{ imprimirDatosDeIngresoPorOrigen('origenIngresoDeCarol', JSON.parse(datos))})
-				.catch(error => {console.log(error);});
+			const origenIngreso = [	{ id: 1, origen: 'origenIngresoDeCarol' },
+    								{ id: 2, origen: 'origenIngresoDePablo' },
+    								{ id: 3, origen: 'origenIngresoDeAlquiler' }
+			];
 
-			solicitarDatosConParametros({'seccion':'obtenerUltimoIngresoPorOrigenDeIngreso', 'inputOrigenDeIngreso':2})
-				.then(resultado => { almacenarDatosEnSessionStorage('origenIngresoDePablo', resultado); return resultado;})
-				.then(datos=>{ imprimirDatosDeIngresoPorOrigen('origenIngresoDePablo', JSON.parse(datos))})
-				.catch(error => {console.log(error);});
+			// 1. Creamos un array de promesas, una por cada origen
+			const promesas = origenIngreso.map(origen => {
+    													  	return solicitarDatosConParametros({'seccion': 'obtenerUltimoIngresoPorOrigenDeIngreso',
+        																						'inputOrigenDeIngreso': origen.id })
+    			.then(resultado => {
+        							let objetoDeDatos = JSON.parse(resultado);
+        							// Imprimimos cada uno individualmente
+        							imprimirDatosDeIngresoPorOrigen(origen.origen, objetoDeDatos);
+        							
+       	 							// Devolvemos el valor numérico para la suma (asumiendo que el campo se llama IMPORTE)
+        							return parseFloat(objetoDeDatos.datos.IMPORTE[0]) || 0; 
+        							
+    			});
+			});
 
-			solicitarDatosConParametros({'seccion':'obtenerUltimoIngresoPorOrigenDeIngreso', 'inputOrigenDeIngreso':3})
-				.then(resultado => { almacenarDatosEnSessionStorage('origenIngresoDeAlquiler', resultado); return resultado;})
-				.then(datos=>{ imprimirDatosDeIngresoPorOrigen('origenIngresoDeAlquiler', JSON.parse(datos))})
-				.catch(error => {console.log(error);});
-
-
+			// 2. Promise.all espera a que todas las peticiones terminen
+			Promise.all(promesas)
+    			.then(importe => {
+        			// 3. Sumamos los resultados obtenidos
+        			const total = importe.reduce((acumulador, valor) => acumulador + valor, 0);
+        
+        			//console.log("El total de los tres ingresos es: " + total);
+        			imprimirIngresoTotal(total);
+        			// Aquí puedes actualizar tu HTML con el total
+        			//document.getElementById('total-ingresos').innerText = total;
+    			})
+    			.catch(error => {
+        			console.error("Error al obtener los datos:", error);
+    			});
 		break;
 	}
 
