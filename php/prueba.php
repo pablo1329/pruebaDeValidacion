@@ -26,12 +26,15 @@ try {
     header("Access-Control-Allow-Headers: Content-Type, Authorization");
     header("Content-Type: application/json; charset=UTF-8");
     //Si no se lanza una excepción, se devuelven los datos sanitizados.
-    $resultado = ['inputOrigenDeIngreso'=>3,
-                  'año'=>2026,
-                  'mes'=>6
-                  ];
+    $resultado = ['inputOrigenDeIngreso'=>"1",
+                  'inputCategoriaDeGasto'=>"1",
+                  'inputDetalleDelGasto'=>"pan",
+                  'inputImporte'=>"1000",
+                  'dia'=>1,
+                  'mes'=>7,
+                  'año'=>2026];
     //Almacenamos la seccion recibída y previamente validada dentro de la función validar.
-    $seccion = 'buscarIngresoDuplicado';
+    $seccion = 'itemGuardarGasto';
     //Se almacenan los datos de consulta por seccion.
     $resultado = Transformador::devolverDatosParaConsultar($resultado);
     $datosDeConsulta = $CRUD->asignarConsultasPorSeccion($seccion);
