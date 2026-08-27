@@ -20,13 +20,32 @@ const RESTRICCIONES = {	inputFecha:{obligatorio: true,
 						           	 		  								caracteresPermitidos: '/^[0-9]+$/',
 						           	 		  								tipoDeDatoAValidar: 'int',
 						          			  								valorAbsolutoMinimo: 1,
-						         		 	  									valorAbsolutoMaximo: 9}
+						         		 	  									valorAbsolutoMaximo: 9},
+
+						         		inputSaldo:{obligatorio: true,
+						           	 		  			longitudMinima: 1,
+						           	 		  			longitudMaxima: 11,
+						           	 		  			caracteresPermitidos: '/^[0-9]+$/',
+						           	 		  			tipoDeDatoAValidar: 'int',
+						          			  			valorAbsolutoMinimo: 1,
+						         		 	  				valorAbsolutoMaximo: 99999999999},
+
+						         		inputCategoriaDeGasto: {obligatorio: true,
+						           	 		  									longitudMinima: 1,
+						           	 		  									longitudMaxima: 2,
+						           	 		  									caracteresPermitidos: '/^[0-9]+$/',
+						           	 		  									tipoDeDatoAValidar: 'int',
+						          			  									valorAbsolutoMinimo: 1,
+						         		 	  										valorAbsolutoMaximo: 99},
+
+						         		inputDetalleDelGasto: {}
 
 }//FIN RESTRICCIONES
 
 
 const PARRAFOS_POR_INPUTS = {'inputFecha': 'mensajeInputFecha',
 							 							 'inputOrigenDeIngreso': 'mensajeInputOrigenDeIngreso',
+							 							 'inputSaldo': 'mensajeInputSaldo',
 							 							 'inputCategoriaDeGasto': 'mensajeInputCategoriaDeGasto',
 							 							 'inputDetalleDelGasto': 'mensajeInputDetalleDelGasto',
 							 							 'inputImporte': 'mensajeInputImporte'};
@@ -149,3 +168,25 @@ function validarDatosDuplicados(respuesta){
     throw new ValidacionError('servidor', { codigosDeError: 'datosDuplicados' });
   }
 }//fin function validarDatosDuplicados
+
+
+function validarCantidadDeResultadosObtenidos(cantidadDeResultados){
+
+	if (cantidadDeResultados === 0) {
+    // Al lanzar el error, el flujo se interrumpe y salta directamente al .catch
+    throw new ValidacionError('servidor', { codigosDeError: 'sinResultados' });
+  }
+  
+}//fin function validarCantidadDeResultadosObtenidos
+
+
+function validarImporteRespectoAlSaldo(gasto, saldoActual){
+	let gastoConvertido = parseFloat(gasto);
+	let saldoConvertido = parseFloat(saldoActual);
+	
+	if(gastoConvertido > saldoConvertido){
+		console.log('Gasto: ' + gastoConvertido + ' Saldo: ' + saldoConvertido);
+		throw new ValidacionError('servidor', { codigosDeError: 'gastoSuperiorAlSueldo' });
+	}
+
+}//fin function validarImporteRespectoAlSaldo
