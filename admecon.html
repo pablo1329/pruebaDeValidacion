@@ -42,10 +42,10 @@
           <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
             <div class="accordion-body">
               <ul class="nav flex-column">
-                <li id="buscarIngreso" class="nav-item" >
+                <li id="buscarIngresoPorMesAñoOrigenDeIngreso" class="nav-item" >
                   <a class="nav-link active colorDeLista"  aria-current="page" href="#">Buscar Ingreso</a>
                 </li>
-                <li id="buscarGastos" class="nav-item">
+                <li id="buscarGastosPorAñoMesSaldoCategoriaDeGasto" class="nav-item">
                   <a class="nav-link colorDeLista" href="#">Buscar Gasto</a>
                 </li>
               </ul>
@@ -115,6 +115,7 @@
 </svg> <span id="encabezadoSaldoCarol"></span></div>
         <div class="card-body">
           <h5 id="importeSaldoCarol" class="card-title fs-4"></h5>
+          <img id="imagenSaldoCarol" src="" style=" width: 6rem;">
           <p id="fechaSaldoCarol" class="card-text"></p>
         </div>
       </div>
@@ -126,6 +127,7 @@
 </svg> <span id="encabezadoSaldoPablo"></span></div>
         <div class="card-body">
           <h5 id="importeSaldoPablo" class="card-title fs-4"></h5>
+          <img id="imagenSaldoPablo" src="" style=" width: 6rem;">
           <p id="fechaSaldoPablo" class="card-text"></p>
         </div>
       </div>
@@ -137,6 +139,7 @@
 </svg> <span id="encabezadoSaldoAlquiler"></span></div>
         <div class="card-body">
           <h5 id="importeSaldoAlquiler" class="card-title fs-4"></h5>
+          <img id="imagenSaldoAlquiler" src="" style=" width: 6rem;">
           <p id="fechaSaldoAlquiler" class="card-text"></p>
         </div>
       </div>
@@ -149,6 +152,7 @@
 </svg> <span id="encabezadoSaldoTotal"></span></div>
         <div class="card-body">
           <h5 id="importeSaldoTotal" class="card-title fs-4"></h5>
+          <img id="imagenSaldoTotal" src="" style=" width: 6rem;">
           <p id="fechaSaldoTotal" class="card-text"></p>
         </div>
       </div>
@@ -161,6 +165,7 @@
     <!--CONTENEDOR FORMULARIO-->
     <div class="col-7 m-auto my-5">
       <form id="formGestionDeDatos" class="p-5 rounded-3">
+        <!--input id="seccion" type="hidden" name="seccion" value="buscarIngresoPorMesAño"-->
         <div class="mb-3">
           <legend id="legendForm" class="text-center fw-bold">Buscar Ingreso</legend>
         </div>
@@ -201,7 +206,7 @@
           <div><p id="mensajeInputImporte" class="ms-2"></p></div>
         </div>
         <div class="mb-3  text-center">
-          <button id="botonForm" class="btn w-100 fw-bold botonFormulario" name="buscarIngreso">
+          <button id="botonForm" class="btn w-100 fw-bold botonFormulario" name="buscarIngresoPorMesAño">
             <svg id="iconoBuscar" class="bi bi-search" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
               <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/></svg>
             <svg id="iconoGuardar" class="bi bi-floppy d-none" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
