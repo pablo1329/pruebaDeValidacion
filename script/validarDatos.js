@@ -161,12 +161,18 @@ function validarDatos(datosDeFormulario) {
 
 }//fin function validarDatos
 
-function validarDatosDuplicados(respuesta){
+async function validarIngresoDuplicado(datosDeFormulario){
+
+	datosDeFormulario.seccion = 'buscarIngresoPorMesAñoOrigenDeIngreso';
+
+	//Almacenamos los datos obtenidos del servidor.
+  let datosDeIngreso = await buscarDatos(datosDeFormulario); 
 	
-	if (respuesta.cantidadDeResultados > 0) {
+	if (datosDeIngreso.cantidadDeResultados > 0) {
     // Al lanzar el error, el flujo se interrumpe y salta directamente al .catch
     throw new ValidacionError('servidor', { codigosDeError: 'datosDuplicados' });
   }
+
 }//fin function validarDatosDuplicados
 
 
@@ -180,12 +186,15 @@ function validarCantidadDeResultadosObtenidos(cantidadDeResultados){
 }//fin function validarCantidadDeResultadosObtenidos
 
 
-function validarImporteRespectoAlSaldo(gasto, saldoActual){
-	let gastoConvertido = parseFloat(gasto);
+async function validarImporteRespectoAlSaldo(datosDeFormulario, datosDeSaldo){
+
+	
+	let gastoActual = datosDeFormulario.inputImporte;
+	let saldoActual = datosDeSaldo.datos.IMPORTE[0];
+	let gastoConvertido = parseFloat(gastoActual);
 	let saldoConvertido = parseFloat(saldoActual);
 	
 	if(gastoConvertido > saldoConvertido){
-		console.log('Gasto: ' + gastoConvertido + ' Saldo: ' + saldoConvertido);
 		throw new ValidacionError('servidor', { codigosDeError: 'gastoSuperiorAlSueldo' });
 	}
 

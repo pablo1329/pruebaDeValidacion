@@ -16,16 +16,20 @@ const DATOS_DE_TARJETAS_DE_INICIO = { 'ingreso':{'Carol': { idEncabezadoDeTarjet
 									  },
 									  'saldo':{'Carol': { idEncabezadoDeTarjeta: 'encabezadoSaldoCarol',
 												 		  idImporteIngreso: 'importeSaldoCarol',
-												 		  idFechaIngreso: 'fechaSaldoCarol' },
+												 		  idFechaIngreso: 'fechaSaldoCarol',
+												 		  idImagen: 'imagenSaldoCarol' },
 									  		   'Pablo': { idEncabezadoDeTarjeta: 'encabezadoSaldoPablo',
 												 		  idImporteIngreso: 'importeSaldoPablo',
-												 		  idFechaIngreso: 'fechaSaldoPablo' },
+												 		  idFechaIngreso: 'fechaSaldoPablo',
+												 		  idImagen: 'imagenSaldoPablo'  },
 									  		   'Alquiler': { idEncabezadoDeTarjeta: 'encabezadoSaldoAlquiler',
 															 idImporteIngreso: 'importeSaldoAlquiler',
-															 idFechaIngreso: 'fechaSaldoAlquiler' },
+															 idFechaIngreso: 'fechaSaldoAlquiler',
+												 		  idImagen: 'imagenSaldoAlquiler'  },
 									  		   'Total': { idEncabezadoDeTarjeta: 'encabezadoSaldoTotal',
 												 		  idImporteIngreso: 'importeSaldoTotal',
-												 		  idFechaIngreso: 'fechaSaldoTotal' } 
+												 		  idFechaIngreso: 'fechaSaldoTotal',
+												 		  idImagen: 'imagenSaldoTotal'  } 
 									 }
     
 };
@@ -33,7 +37,55 @@ const DATOS_DE_TARJETAS_DE_INICIO = { 'ingreso':{'Carol': { idEncabezadoDeTarjet
 
 const NOMBRE_DE_MESES = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
+async function imprimirImagenes(origen, ingresoActual, saldoActual){
+	console.log(origen);
+	console.log(ingresoActual);
+	console.log(saldoActual);
+	porcentaje = (saldoActual * 100)/ingresoActual;
+	console.log(porcentaje);
+	let src = 'imagenes/';
 
+	if(porcentaje > 50){
+		src += 'numero 100.png';
+	} else if(porcentaje <= 50 && porcentaje > 30) {
+		src += 'numero 50.jpg';
+	} else if(porcentaje <= 30){
+		src += 'numero 30.png';
+	}
+
+	let imagenActual = document.getElementById(DATOS_DE_TARJETAS_DE_INICIO['saldo'][origen].idImagen);
+
+	imagenActual.setAttribute('src', src);
+
+}//fin function imprimirImagenes
+
+
+async function imprimirTodasLasImagensPorSaldo(){
+
+	const origenesDeIngresos = await buscarDatos({ seccion: 'buscarTodosLosOrigenesDeIngreso'});
+	let datosDeIngresos = {};
+	let datosDeSaldo = {};
+	const cantidadDeResultados = origenesDeIngresos.cantidadDeResultados;
+	let importeTotal = { ingresoTotal: 0, saldoTotal: 0 };
+	for (let i = 0; i < cantidadDeResultados; i++) {
+
+		datosDeIngresos = await buscarDatos({ seccion: 'buscarUltimoIngresoPorOrigenDeIngreso',
+		                                      inputOrigenDeIngreso: origenesDeIngresos.datos.ID_ORIGEN[i]});
+
+		datosDeSaldo = await buscarDatos({ seccion: 'buscarUltimoSaldoPorOrigenDeIngreso', 
+										   inputOrigenDeIngreso: origenesDeIngresos.datos.ID_ORIGEN[i]});
+
+		imprimirImagenes(datosDeIngresos.datos.ORIGEN[0], datosDeIngresos.datos.IMPORTE[0], datosDeSaldo.datos.IMPORTE[0]);
+
+		importeTotal.ingresoTotal += parseFloat(datosDeIngresos.datos.IMPORTE[0]);
+		importeTotal.saldoTotal += parseFloat(datosDeSaldo.datos.IMPORTE[0]);
+		
+	}
+
+	imprimirImagenes('Total', importeTotal.ingresoTotal, importeTotal.ingresoTotal);
+	
+
+}//fin function imprimirTodasLasImagensPorSaldo
 
 
 function obtenerConfiguracionDeFormulario(idDeLista){
@@ -60,17 +112,17 @@ function obtenerConfiguracionDeFormulario(idDeLista){
 			configuracion.contenidoDeTextoDeBotonForm = 'Guardar';
 			configuracion.iconoBotonForm = 'iconoGuardar';
 		break;
-		case'buscarIngreso':
+		case'buscarIngresoPorMesAñoOrigenDeIngreso':
 			configuracion.cajasAMostrar = ['cajaFecha', 'cajaOrigen'];
 			configuracion.legendForm = 'Buscar Ingreso';
-			configuracion.nameBotonForm = 'buscarIngreso';
+			configuracion.nameBotonForm = 'buscarIngresoPorMesAñoOrigenDeIngreso';
 			configuracion.contenidoDeTextoDeBotonForm = 'Buscar';
 			configuracion.iconoBotonForm = 'iconoBuscar';
 		break;
-		case'buscarGastos':
+		case'buscarGastosPorAñoMesSaldoCategoriaDeGasto':
 			configuracion.cajasAMostrar = ['cajaFecha', 'cajaCategoriaGasto', 'cajaSaldo'];
 			configuracion.legendForm = 'Buscar Gastos';
-			configuracion.nameBotonForm = 'buscarGastos';
+			configuracion.nameBotonForm = 'buscarGastosPorAñoMesSaldoCategoriaDeGasto';
 			configuracion.contenidoDeTextoDeBotonForm = 'Buscar';
 			configuracion.iconoBotonForm = 'iconoBuscar';
 		break;
@@ -122,10 +174,49 @@ function mostrarIconoDeBotonDeFormulario(configuracion){
 }//fin function mostrarIconoDeBotonDeFormulario
 
 
-function administrarVistaDeFormularioPorId(idDeLista){
+function actualizarNombreBotonFormulario(nombre) {
+    document.getElementById('botonForm').setAttribute('name', nombre);
+}
+
+function configurarCambioDinamicoBoton(inputId, nombreBase, nombreConFiltro) {
+    const inputElement = document.getElementById(inputId);
+    if (!inputElement) return;
+
+    inputElement.addEventListener('change', () => {
+        const valor = parseInt(inputElement.value, 10);
+        const nuevoNombre = valor === 0 ? nombreConFiltro  : nombreBase;
+        actualizarNombreBotonFormulario(nuevoNombre);
+    });
+}
+
+function configurarDinamicaSegunLista(idDeLista) {
+    // 'configuraciones' es un objeto local que actúa como un diccionario
+    const configuraciones = {
+        'buscarIngresoPorMesAñoOrigenDeIngreso': {
+            inputId: 'inputOrigenDeIngreso',
+            nombreBase: 'buscarIngresoPorMesAñoOrigenDeIngreso',
+            nombreConFiltro:  'buscarIngresoPorMesAño'
+        },
+        'buscarGastosPorAñoMesSaldoCategoriaDeGasto': {
+            inputId: 'inputCategoriaDeGasto',
+            nombreBase: 'buscarGastosPorAñoMesSaldoCategoriaDeGasto',
+            nombreConFiltro: 'buscarGastosPorAñoMesSaldo'
+        }
+    };
+
+    // Buscamos si el idDeLista existe dentro de nuestro diccionario de objetos
+    const config = configuraciones[idDeLista];
+    // Si existe, configuramos el evento pasándole sus propiedades
+    if (config) {
+        configurarCambioDinamicoBoton(config.inputId, config.nombreBase, config.nombreConFiltro);
+    }
+}
+
+
+function administrarVistaDeFormularioPorId(idDeLista) {
 	
 	let configuracion = obtenerConfiguracionDeFormulario(idDeLista);
-
+	
 	mostrarCamposDeFormulario(configuracion);
 
 	document.getElementById('legendForm').textContent = configuracion.legendForm;
@@ -134,6 +225,8 @@ function administrarVistaDeFormularioPorId(idDeLista){
 
 	mostrarIconoDeBotonDeFormulario(configuracion);
 
+	configurarDinamicaSegunLista(idDeLista);
+	
 }//fin function mostrarCamposDeFormularioPorId
 
 function imprimirErroresEnFormulario(idsDeParrafosRelacionadosAInputs, erroresPorCodigoDeError){
@@ -240,58 +333,78 @@ function imprimirDatosDeSaldoPorOrigen(origenDeIngreso, dia, mes, año, importe)
 }//fin function imprimirDatosDeIngresoPorOrigen
 
 
-function imprimirTodosLosIngresos(datos){
+async function imprimirTodosLosIngresos() {
+
+	const datosDeUltimoIngreso = await buscarUltimosIngresos();
 
 	let datosDeIngreso = {	AÑO: 0,
 						 	MES: 0,
 						 	IMPORTE: [] };
 
-	datos.forEach((element) => {			
-		imprimirDatosDeIngresoPorOrigen(element.ORIGEN[0], element.AÑO[0], element.MES[0], element.IMPORTE[0]);
-			datosDeIngreso.MES = element.MES[0];
-			datosDeIngreso.AÑO = element.AÑO[0];
-			datosDeIngreso.IMPORTE.push(element.IMPORTE[0]);	
-		});//fin bucle for
+	let totalDeIngresos = 0;
 
-    let totalDeIngresos = sumarNumerosEnMatriz(datosDeIngreso.IMPORTE);
-        			
-    imprimirDatosDeIngresoPorOrigen('Total', datosDeIngreso.AÑO, datosDeIngreso.MES, totalDeIngresos);
+	for (let i = 0; i < datosDeUltimoIngreso.length; i++) {
+		
+		imprimirDatosDeIngresoPorOrigen(datosDeUltimoIngreso[i].datos.ORIGEN[0], 
+									    datosDeUltimoIngreso[i].datos.AÑO[0], 
+									    datosDeUltimoIngreso[i].datos.MES[0], 
+									    datosDeUltimoIngreso[i].datos.IMPORTE[0]);
+
+		datosDeIngreso.MES = datosDeUltimoIngreso[i].datos.MES[0];
+		datosDeIngreso.AÑO = datosDeUltimoIngreso[i].datos.AÑO[0];
+		datosDeIngreso.IMPORTE.push(datosDeUltimoIngreso[i].datos.IMPORTE[0]);
+	}//fin bucle for
+
+	totalDeIngresos = sumarNumerosEnMatriz(datosDeIngreso.IMPORTE);
+
+	imprimirDatosDeIngresoPorOrigen('Total', datosDeIngreso.AÑO, datosDeIngreso.MES, totalDeIngresos);
 
 }//fin function imprimirTodosLosIngresos
 
 
-function imprimirTodosLosSaldos(datosDeSaldo, datosDelServidor){
+async function imprimirTodosLosSaldos(){
 
+	const datosDeSaldo = await buscarDatosDeTodosLosSaldos();
+	
 	let datosLocales = {	AÑO: [],
 						 	MES: [],
 						 	DIA: [],
 						 	IMPORTE: [] };
 
-	let cantidadDeDatos = datosDelServidor.length
+	let cantidadDeDatos = datosDeSaldo.length;
+	
 	for (let i = 0; i < cantidadDeDatos; i++) {
 
-		if(datosDelServidor[i].cantidadDeResultados > 0) {
+		if(datosDeSaldo[i].cantidadDeResultados > 0){
 
-			imprimirDatosDeSaldoPorOrigen(datosDeSaldo.saldo[i], datosDelServidor[i].datos.DIA[0], datosDelServidor[i].datos.MES[0], datosDelServidor[i].datos.AÑO[0], datosDelServidor[i].datos.IMPORTE[0]);
-			datosLocales.DIA.push(datosDelServidor[i].datos.DIA[0]);
-			datosLocales.MES.push(datosDelServidor[i].datos.MES[0]);
-			datosLocales.AÑO.push(datosDelServidor[i].datos.AÑO[0]);
-			datosLocales.IMPORTE.push(datosDelServidor[i].datos.IMPORTE[0]);
+			imprimirDatosDeSaldoPorOrigen(datosDeSaldo[i].datos.ORIGEN[0], 
+			datosDeSaldo[i].datos.DIA[0], 
+			datosDeSaldo[i].datos.MES[0], 
+			datosDeSaldo[i].datos.AÑO[0], 
+			datosDeSaldo[i].datos.IMPORTE[0]);
+
+			datosLocales.DIA.push(datosDeSaldo[i].datos.DIA[0]);
+			datosLocales.MES.push(datosDeSaldo[i].datos.MES[0]);
+			datosLocales.AÑO.push(datosDeSaldo[i].datos.AÑO[0]);
+			datosLocales.IMPORTE.push(datosDeSaldo[i].datos.IMPORTE[0]);
+
 		} else {
-			console.log(datosDelServidor);
-			imprimirDatosDeSaldoPorOrigen(datosDeSaldo.saldo[i], 0, 0, 0, 'SALDO NO ENCONTRADO');
+
+			imprimirDatosDeSaldoPorOrigen(datosDeSaldo[i].datos.ORIGEN[0], 0, 0, 0, 'SALDO NO ENCONTRADO');
 			datosLocales.DIA.push(1);
 			datosLocales.MES.push(1);
 			datosLocales.AÑO.push(1995);
 			datosLocales.IMPORTE.push(0);
+
 		}
 		
-	}
+	}//fin bucle for
+
 	let totalDeIngresos = sumarNumerosEnMatriz(datosLocales.IMPORTE);
     let fechaMasReciente = devolverFechaMasReciente(datosLocales);
 	imprimirDatosDeSaldoPorOrigen('Total', fechaMasReciente.dia, fechaMasReciente.mes, fechaMasReciente.año, totalDeIngresos);
 
-}
+}//fin function imprimirTodosLosSaldos
 
 
 function mostrarEncabezadoDeTabla(seccion){
@@ -367,6 +480,26 @@ function imprimirDatosEnCuerpoDeTabla(accion, cantidadDeDatos, datos) {
 
 }//fin function imprimirDatosEnCuerpoDeTabla
 
+
+function imprimirDatosEnTabla(idEncabezadoDeTabla, datosDelServidor){
+
+	if(idEncabezadoDeTabla === 'ingresos'){
+	
+		mostrarEncabezadoDeTabla('ingresos');
+
+ 		imprimirDatosEnCuerpoDeTabla('imprimirDatosDeIngreso', datosDelServidor.cantidadDeResultados, datosDelServidor.datos);
+
+	} else if(idEncabezadoDeTabla === 'gastos'){
+
+		mostrarEncabezadoDeTabla('gastos');
+		
+		imprimirDatosEnCuerpoDeTabla('imprimirDatosDeGasto', datosDelServidor.cantidadDeResultados, datosDelServidor.datos);
+
+	}
+
+}//fin function imprimirDatosEnTabla
+
+
 function reestablecerCajaDeMensaje() {
 	
 	let cajaDeMensajeDelServidor = document.getElementById('cajaMensajeDelServidor');
@@ -398,7 +531,7 @@ function reestablecerFormulario(){
 }//FIN function reestablecerFormulacio
 
 function reestablecerVistaPrincipal(){
-
+	destruirGrafico(document.getElementById('grafico'));
 	reestablecerFormulario();
 	reestablecerCajaDeMensaje();
 	reestablecerTabla();

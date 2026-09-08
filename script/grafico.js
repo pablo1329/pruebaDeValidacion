@@ -4,7 +4,10 @@ function destruirGrafico(canvas) {
     }
 }//fin function destruirGrafico
 
-function crearGrafico(canvas, tipoDeGrafico, tituloDelGrafico, etiquetas, datosNumericos, colores, coloresDeBordesDeBarras, colorTextoDeBarra, colorDatosEjeX) {
+function crearGrafico(idGrafico, tipoDeGrafico, tituloDelGrafico, etiquetas, datosNumericos, colores, coloresDeBordesDeBarras, colorTextoDeBarra, colorDatosEjeX) {
+
+const canvas = document.getElementById(idGrafico);
+
 // Verifica si ya existe un gráfico en el canvas y lo destruye
 destruirGrafico(canvas);
 // Registrar el plugin ChartDataLabels
@@ -132,5 +135,32 @@ function almacenarDatosDeIngresoParaGraficar(datosDeIngreso, matrizOrigenDeIngre
     return datosAGraficar;
 
 }//fin almacenarDatosParaGraficar
+
+
+function almacenarDatosDeGastoParaGraficar(idCategoria, categoria, importeTotal){
+
+    const coloresDeCategoriasDeGasto = ['#66ff66', '#6699ff', '#b3ff66', '#c266ff', '#d9b38c', '#ff6666', '#ffa366', '#b3b3b3', '#66d9ff', '#b3b3b3'];
+
+    const coloresDeBordeDeCategoriasDeGasto = ['#ff6666', '#002266', '#336600', '#3d0066', '#4d3319', '#660000', '#662900', '#333333', '#004d66', '#333333'];
+
+    let datosDeGastoAGraficar = {categoriaDeGasto: [], 
+                                 importeTotal: [], 
+                                 colores: [], 
+                                 coloresDeBorde: [] };
+
+    cantidadDeDatos = idCategoria.length;
+
+    for (let i = 0; i < cantidadDeDatos; i++) {
+                
+        datosDeGastoAGraficar.categoriaDeGasto.push(categoria[i]);
+        datosDeGastoAGraficar.importeTotal.push(importeTotal[i]);
+        datosDeGastoAGraficar.colores.push(coloresDeCategoriasDeGasto[idCategoria[i]]);
+        datosDeGastoAGraficar.coloresDeBorde.push(coloresDeBordeDeCategoriasDeGasto[idCategoria[i]]);
+
+    }//fin bucle for
+
+    return datosDeGastoAGraficar;
+
+}//fin function almacenarDatosDeGastoParaGraficar
 
 

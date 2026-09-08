@@ -1,11 +1,16 @@
-const CONFIGURACION_FORMULARIOS = {'buscarGastosPorAñoMesSaldo':['inputFecha', 'inputOrigenDeIngreso'],
-								   'buscarGastosPorAñoMesSaldoCategoriaDeGasto':['inputFecha', 'inputOrigenDeIngreso', 'inputCategoriaDeGasto'],
-								   'buscarIngreso':['inputFecha', 'inputOrigenDeIngreso'],
+const CONFIGURACION_FORMULARIOS = {'buscarGastosPorAñoMesSaldo':['inputFecha', 'inputSaldo'],
+								   'buscarGastosPorAñoMesSaldoCategoriaDeGasto':['inputFecha', 'inputSaldo', 'inputCategoriaDeGasto'],
+								   'buscarIngresoPorMesAño':['inputFecha'],
+								   'buscarIngresoPorMesAñoOrigenDeIngreso':['inputFecha', 'inputOrigenDeIngreso'],
 								   'guardarIngreso': ['inputFecha', 'inputOrigenDeIngreso', 'inputImporte'],
     							   'guardarGasto': ['inputFecha', 'inputSaldo', 'inputCategoriaDeGasto', 'inputDetalleDelGasto', 'inputImporte'],
     							   'buscarGastos': ['inputFecha', 'inputSaldo', 'inputCategoriaDeGasto'],
     							   'buscarIngresoDuplicado': ['inputFecha', 'inputOrigenDeIngreso'],
-    							   'obtenerUltimoIngresoPorOrigenDeIngreso': ['inputOrigenDeIngreso']
+    							   'buscarUltimoIngresoPorOrigenDeIngreso': ['inputOrigenDeIngreso']
+};
+
+const MENSAJES_DE_CONFIRMACION = { '.botonEliminarGasto': '¿Está seguro de eliminar el gasto?', 
+								   '.botonEliminarIngreso': '¿Está seguro de eliminar el ingreso? ¡Se eliminará el saldo y los gastos relacionados al mismo!'
 };
 
 let solicitudActual = '';
@@ -35,15 +40,17 @@ function obtenerIdsDeInputsDeFormularioPorSolicitud(solicitud){
 
 
 function obtenerDatosDeFormularioPorSolicitud(solicitud){
+	
+	let seccion = document.getElementById('botonForm').name;
 
-	let idsDeInputsDeFormulario = obtenerIdsDeInputsDeFormularioPorSolicitud(solicitud);
+	let idsDeInputsDeFormulario = obtenerIdsDeInputsDeFormularioPorSolicitud(seccion);
 
 	let datosDeFormulario = almacenarDatosPorId(idsDeInputsDeFormulario);
 
 	datosDeFormulario = validarDatos(datosDeFormulario);
 	
 	datosDeFormulario = devolverFechaFormateada(solicitud, datosDeFormulario);
-	console.log(datosDeFormulario);
+
 	return datosDeFormulario; 
 
 }//fin function obtenerDatosPorNombreDeBotonDeFormulario
@@ -53,15 +60,11 @@ async function eliminarIngreso(idIngreso){
 
 	reestablecerTabla();
 
-	console.log(idIngreso);
-
 	let buscarDatosDeSaldo = {'seccion':'buscarSaldoPorFkSaldoIngreso',
 							  'idIngreso':idIngreso}	
 
-	let datosDeSaldo = await solicitarDatosConParametros(buscarDatosDeSaldo);
+	let datosDeSaldo = await buscarDatos(buscarDatosDeSaldo);
 
-	datosDeSaldo = JSON.parse(datosDeSaldo);
-	console.log(datosDeSaldo);
 	const idSaldo = datosDeSaldo.datos.ID_SALDO[0];
 
 	let eliminarGasto = {'seccion':'eliminarGastoPorId', 
@@ -76,33 +79,19 @@ async function eliminarIngreso(idIngreso){
 	let datosDeSaldoEliminado =	await solicitarDatosConParametros(eliminarSaldo);
 
 	datosDeSaldoEliminado = JSON.parse(datosDeSaldoEliminado);
-	console.log(datosDeSaldoEliminado);
 
-	procesarSolicitudAlServidor('obtenerDatosDeSaldoPorIngreso');
+	imprimirTodosLosSaldos();
                       												 
 }//fin function eliminarIngreso
 
 
-async function eliminarGasto(idGasto){
-
-	let buscarDatosDeGasto = {'seccion': 'buscarGastoPorId',
-				              'idGasto': idGasto};
-
-	let datosDeGasto = await solicitarDatosConParametros(buscarDatosDeGasto);
-	datosDeGasto = JSON.parse(datosDeGasto);
-
-	let datosAEliminar = {'seccion': 'eliminarGastoPorId',
-						  'idGasto': idGasto}
-
-	let respuestaDatosEliminados = await eliminarDatos(datosAEliminar);
-
-	const idSaldo = datosDeGasto.datos.FK_GASTO_SALDO[0];
+async function actualizarSaldo(idSaldo, datosDeGasto){
 
 	let solicitarDatosDeSaldo = {'seccion': 'buscarSaldoPorId',
 								 'inputSaldo': idSaldo}
 
-	let datosDeSaldo = await solicitarDatosConParametros(solicitarDatosDeSaldo);
-	datosDeSaldo =  JSON.parse(datosDeSaldo);
+	let datosDeSaldo = await buscarDatos(solicitarDatosDeSaldo);
+
 	const gastoActual = parseFloat(datosDeGasto.datos.IMPORTE[0]);
 
 	const saldoActual = parseFloat(datosDeSaldo.datos.IMPORTE[0]);
@@ -117,9 +106,30 @@ async function eliminarGasto(idGasto){
 
     imprimerMensajeDeExito('El gasto fué eliminado. ' + respuestaDatosModificados);
 
-    procesarSolicitudAlServidor('obtenerDatosDeSaldoPorIngreso');
+    imprimirTodosLosSaldos();
+
+    reestablecerFormulario();
 
     reestablecerTabla();
+
+    destruirGrafico(document.getElementById('grafico'));
+
+}//fin function actualizarSaldo
+
+
+async function eliminarGasto(idGasto){
+
+	let buscarDatosDeGasto = {'seccion': 'buscarGastoPorId',
+				              'idGasto': idGasto};
+
+	let datosDeGasto = await buscarDatos(buscarDatosDeGasto);
+
+	let datosAEliminar = {'seccion': 'eliminarGastoPorId',
+						  'idGasto': idGasto}
+
+	let respuestaDatosEliminados = await eliminarDatos(datosAEliminar);
+
+	actualizarSaldo(datosDeGasto.datos.FK_GASTO_SALDO[0], datosDeGasto);
 
 }//fin function eliminarGasto
 
@@ -130,13 +140,7 @@ function detectarInteraccionConBotonEliminar(claseDelBotonEliminar){
 
 	const cantidadDeIconosBotonEliminar = iconosBotonEliminar.length;
 
-	let mensajeDeConfirmacion = '';
-
-	if(claseDelBotonEliminar === '.botonEliminarGasto'){
-		mensajeDeConfirmacion = '¿Está seguro de eliminar el gasto?';
-	}else{
-		mensajeDeConfirmacion = '¿Está seguro de eliminar el ingreso? ¡Se eliminará el saldo y los gastos relacionados al mismo!';
-	}
+	let mensajeDeConfirmacion = MENSAJES_DE_CONFIRMACION[claseDelBotonEliminar];
 
 	for (let i = 0; i < cantidadDeIconosBotonEliminar; i++) {
 		iconosBotonEliminar[i].addEventListener('click', ()=>{
@@ -197,254 +201,335 @@ function almacenarDatosDeIngresosYSaldos(cantidadDeDatos, origenIngreso, ingreso
 }//fin function almacenarDatosDeIngresosYSaldos
 
 
-async function gestionarDatos(datosDelServidor){
+async function devolverGastoTotal(datosDelServidor){
 
-	let datosDeSaldo = await buscarDatosDeSaldoPorIngreso(datosDelServidor);
-	/*console.log(datosDeSaldo);
-	console.log(datosDelServidor);*/
+	//Se almacenan datos para buscar el gasto total por año, mes, idSaldo, InputCategoriaDeGasto
+	let idSaldo = datosDelServidor.FK_GASTO_SALDO[0];
 
-	let datos = almacenarDatosDeIngresosYSaldos(datosDelServidor.cantidadDeResultados, datosDelServidor.datos.ORIGEN, datosDelServidor.datos.IMPORTE, datosDeSaldo);
+	let mesActual = datosDelServidor.MES[0];
 
-  	console.log(datos);
+	let añoActual = datosDelServidor.AÑO[0];
 
-  	let datosAGraficar = almacenarDatosDeIngresoParaGraficar(datosDelServidor, datos.origenDeIngresos, datos.ingresosActuales, datos.saldosActuales);
-  			
-  	const canvas = document.getElementById('grafico');
+	let datosDeGastoTotal = {};
 
-  	crearGrafico(canvas, 'bar', 'Ingresos', datosAGraficar.origen, datosAGraficar.datosNumericos, datosAGraficar.colorDeBarra, datosAGraficar.colorDeBordeDeBarra, datosAGraficar.colorTextoDeBarra, datosAGraficar.colorDatosEjeX);
+	let datosAGraficar = {categoria: [],
+						  importeTotal: [],
+						  idCategoria: [] };
 
- 	mostrarEncabezadoDeTabla('ingresos');
+	//Obtener todas las categorías.
+	/*datosDeCategoriasDeGastos = await solicitarDatosConParametros({'seccion':'obtenerTodasLasCategoriasDeGastos'});
 
- 	imprimirDatosEnCuerpoDeTabla('imprimirDatosDeIngreso', datosDelServidor.cantidadDeResultados, datosDelServidor.datos);
+    datosDeCategoriasDeGastos = JSON.parse(datosDeCategoriasDeGastos);
+   	console.log(datosDeCategoriasDeGastos);*/
+	let cantidadDeDatos = document.getElementById('inputCategoriaDeGasto').querySelectorAll('option').length;
 
- 	detectarInteraccionConBotonEliminar('.botonEliminarIngreso');
+    for (let i = 1; i < cantidadDeDatos; i++) {
+
+		let buscarGastoTotal = {'seccion': 'buscarGastoTotalPorAñoMesInputSaldoInputCategoriaDeGasto', 
+    		                    'inputSaldo': idSaldo, 
+    		                    'inputCategoriaDeGasto': i, 
+    		                    'mes': mesActual, 
+    		                    'año': añoActual }
+
+    	datosDeGastoTotal = await buscarDatos(buscarGastoTotal); 
+
+    	if(datosDeGastoTotal.datos.IMPORTE_TOTAL[0] != null){
+
+    		datosAGraficar.idCategoria.push(i);
+
+    		datosAGraficar.categoria.push(datosDeGastoTotal.datos.CATEGORIA[0]);
+
+    		datosAGraficar.importeTotal.push(datosDeGastoTotal.datos.IMPORTE_TOTAL[0]);
+
+    	}
+
+    }//fin bucle for
+
+    return datosAGraficar;
+
+}//fin function devolverGastoTotal
+
+
+async function gestionarDatos(accion, datosDelServidor){
+	console.log(datosDelServidor);
+	if(accion === 'buscarIngreso') {
+
+		//Se buscan los datos de saldo en base a los datos de ingreso.
+		let datosDeSaldo = await buscarDatosDeSaldoPorIngreso(datosDelServidor);
+
+		let datos = almacenarDatosDeIngresosYSaldos(datosDelServidor.cantidadDeResultados, datosDelServidor.datos.ORIGEN, datosDelServidor.datos.IMPORTE, datosDeSaldo);
+		
+  		let datosAGraficar = almacenarDatosDeIngresoParaGraficar(datosDelServidor, datos.origenDeIngresos, datos.ingresosActuales, datos.saldosActuales);
+
+  		crearGrafico('grafico', 'bar', 'Ingresos', datosAGraficar.origen, datosAGraficar.datosNumericos, datosAGraficar.colorDeBarra, datosAGraficar.colorDeBordeDeBarra, datosAGraficar.colorTextoDeBarra, datosAGraficar.colorDatosEjeX);
+
+  		imprimirDatosEnTabla('ingresos', datosDelServidor);
+
+ 		detectarInteraccionConBotonEliminar('.botonEliminarIngreso');
+
+	} else if(accion === 'buscarGasto') {
+
+		let datosDeGastoTotal = {};
+
+		datosDelServidor.datos.ORIGEN = document.getElementById('inputSaldo').querySelector('select option:checked').textContent;
+
+		imprimirDatosEnTabla('gastos', datosDelServidor);
+
+    	datosDeGastoTotal = await devolverGastoTotal(datosDelServidor.datos);
+
+		let datosDeGastoAGraficar = almacenarDatosDeGastoParaGraficar(datosDeGastoTotal.idCategoria, datosDeGastoTotal.categoria, datosDeGastoTotal.importeTotal);
+    	
+		crearGrafico('grafico', 'bar', 'Gastos por categoría', datosDeGastoAGraficar.categoriaDeGasto, datosDeGastoAGraficar.importeTotal, datosDeGastoAGraficar.colores, datosDeGastoAGraficar.coloresDeBorde, '#66ff66', '#66ff66');
+
+		detectarInteraccionConBotonEliminar('.botonEliminarGasto');
+	}
+	
 
 }//fin function gestionarDatos
+
+
+async function actualizarIngreso(datosDeFormulario){
+
+	datosDeFormulario.seccion = 'buscarUltimoIngresoPorOrigenDeIngreso';
+	let ultimoIngreso = await buscarDatos(datosDeFormulario);
+	console.log(ultimoIngreso);
+	imprimirDatosDeIngresoPorOrigen(ultimoIngreso.datos.ORIGEN[0], ultimoIngreso.datos.AÑO[0], ultimoIngreso.datos.MES[0], ultimoIngreso.datos.IMPORTE[0]);
+	return ultimoIngreso;
+
+}//fin function actualizarIngreso
+
+
+async function guardarSaldo(datosDeFormulario, datosDeIngreso){
+
+	//IMPORTE, FK_SALDO_INGRESO, FK_SALDO_ORIGEN_INGRESO, DIA, MES, AÑO
+	let datosDeSaldo = { seccion: 'guardarSaldo',
+					     inputImporte: datosDeFormulario.inputImporte,
+					     idIngreso: datosDeIngreso.datos.ID_INGRESO[0], 
+					     inputOrigenDeIngreso: datosDeFormulario.inputOrigenDeIngreso, 
+					     dia: datosDeFormulario.dia,
+					     mes: datosDeFormulario.mes, 
+					     año: datosDeFormulario.año };
+
+	let saldo = await guardarDatos(datosDeSaldo);
+	saldo = JSON.parse(saldo);
+	/*GUARDAR SALDO*/
+
+	/*IMPRIMIR SALDO*/
+	imprimirDatosDeSaldoPorOrigen(datosDeIngreso.datos.ORIGEN[0], datosDeFormulario.dia, datosDeFormulario.mes, datosDeFormulario.año, datosDeFormulario.inputImporte);
+	/*IMPRIMIR SALDO*/
+
+}//fin function guardarSaldo
+
+
+async function buscarSaldoPorId(idSaldo){
+
+	const buscarSaldoPorId = { seccion:'buscarSaldoPorId',
+							   inputSaldo: idSaldo};
+    const datosDeSaldo = await buscarDatos(buscarSaldoPorId);
+    return datosDeSaldo;
+
+}//fin function buscarSaldoPorId
+
+
+async function modificarSaldo(datosDeFormulario, datosDeSaldo){
+
+	const saldoActual = parseFloat(datosDeSaldo.datos.IMPORTE[0]);
+	const gastoActual = parseFloat(datosDeFormulario.inputImporte);
+	let nuevoSaldo = saldoActual - gastoActual;
+	let datosDeSaldoAModificar = {'seccion': 'modificarSaldoPorOrigen',
+								  'inputImporte': nuevoSaldo,
+								  'dia': datosDeFormulario.dia,
+                                  'mes': datosDeFormulario.mes,
+                                  'año': datosDeFormulario.año,
+                                  'idSaldo': datosDeFormulario.inputSaldo };
+    let respuestaDatosModificados = await modificarDatos(datosDeSaldoAModificar);
+	respuestaDatosModificados = JSON.parse(respuestaDatosModificados);
+	imprimerMensajeDeExito('Los datos se guardaron con éxito ' + respuestaDatosModificados);
+
+}//fin function modificarSaldo
+
+
+async function guardarGasto(datosDeFormulario){
+
+	datosDeFormulario.seccion = 'guardarGasto';
+	let datosDeGasto = await guardarDatos(datosDeFormulario);
+	datosDeGasto = JSON.parse(datosDeGasto);
+	imprimerMensajeDeExito('Los datos se guardaron con éxito ' + datosDeGasto);
+
+}//fin function guardarGasto
+
+
+async function buscarUltimoIngresoPorOrigen(datosDeTodosLosOrigenesDeIngreso) {
+
+
+	//Se declara el objeto para buscar los ultimos ingresos por origen.
+	let buscarUltimoIngreso = {seccion: 'buscarUltimoIngresoPorOrigenDeIngreso',
+	                           inputOrigenDeIngreso: '' };
+
+	let datosDeUltimosIngresosPorOrigen = [];
+
+	let datosActuales = [];
+
+	//Recorremos todos los origenes de ingreso.
+	for(let i = 0; i < datosDeTodosLosOrigenesDeIngreso.cantidadDeResultados; i++) {
+		
+		//Se almacena el id de origen de ingreso, en el objeto para obtener los ultimos ingresos.
+		buscarUltimoIngreso.inputOrigenDeIngreso = datosDeTodosLosOrigenesDeIngreso.datos.ID_ORIGEN[i];
+
+		//Se almacenan los resultados obtenidos.
+		datosActuales = await buscarDatos(buscarUltimoIngreso);
+
+		datosDeUltimosIngresosPorOrigen.push(datosActuales);
+
+	}//fin bucle for
+
+	return datosDeUltimosIngresosPorOrigen;
+
+}//fin function buscarUltimoIngresoPorOrigen
+
+
+async function buscarUltimosIngresos(){
+
+	//Se declara el objeto para buscar todos los origenes de ingresos.
+	const todosLosOrigenesDeIngreso = {'seccion':'buscarTodosLosOrigenesDeIngreso'};
+
+	//Se almacenan los datos de los origenesw de ingreso.
+	const datosDeTodosLosOrigenesDeIngreso = await buscarDatos(todosLosOrigenesDeIngreso);
+
+	let datosDeUltimosIngresos = await buscarUltimoIngresoPorOrigen(datosDeTodosLosOrigenesDeIngreso);
+
+	return datosDeUltimosIngresos;
+
+}//fin buscarUltimoIngresos
+
+
+async function buscarDatosParaCalcularPorcentajeDeSaldoActual(idSaldo){
+
+	const datosDeSaldo = await buscarDatos({ seccion: 'buscarSaldoPorId', inputSaldo: idSaldo});
+
+	const datosDeIngresos = await buscarDatos({ seccion: 'buscarIngresoPorId', idIngreso: datosDeSaldo.datos.FK_SALDO_INGRESO[0]});
+
+	console.log(datosDeSaldo);
+	console.log(datosDeIngresos);
+
+	imprimirImagenes(datosDeSaldo.datos.ORIGEN[0], parseFloat(datosDeIngresos.datos.IMPORTE[0]), parseFloat(datosDeSaldo.datos.IMPORTE[0]));
+
+}//fin function buscarDatosParaCalcularPorcentajeDeSaldoActual
 
 
 async function procesarSolicitudAlServidor(solicitud){
 
 	let datosDeFormulario = {};
 
+	let datosDeGastos = {};
+
 	let datosDeSaldo = {};
 
-	switch(solicitud){
+	switch(solicitud) {
+
 		case'guardarIngreso':
 			/*VALIDAR INGRESO DUPLICADO*/
+
 			//Almacenamos los datos del formulario (inputFecha, inputImporte).
-  			datosDeFormulario =	obtenerDatosDeFormularioPorSolicitud('buscarIngresoDuplicado');
-			let datosDuplicados = await buscarIngresoDuplicado(datosDeFormulario);
-			datosDuplicados = JSON.parse(datosDuplicados);
-			validarDatosDuplicados(datosDuplicados);
+  			datosDeFormulario =	obtenerDatosDeFormularioPorSolicitud(solicitud);
+
+			validarIngresoDuplicado(datosDeFormulario);
 			/*VALIDAR INGRESO DUPLICADO*/
 
 			/*GUARDAR INGRESO*/
-			datosDeFormulario = obtenerDatosDeFormularioPorSolicitud('guardarIngreso');
-			datosDeFormulario.seccion = 'guardarIngreso';
+			datosDeFormulario.seccion = solicitud;
 			let datosGuardados = await guardarDatos(datosDeFormulario);
 			datosGuardados = JSON.parse(datosGuardados);
 			imprimerMensajeDeExito('Los datos se guardaron con éxito ' + datosGuardados);
 			/*GUARDAR INGRESO*/
 
 			/*IMPRIMIR INGRESO POR ORIGEN DE INGRESO*/
-			datosDeFormulario.seccion = 'obtenerUltimoIngresoPorOrigenDeIngreso';
-			let ultimoIngreso = await solicitarDatosConParametros(datosDeFormulario);
-			ultimoIngreso = JSON.parse(ultimoIngreso);
-			imprimirDatosDeIngresoPorOrigen(ultimoIngreso.datos.ORIGEN[0], ultimoIngreso.datos.AÑO[0], ultimoIngreso.datos.MES[0], ultimoIngreso.datos.IMPORTE[0]);
-			/*IMPRIMIR INGRESO POR ORIGEN DE INGRESO*/
-
+			datosDeIngreso = await actualizarIngreso(datosDeFormulario);
 			/*GUARDAR SALDO*/
-			//IMPORTE, FK_SALDO_INGRESO, FK_SALDO_ORIGEN_INGRESO, DIA, MES, AÑO
-			datosDeSaldo = { seccion: 'guardarSaldo',
-							 inputImporte: ultimoIngreso.datos.IMPORTE[0],
-							 idIngreso: ultimoIngreso.datos.ID_INGRESO[0], 
-							 inputOrigenDeIngreso: ultimoIngreso.datos.FK_INGRESO_ORIGEN_INGRESO[0], 
-							 dia: ultimoIngreso.datos.DIA[0],
-							 mes: ultimoIngreso.datos.MES[0], 
-							 año: ultimoIngreso.datos.AÑO[0] };
+			guardarSaldo(datosDeFormulario, datosDeIngreso);
 
-			let saldo = await guardarDatos(datosDeSaldo);
-			saldo = JSON.parse(saldo);
-			/*GUARDAR SALDO*/
+			imprimirTodosLosIngresos();
 
-			/*IMPRIMIR SALDO*/
-			imprimirDatosDeSaldoPorOrigen(ultimoIngreso.datos.ORIGEN[0], ultimoIngreso.datos.DIA[0], ultimoIngreso.datos.MES[0], ultimoIngreso.datos.AÑO[0], ultimoIngreso.datos.IMPORTE[0]);
-			/*IMPRIMIR SALDO*/
+			imprimirTodosLosSaldos();
 
-			/*IMPRIMIR TODOS LOS INGRESOS*/
-			procesarSolicitudAlServidor('obtenerDatosPorIngreso');
-    		/*IMPRIMIR TODOS LOS INGRESOS*/
-
-    		/*IMPRIMIR TODOS LOS SALDOS*/
-    		procesarSolicitudAlServidor('obtenerDatosDeSaldoPorIngreso');
-			/*IMPRIMIR TODOS LOS SALDOS*/
 		break;
 		case'guardarGasto':	
-			datosDeFormulario = obtenerDatosDeFormularioPorSolicitud('guardarGasto'); 	
-			datosDeFormulario.seccion = 'buscarSaldoPorId';
 
-			datos = await solicitarDatosConParametros(datosDeFormulario);
-			datos = JSON.parse(datos);
-			let gastoActual = datosDeFormulario.inputImporte;
-			let saldoActual = datos.datos.IMPORTE[0];
-			validarImporteRespectoAlSaldo(gastoActual, saldoActual);
-			let nuevoSaldo = saldoActual - gastoActual;
-			let datosDeSaldoAModificar = {'seccion': 'modificarSaldoPorOrigen',
-										  'inputImporte': nuevoSaldo,
-										  'dia': datosDeFormulario.dia,
-                                          'mes': datosDeFormulario.mes,
-                                          'año': datosDeFormulario.año,
-                                          'idSaldo': datosDeFormulario.inputSaldo };
-            let respuestaDatosModificados = await modificarDatos(datosDeSaldoAModificar);
-			respuestaDatosModificados = JSON.parse(respuestaDatosModificados);
-			imprimerMensajeDeExito('Los datos se guardaron con éxito ' + respuestaDatosModificados);
-
-			datosDeFormulario.seccion = 'guardarGasto';
-			let datosDeGasto = await guardarDatos(datosDeFormulario);
-			datosDeGasto = JSON.parse(datosDeGasto);
-
+			datosDeFormulario = obtenerDatosDeFormularioPorSolicitud(solicitud);
+			console.log(datosDeFormulario);
+			datosDeSaldo =  await buscarSaldoPorId(datosDeFormulario.inputSaldo);
+			console.log(datosDeSaldo);
+			validarImporteRespectoAlSaldo(datosDeFormulario, datosDeSaldo);
 			
-			imprimerMensajeDeExito('Los datos se guardaron con éxito ' + datosDeGasto);
-			procesarSolicitudAlServidor('obtenerDatosDeSaldoPorIngreso');
-		break;
-		case 'buscarIngreso':
+			modificarSaldo(datosDeFormulario, datosDeSaldo);
 
+			guardarGasto(datosDeFormulario);
+
+			imprimirTodosLosSaldos();
+
+			buscarDatosParaCalcularPorcentajeDeSaldoActual(datosDeFormulario.inputSaldo);
+
+		break;
+		case 'buscarIngresoPorMesAño':
+			
 			//Almacenamos los datos del formulario (inputFecha, inputImporte).
   			datosDeFormulario = obtenerDatosDeFormularioPorSolicitud(solicitud);
-  			
-  			let filtroDeBusqueda = 'buscarIngresoPorMesAño';
 
-  			if(parseInt(datosDeFormulario.inputOrigenDeIngreso) > 0) {
-  				filtroDeBusqueda = filtroDeBusqueda + 'OrigenDeIngreso';
-  			}
-
-  			//Almacenamos la seccion para buscar los datos.
-  			datosDeFormulario.seccion = filtroDeBusqueda;
+  			datosDeFormulario.seccion = solicitud;
   			
   			//Almacenamos los datos obtenidos del servidor.
-  			let datosDeIngreso = await buscarDatos(datosDeFormulario); 
+  			datosDeIngreso = await buscarDatos(datosDeFormulario); 
 
-  			gestionarDatos(datosDeIngreso);
+  			validarCantidadDeResultadosObtenidos(datosDeIngreso.cantidadDeResultados);
 
-  			/*
-  			
-  			let datosAGraficar = almacenarDatosDeIngresoParaGraficar(datosDeIngreso, matrizOrigenDeIngresos, ingresosActuales, matrizSaldosActuales);
-  			
-  			const canvas = document.getElementById('grafico');
-
-  			crearGrafico(canvas, 'bar', 'Ingresos', datosAGraficar.origen, datosAGraficar.datosNumericos, datosAGraficar.colorDeBarra, datosAGraficar.colorDeBordeDeBarra, datosAGraficar.colorTextoDeBarra, datosAGraficar.colorDatosEjeX);
-
- 			mostrarEncabezadoDeTabla('ingresos');
-
- 			imprimirDatosEnCuerpoDeTabla('imprimirDatosDeIngreso', datosDeIngreso.cantidadDeResultados, datosDeIngreso.datos);
-
- 			detectarInteraccionConBotonEliminar('.botonEliminarIngreso');*/
+  			gestionarDatos('buscarIngreso', datosDeIngreso);
 
 		break;
-		case 'buscarGastos':
+		case 'buscarIngresoPorMesAñoOrigenDeIngreso':
 
 			//Almacenamos los datos del formulario (inputFecha, inputImporte).
   			datosDeFormulario = obtenerDatosDeFormularioPorSolicitud(solicitud);
-  			console.log(datosDeFormulario);
-  			if(datosDeFormulario.inputCategoriaDeGasto > 0){
-  				datosDeFormulario.seccion = 'buscarGastosPorAñoMesSaldoCategoriaDeGasto';
-  			}else{
-				datosDeFormulario.seccion = 'buscarGastosPorAñoMesSaldo';
-  			}
+  			
+  			datosDeFormulario.seccion = solicitud;
+  			
+  			//Almacenamos los datos obtenidos del servidor.
+  			datosDeIngreso = await buscarDatos(datosDeFormulario);
 
-			let datosDeGastos = await solicitarDatosConParametros(datosDeFormulario);
+  			validarCantidadDeResultadosObtenidos(datosDeIngreso.cantidadDeResultados);
 
-			datosDeGastos = JSON.parse(datosDeGastos);
-			console.log(datosDeGastos);
+  			gestionarDatos('buscarIngreso', datosDeIngreso);
+
+		break;
+		case 'buscarGastosPorAñoMesSaldo':
+
+			//Almacenamos los datos del formulario (inputFecha, inputImporte).
+  			datosDeFormulario = obtenerDatosDeFormularioPorSolicitud(solicitud);
+
+  			datosDeFormulario.seccion = solicitud;
+
+			datosDeGastos = await buscarDatos(datosDeFormulario);
 
   			validarCantidadDeResultadosObtenidos(datosDeGastos.cantidadDeResultados);
 			
-			mostrarEncabezadoDeTabla('gastos');
-
-			datosDeGastos.datos.ORIGEN = document.getElementById('inputSaldo').querySelector('option[value="' + datosDeFormulario.inputSaldo + '"]').textContent;
+			gestionarDatos('buscarGasto', datosDeGastos);
 			
-			imprimirDatosEnCuerpoDeTabla('imprimirDatosDeGasto', datosDeGastos.cantidadDeResultados, datosDeGastos.datos);
+		break;
+		case 'buscarGastosPorAñoMesSaldoCategoriaDeGasto':
 
-			const idSaldo = datosDeGastos.datos.FK_GASTO_SALDO[0];
+			//Almacenamos los datos del formulario (inputFecha, inputImporte).
+  			datosDeFormulario = obtenerDatosDeFormularioPorSolicitud(solicitud);
 
-			const mesActual = datosDeGastos.datos.MES[0];
+  			datosDeFormulario.seccion = solicitud;
 
-			const añoActual = datosDeGastos.datos.AÑO[0];
+			datosDeGastos = await buscarDatos(datosDeFormulario);
 
-			let datosDeCategoriasDeGastos = await solicitarDatosConParametros({'seccion':'obtenerTodasLasCategoriasDeGastos'});
-
-    		datosDeCategoriasDeGastos = JSON.parse(datosDeCategoriasDeGastos);
-    		
-    		let datosDeGastoAGraficar = {categoriaDeGasto: [],
-    									 importeTotal: [],
-    									 colores: [],
-    									 coloresDeBorde: [] };
-
-    		const coloresDeCategoriasDeGasto = ['', '#66ff66', '#6699ff', '#b3ff66', '#c266ff', '#d9b38c', '#ff6666', '#ffa366', '#b3b3b3', '#66d9ff', '#b3b3b3'];
-
-    		const coloresDeBordeDeCategoriasDeGasto = ['', '#ff6666', '#002266', '#336600', '#3d0066', '#4d3319', '#660000', '#662900', '#333333', '#004d66', '#333333'];
-    		
-    		let cantidadDeDatos = datosDeCategoriasDeGastos.cantidadDeResultados + 1;
-
-			for (let i = 1; i < cantidadDeDatos; i++) {
-
-				let buscarGastoTotal = {'seccion': 'buscarGastoTotalPorAñoMesInputSaldoInputCategoriaDeGasto', 
-    		                            'inputSaldo': idSaldo, 
-    		                            'inputCategoriaDeGasto': i, 
-    		                            'mes': mesActual, 
-    		                            'año': añoActual }
-
-    		    let datosDeGastoTotal = await solicitarDatosConParametros(buscarGastoTotal);
-    		    datosDeGastoTotal = JSON.parse(datosDeGastoTotal);
-    		    console.log(datosDeGastoTotal);
-    		    if(datosDeGastoTotal.datos.IMPORTE_TOTAL[0] != null){
-
-    		    	datosDeGastoAGraficar.categoriaDeGasto.push(datosDeGastoTotal.datos.CATEGORIA[0]);
-    		    	datosDeGastoAGraficar.importeTotal.push(datosDeGastoTotal.datos.IMPORTE_TOTAL[0]);
-    		    	datosDeGastoAGraficar.colores.push(coloresDeCategoriasDeGasto[i]);
-    		    	datosDeGastoAGraficar.coloresDeBorde.push(coloresDeBordeDeCategoriasDeGasto[i]);
-    		    }
-
-			}//fin bucle for
-
-			let grafico = document.getElementById('grafico');
-
-			crearGrafico(grafico, 'bar', 'Gastos por categoría', datosDeGastoAGraficar.categoriaDeGasto, datosDeGastoAGraficar.importeTotal, datosDeGastoAGraficar.colores, datosDeGastoAGraficar.coloresDeBorde, '#66ff66', '#66ff66');
-
-			console.log(datosDeGastoAGraficar);
-
-			detectarInteraccionConBotonEliminar('.botonEliminarGasto');
+  			validarCantidadDeResultadosObtenidos(datosDeGastos.cantidadDeResultados);
 			
+			gestionarDatos('buscarGasto', datosDeGastos);
 
 		break;
-		case 'obtenerDatosPorIngreso':
-			// 1. Creamos un array de promesas, una por cada origen
-			const promesas = await obtenerDatosDeTodosLosIngresos();
-			// 2. Promise.all espera a que todas las peticiones terminen
-			Promise.all(promesas)
-				.then(datos => {
-					imprimirTodosLosIngresos(datos);
-    			})
-    			.catch(error => {
-        			console.error("Error al obtener los datos:", error);
-    			});
-		break;
-		case 'obtenerDatosDeSaldoPorIngreso':
-  			datosDeSaldo = {id: [1, 2, 3],
-                        	saldo: ['Carol', 'Pablo', 'Alquiler'] }
-			// 1. Creamos un array de promesas, una por cada origen
-			const saldos = await obtenerDatosDeTodosLosSaldos(datosDeSaldo);
 
-			// 2. Promise.all espera a que todas las peticiones terminen
-			Promise.all(saldos)
-				.then(datosDelServidor => {
-					imprimirTodosLosSaldos(datosDeSaldo, datosDelServidor);
-    			})
-    			.catch(error => {
-        			console.error("Error al obtener los datos:", error);
-    			});
-		break;
-	}
+	}//fin switch
 
 }//fin function procesarSolicitudAlServidor
 
@@ -453,17 +538,19 @@ function inicializarEventosFormulario() {
 
     let botonDeFormulario = document.getElementById('botonForm');
 
-    botonDeFormulario.addEventListener('click', (event) => {
+    botonDeFormulario.addEventListener('click', (event) => { 
         event.preventDefault();
-        if (solicitudActual) {
+        if (botonDeFormulario.name) {
             reestablecerVistaPrincipal();
-            procesarSolicitudAlServidor(solicitudActual);
+            procesarSolicitudAlServidor(botonDeFormulario.name);
         }
     });
+
 }
 
 
-function detectarInteraccionConBarraDeInicio(){
+function detectarInteraccionConBarraDeInicio() {
+
     let elementosDeListaPrincipal = document.querySelectorAll('li');
 
     elementosDeListaPrincipal.forEach((element) => {
@@ -473,6 +560,7 @@ function detectarInteraccionConBarraDeInicio(){
             reestablecerVistaPrincipal();
             // Actualizamos la solicitud activa en lugar de reasignar el evento del botón
             solicitudActual = id;
+
         });
     });
 }

@@ -36,7 +36,6 @@ function devolverURLConParametros(datos){
 async function enviarDatos(url = '', configuracion) {
   // Opciones por defecto estan marcadas con un *
   const respuesta = await fetch(url, configuracion);
-  //console.log(respuesta);
   if(!respuesta.ok){
     // Aquí es donde está el cambio: debes esperar al texto
     const mensajeError = await respuesta.text();
@@ -71,25 +70,13 @@ function solicitarDatosConParametros(datos){
 }//fin function solicitarDatosConParametros
 
 
-async function buscarIngresoDuplicado(datosDeFormulario){
-
-  //Almacenamos la seccion.
-  datosDeFormulario.seccion = 'buscarIngresoDuplicado';
-
-  const resultado = await solicitarDatosConParametros(datosDeFormulario);
-
-  return resultado;
-
-}//fin function buscarIngresoDuplicado
-
-
 function actualizarInformacionDeIngresoPorOrigen(){
 
   //Almacenamos los datos del formulario (inputFecha, inputImporte).
-  let datosDeFormulario = obtenerDatosDeFormularioPorSolicitud('obtenerUltimoIngresoPorOrigenDeIngreso');
+  let datosDeFormulario = obtenerDatosDeFormularioPorSolicitud('buscarUltimoIngresoPorOrigenDeIngreso');
 
   //Almacenamos la seccion.
-  datosDeFormulario.seccion = 'obtenerUltimoIngresoPorOrigenDeIngreso';
+  datosDeFormulario.seccion = 'buscarUltimoIngresoPorOrigenDeIngreso';
 
   return solicitarDatosConParametros(datosDeFormulario);
 }
@@ -115,7 +102,7 @@ async function obtenerDatosDeTodosLosIngresos(){
   const promesas = origenIngreso.map(async (origen) => {
     // 1. Solicitamos los datos esperando la respuesta
     const resultado = await solicitarDatosConParametros({
-      'seccion': 'obtenerUltimoIngresoPorOrigenDeIngreso',
+      'seccion': 'buscarUltimoIngresoPorOrigenDeIngreso',
       'inputOrigenDeIngreso': origen.id
     });
 
@@ -132,25 +119,34 @@ async function obtenerDatosDeTodosLosIngresos(){
 }//fin function obtenerDatosDeTodosLosIngresos
 
 
-async function obtenerDatosDeTodosLosSaldos(datosDeSaldo){
-    
-  // Creamos un arreglo de promesas mapeando cada elemento
-  const promesas = datosDeSaldo.id.map(async (idSaldo) => {
-    // 1. Solicitamos los datos esperando la respuesta
-    const resultado = await solicitarDatosConParametros({ 'seccion': 'obtenerUltimoSaldoPorOrigenDeIngreso',
-                                                          'inputOrigenDeIngreso': idSaldo });
+async function buscarDatosDeTodosLosSaldos() {
+  
+  //Se declara el objeto para buscar todos los origenes de ingresos.
+  const todosLosOrigenesDeIngreso = {'seccion':'buscarTodosLosOrigenesDeIngreso'};
 
-    // 2. Parseamos el resultado JSON
-    let objetoDeDatos = JSON.parse(resultado);
+  //Se almacenan los datos de los origenesw de ingreso.
+  const datosDeTodosLosOrigenesDeIngreso = await buscarDatos(todosLosOrigenesDeIngreso);
 
-    // 3. Retornamos el dato que necesitamos
-    return objetoDeDatos;
-  });
+  let buscarUltimoSaldo = { seccion: 'buscarUltimoSaldoPorOrigenDeIngreso',
+                            inputOrigenDeIngreso: 0 };
 
-  // Esperamos a que todas las peticiones en paralelo terminen
-  return await Promise.all(promesas);
+  let datosActuales = [];
 
-}//fin function obtenerDatosDeTodosLosSaldos
+  let datosDeUltimoSaldos = [];
+
+  for (let i = 0; i < datosDeTodosLosOrigenesDeIngreso.cantidadDeResultados; i++) {
+
+    buscarUltimoSaldo.inputOrigenDeIngreso = datosDeTodosLosOrigenesDeIngreso.datos.ID_ORIGEN[i];
+
+    datosActuales = await buscarDatos(buscarUltimoSaldo);
+
+    datosDeUltimoSaldos.push(datosActuales);
+
+  }//fin bucle for
+
+  return datosDeUltimoSaldos;
+
+}//fin function buscarDatosDeTodosLosSaldos
 
 
 async function modificarDatos(datos){

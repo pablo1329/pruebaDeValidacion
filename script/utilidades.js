@@ -50,8 +50,7 @@ async function cargarSaldos(datos) {
         idSaldo.push(datos[i].datos.ID_SALDO[0]);
         origenSaldo.push(datos[i].datos.ORIGEN[0]);
     }
-    console.log(idSaldo);
-    console.log(origenSaldo);
+ 
     llenarSelect('inputSaldo', idSaldo, origenSaldo);
 
 }//fin function cargarSaldos
@@ -59,12 +58,12 @@ async function cargarSaldos(datos) {
 
 async function almacenarDatos(){
 
-    const obtenerTodosLosOrigenesDeIngreso = {'seccion':'obtenerTodosLosOrigenesDeIngreso'};
+    const obtenerTodosLosOrigenesDeIngreso = {'seccion':'buscarTodosLosOrigenesDeIngreso'};
     let origenesDeIngreso = await solicitarDatosConParametros(obtenerTodosLosOrigenesDeIngreso);
     origenesDeIngreso = JSON.parse(origenesDeIngreso);
     llenarSelect('inputOrigenDeIngreso', origenesDeIngreso.datos.ID_ORIGEN, origenesDeIngreso.datos.ORIGEN);
     
-    const obtenerTodasLasCategoriasDeGastos = {'seccion':'obtenerTodasLasCategoriasDeGastos'};
+    const obtenerTodasLasCategoriasDeGastos = {'seccion':'buscarTodasLasCategoriasDeGastos'};
     let categoriasDeGastos = await solicitarDatosConParametros(obtenerTodasLasCategoriasDeGastos);
     categoriasDeGastos = JSON.parse(categoriasDeGastos);
     llenarSelect('inputCategoriaDeGasto', categoriasDeGastos.datos.ID_CATEGORIA_GASTO, categoriasDeGastos.datos.CATEGORIA);
@@ -73,7 +72,7 @@ async function almacenarDatos(){
     datosDeSaldo = {id: [1, 2, 3],
                     saldo: ['Carol', 'Pablo', 'Alquiler'] }
     // 1. Creamos un array de promesas, una por cada origen
-    const datosDeTodosLosSaldos = await obtenerDatosDeTodosLosSaldos(datosDeSaldo);
+    const datosDeTodosLosSaldos = await buscarDatosDeTodosLosSaldos();
     cargarSaldos(datosDeTodosLosSaldos);
 }//fin async function almacenarDatos
 
@@ -124,7 +123,7 @@ function agregarOptionPorNombreDeBotonDeFormulario(nombreDeBoton){
     gestionarOption(
         'optionCualquierOrigen',
         'inputOrigenDeIngreso',
-        nombreDeBoton === 'buscarIngreso',
+        nombreDeBoton === 'buscarIngresoPorMesAñoOrigenDeIngreso',
         () => crearElemento('option', 'optionCualquierOrigen', null, '0', 'Cualquier origen')
     );
 
@@ -132,7 +131,7 @@ function agregarOptionPorNombreDeBotonDeFormulario(nombreDeBoton){
     gestionarOption(
         'optionTodosLosGastos',
         'inputCategoriaDeGasto',
-        nombreDeBoton === 'buscarGastos',
+        nombreDeBoton === 'buscarGastosPorAñoMesSaldoCategoriaDeGasto',
         () => crearElemento('option', 'optionTodosLosGastos', null, '0', 'Todos los gastos')
     );
 
@@ -208,7 +207,6 @@ function suprimirDatosInecesarios(solicitud, datosDeFormulario){
 
         for (const [clave, valor] of Object.entries(datosDeFormulario)) {
             if (valor == 0) {
-                console.log(`La clave '${clave}' tiene un valor de 0`);
                 delete datosDeFormulario[clave];
             }
         }

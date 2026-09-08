@@ -2,8 +2,9 @@ addEventListener("DOMContentLoaded", (event) => {
 	
 	try	{
 		almacenarDatos();
-		procesarSolicitudAlServidor('obtenerDatosPorIngreso');
-		procesarSolicitudAlServidor('obtenerDatosDeSaldoPorIngreso');
+		imprimirTodosLosIngresos();
+		imprimirTodosLosSaldos();
+		imprimirTodasLasImagensPorSaldo();
 		detectarInteraccionConBarraDeInicio();
 		inicializarEventosFormulario();
 	} catch(error) {
