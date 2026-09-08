@@ -1,22 +1,24 @@
 <?php 
 class CRUD {
 	
-	private const CONSULTAS = ['obtenerTodosLosOrigenesDeIngreso'=>['consulta'=>'SELECT * FROM origen_ingreso',
-        															'tipos'=>''],
-        					   'obtenerTodasLasCategoriasDeGastos'=>['consulta'=>'SELECT * FROM categoria_gasto',
+	private const CONSULTAS = ['buscarTodosLosOrigenesDeIngreso'=>['consulta'=>'SELECT * FROM origen_ingreso',
+        														   'tipos'=>''],
+        					   'buscarTodasLasCategoriasDeGastos'=>['consulta'=>'SELECT * FROM categoria_gasto',
         															 'tipos'=>''],
-        					   'obtenerUltimoIngresoPorOrigenDeIngreso'=>['consulta'=>'SELECT ID_INGRESO, FK_INGRESO_ORIGEN_INGRESO, DIA, MES, AÑO, ORIGEN, IMPORTE FROM ingreso
-																					   JOIN origen_ingreso ON ID_ORIGEN = FK_INGRESO_ORIGEN_INGRESO 
-																					   WHERE FK_INGRESO_ORIGEN_INGRESO = ?
-																					   ORDER BY AÑO DESC, MES DESC
-																					   LIMIT 1',
-        																  'tipos'=>'i'],
-        					   'obtenerUltimoSaldoPorOrigenDeIngreso'=>['consulta'=>'SELECT ID_SALDO, FK_SALDO_ORIGEN_INGRESO, DIA, MES, AÑO, ORIGEN, IMPORTE FROM saldo
+        					   'buscarUltimoIngresoPorOrigenDeIngreso'=>['consulta'=>'SELECT ID_INGRESO, FK_INGRESO_ORIGEN_INGRESO, DIA, MES, AÑO, ORIGEN, IMPORTE FROM ingreso
+																					  JOIN origen_ingreso ON ID_ORIGEN = FK_INGRESO_ORIGEN_INGRESO 
+																					  WHERE FK_INGRESO_ORIGEN_INGRESO = ?
+																					  ORDER BY AÑO DESC, MES DESC
+																					  LIMIT 1',
+        																 'tipos'=>'i'],
+        					   'buscarUltimoSaldoPorOrigenDeIngreso'=>['consulta'=>'SELECT ID_SALDO, FK_SALDO_ORIGEN_INGRESO, DIA, MES, AÑO, ORIGEN, IMPORTE FROM saldo
 																					 JOIN origen_ingreso ON ID_ORIGEN = FK_SALDO_ORIGEN_INGRESO 
 																					 WHERE FK_SALDO_ORIGEN_INGRESO = ?
 																					 ORDER BY AÑO DESC, MES DESC
 																					 LIMIT 1',
         																  'tipos'=>'i'],
+        					   'buscarIngresoPorId'=>['consulta'=>'SELECT * FROM ingreso WHERE ID_INGRESO = ?',
+        											  'tipos'=>'i'],
         					   'buscarIngresoDuplicado'=>['consulta'=>'SELECT * FROM ingreso WHERE FK_INGRESO_ORIGEN_INGRESO = ? AND 
         					   																		  MES = ? AND 
         					   																		  AÑO = ?',
@@ -59,7 +61,7 @@ class CRUD {
 																										 MES = ? AND
 																										 AÑO = ?',
         											      	     							'tipos'=>'iiii'],
-        					   'buscarSaldoPorId'=>['consulta'=>'SELECT ORIGEN, IMPORTE, DIA, MES, AÑO FROM saldo 
+        					   'buscarSaldoPorId'=>['consulta'=>'SELECT ORIGEN, FK_SALDO_INGRESO, IMPORTE, DIA, MES, AÑO FROM saldo 
 																 JOIN origen_ingreso ON ID_ORIGEN = FK_SALDO_ORIGEN_INGRESO
 																 WHERE ID_SALDO = ?',
         											'tipos'=>'i'],

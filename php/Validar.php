@@ -158,14 +158,14 @@ class Validar {
 						 	 	        'buscarDatosDeUsuarioPorNombreYClave'=>['usuario', 
 								  		   						 	 	               					'clave'],
 
-							 	        'obtenerTodosLosOrigenesDeIngreso'=>['seccion'],
+							 	        'buscarTodosLosOrigenesDeIngreso'=>['seccion'],
 
-							 	        'obtenerTodasLasCategoriasDeGastos'=>['seccion'],
+							 	        'buscarTodasLasCategoriasDeGastos'=>['seccion'],
 
-							 	        'obtenerUltimoIngresoPorOrigenDeIngreso'=>['seccion',
-							 															         							 'inputOrigenDeIngreso'],
+							 	        'buscarUltimoIngresoPorOrigenDeIngreso'=>['seccion',
+							 															         							'inputOrigenDeIngreso'],
 
-							 	        'obtenerUltimoSaldoPorOrigenDeIngreso'=>['seccion',
+							 	        'buscarUltimoSaldoPorOrigenDeIngreso'=>['seccion',
 							 															       							 'inputOrigenDeIngreso'],
 
 							 	        'buscarIngresoDuplicado'=>['seccion',
@@ -195,6 +195,8 @@ class Validar {
                                  				 'dia',
                                          'mes',
                                          'año'],
+                        'buscarIngresoPorId'=>['seccion',
+                      												 'idIngreso'],
 							 					'buscarIngresoPorMesAño'=>['seccion', 
 							 																		 'año', 
 							 																		 'mes'],
