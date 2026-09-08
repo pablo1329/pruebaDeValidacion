@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 27-08-2026 a las 17:34:31
+-- Tiempo de generación: 08-09-2026 a las 16:19:07
 -- Versión del servidor: 10.4.25-MariaDB
 -- Versión de PHP: 8.1.10
 
@@ -65,19 +65,6 @@ CREATE TABLE `gasto` (
   `DETALLE` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_spanish_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
 
---
--- Volcado de datos para la tabla `gasto`
---
-
-INSERT INTO `gasto` (`ID_GASTO`, `DIA`, `MES`, `AÑO`, `FK_GASTO_CATEGORIA_GASTO`, `FK_GASTO_SALDO`, `IMPORTE`, `DETALLE`) VALUES
-(1, 19, 8, 2026, 1, 42, 10, '100g queso cremoso'),
-(2, 20, 8, 2026, 1, 43, 25, '1 doc. de empanada'),
-(3, 20, 8, 2026, 10, 43, 23, 'Siempre vivie, coco rallado, anís, canela, clavo de olor'),
-(4, 1, 8, 2026, 1, 43, 14, '1 chocolate block grande'),
-(5, 1, 8, 2026, 2, 43, 25, 'alimento de gato, verduras'),
-(6, 1, 8, 2026, 2, 43, 6, '1 Aquarius'),
-(7, 1, 8, 2026, 8, 43, 12, 'Nafta');
-
 -- --------------------------------------------------------
 
 --
@@ -98,9 +85,9 @@ CREATE TABLE `ingreso` (
 --
 
 INSERT INTO `ingreso` (`ID_INGRESO`, `IMPORTE`, `FK_INGRESO_ORIGEN_INGRESO`, `DIA`, `MES`, `AÑO`) VALUES
-(246, '108.00', 1, 1, 8, 2026),
-(247, '108.00', 2, 1, 8, 2026),
-(248, '108.00', 3, 1, 8, 2026);
+(262, '109.00', 1, 1, 9, 2026),
+(263, '109.00', 2, 1, 9, 2026),
+(264, '109.00', 3, 1, 9, 2026);
 
 -- --------------------------------------------------------
 
@@ -143,9 +130,9 @@ CREATE TABLE `saldo` (
 --
 
 INSERT INTO `saldo` (`ID_SALDO`, `IMPORTE`, `FK_SALDO_INGRESO`, `FK_SALDO_ORIGEN_INGRESO`, `DIA`, `MES`, `AÑO`) VALUES
-(42, '98.00', 246, 1, 19, 8, 2026),
-(43, '3.00', 247, 2, 1, 8, 2026),
-(44, '108.00', 248, 3, 1, 8, 2026);
+(57, '109.00', 262, 1, 1, 9, 2026),
+(58, '100.00', 263, 2, 1, 9, 2026),
+(59, '109.00', 264, 3, 1, 9, 2026);
 
 --
 -- Índices para tablas volcadas
@@ -183,7 +170,7 @@ ALTER TABLE `origen_ingreso`
 --
 ALTER TABLE `saldo`
   ADD PRIMARY KEY (`ID_SALDO`),
-  ADD UNIQUE KEY `uc_saldo_fecha_origen` (`FK_SALDO_ORIGEN_INGRESO`,`DIA`,`MES`,`AÑO`),
+  ADD UNIQUE KEY `uc_saldo_fecha_origen` (`FK_SALDO_ORIGEN_INGRESO`,`MES`,`AÑO`) USING BTREE,
   ADD KEY `ID_ORIGEN_INGRESO` (`FK_SALDO_ORIGEN_INGRESO`),
   ADD KEY `ID_INGRESO` (`FK_SALDO_INGRESO`) USING BTREE;
 
@@ -201,13 +188,13 @@ ALTER TABLE `categoria_gasto`
 -- AUTO_INCREMENT de la tabla `gasto`
 --
 ALTER TABLE `gasto`
-  MODIFY `ID_GASTO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `ID_GASTO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
 
 --
 -- AUTO_INCREMENT de la tabla `ingreso`
 --
 ALTER TABLE `ingreso`
-  MODIFY `ID_INGRESO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=249;
+  MODIFY `ID_INGRESO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=265;
 
 --
 -- AUTO_INCREMENT de la tabla `origen_ingreso`
@@ -219,7 +206,7 @@ ALTER TABLE `origen_ingreso`
 -- AUTO_INCREMENT de la tabla `saldo`
 --
 ALTER TABLE `saldo`
-  MODIFY `ID_SALDO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `ID_SALDO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
 
 --
 -- Restricciones para tablas volcadas
