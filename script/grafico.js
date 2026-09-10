@@ -15,7 +15,7 @@ Chart.register(ChartDataLabels);
 const configuracionDeDatosDeGrafico = {
     labels: etiquetas,
     datasets: [
-        {   label: tituloDelGrafico,
+        {    label: tituloDelGrafico,
             data: datosNumericos,
             backgroundColor: colores,
             borderColor: coloresDeBordesDeBarras,
@@ -23,15 +23,7 @@ const configuracionDeDatosDeGrafico = {
             hoverOffset: 4,
             borderRadius: 5,
             maxBarThickness: 40
-        }/*,
-        {   label: tituloDelGrafico,
-            data: datosNumericos,
-            backgroundColor: colores,
-            borderColor: coloresDeBordesDeBarras,
-            hoverOffset: 4,
-            borderRadius: 5,
-            maxBarThickness: 40
-        }*/
+        }
     ]
 };
 
@@ -51,7 +43,6 @@ new Chart(canvas, {
     type: tipoDeGrafico,
     data: configuracionDeDatosDeGrafico,
     options: {
-        // 👇 ANIMACIÓN CORRECTA PARA BARRAS
             animation: {
                 duration: 1000,
                 easing: 'easeInOutCubic'
@@ -71,33 +62,33 @@ new Chart(canvas, {
                     size: 18
                 }
             },
-            datalabels: {  // Configuración de etiquetas sobre las barras
-                anchor: "end", // Ubicar las etiquetas en la parte superior de la barra
-                align: "top",  // Alineación superior
-                formatter: function(value) { return value; }, // Mostrar el valor de cada barra
+            datalabels: {  
+                anchor: "end", 
+                align: "top",  
+                formatter: function(value) { return value; }, 
                 font: {
                     weight: "bold",
                     size: 14
                 },
-                color: colorTextoDeBarra//"#66ff66" // Color del texto de los números
+                color: colorTextoDeBarra 
             }
         },
         scales: {
             x: {
                 ticks: {
-                color: colorDatosEjeX//'#66ff66' // Color de los labels del eje X
+                color: colorDatosEjeX 
                 }
             },
             y: {
                 beginAtZero: true,
                 grace: '10%',
                 ticks: {
-                    color: '#66ff66' // Color de los labels del eje Y
+                    color: '#66ff66' 
                 }
             }
         }
     },
-    plugins: [plugin, ChartDataLabels] // Se mantiene el plugin de fondo
+    plugins: [plugin, ChartDataLabels] 
 });
 
 }
@@ -143,15 +134,15 @@ function almacenarDatosDeGastoParaGraficar(idCategoria, categoria, importeTotal)
 
     const coloresDeBordeDeCategoriasDeGasto = ['#ff6666', '#002266', '#336600', '#3d0066', '#4d3319', '#660000', '#662900', '#333333', '#004d66', '#333333'];
 
-    let datosDeGastoAGraficar = {categoriaDeGasto: [], 
-                                 importeTotal: [], 
-                                 colores: [], 
+    let datosDeGastoAGraficar = {categoriaDeGasto: [],  
+                                 importeTotal: [],  
+                                 colores: [],  
                                  coloresDeBorde: [] };
 
-    cantidadDeDatos = idCategoria.length;
+    let cantidadDeDatos = idCategoria.length;
 
     for (let i = 0; i < cantidadDeDatos; i++) {
-                
+            
         datosDeGastoAGraficar.categoriaDeGasto.push(categoria[i]);
         datosDeGastoAGraficar.importeTotal.push(importeTotal[i]);
         datosDeGastoAGraficar.colores.push(coloresDeCategoriasDeGasto[idCategoria[i]]);
@@ -162,5 +153,3 @@ function almacenarDatosDeGastoParaGraficar(idCategoria, categoria, importeTotal)
     return datosDeGastoAGraficar;
 
 }//fin function almacenarDatosDeGastoParaGraficar
-
-

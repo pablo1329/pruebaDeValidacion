@@ -7,6 +7,13 @@ addEventListener("DOMContentLoaded", (event) => {
 		imprimirTodasLasImagensPorSaldo();
 		detectarInteraccionConBarraDeInicio();
 		inicializarEventosFormulario();
+
+		function imprimirNombre(nombre){
+			console.log(nombre);
+		}
+
+		callback(imprimirNombre);
+
 	} catch(error) {
     	console.error('Error en la solicitud:', error);
     }
