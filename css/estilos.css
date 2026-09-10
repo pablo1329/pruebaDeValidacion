@@ -18,6 +18,16 @@ svg{
 	stroke: withe;
 }
 
+.iconoEncabezadoDeTarjeta {
+	width: 1rem; 
+	height: 1rem;
+	fill: currentColor;
+}
+
+.imagenDePorcentaje{
+	max-width: 9.5rem;
+}
+
 .tabla{
 	border: 2px solid #3385ff;
 }
