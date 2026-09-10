@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 08-09-2026 a las 16:19:07
+-- Tiempo de generación: 10-09-2026 a las 13:36:19
 -- Versión del servidor: 10.4.25-MariaDB
 -- Versión de PHP: 8.1.10
 
@@ -85,9 +85,9 @@ CREATE TABLE `ingreso` (
 --
 
 INSERT INTO `ingreso` (`ID_INGRESO`, `IMPORTE`, `FK_INGRESO_ORIGEN_INGRESO`, `DIA`, `MES`, `AÑO`) VALUES
-(262, '109.00', 1, 1, 9, 2026),
-(263, '109.00', 2, 1, 9, 2026),
-(264, '109.00', 3, 1, 9, 2026);
+(263, '100.00', 2, 1, 9, 2026),
+(264, '100.00', 3, 1, 9, 2026),
+(267, '100.00', 1, 1, 9, 2026);
 
 -- --------------------------------------------------------
 
@@ -130,9 +130,9 @@ CREATE TABLE `saldo` (
 --
 
 INSERT INTO `saldo` (`ID_SALDO`, `IMPORTE`, `FK_SALDO_INGRESO`, `FK_SALDO_ORIGEN_INGRESO`, `DIA`, `MES`, `AÑO`) VALUES
-(57, '109.00', 262, 1, 1, 9, 2026),
 (58, '100.00', 263, 2, 1, 9, 2026),
-(59, '109.00', 264, 3, 1, 9, 2026);
+(59, '100.00', 264, 3, 9, 9, 2026),
+(60, '100.00', 267, 1, 1, 9, 2026);
 
 --
 -- Índices para tablas volcadas
@@ -188,13 +188,13 @@ ALTER TABLE `categoria_gasto`
 -- AUTO_INCREMENT de la tabla `gasto`
 --
 ALTER TABLE `gasto`
-  MODIFY `ID_GASTO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
+  MODIFY `ID_GASTO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
 
 --
 -- AUTO_INCREMENT de la tabla `ingreso`
 --
 ALTER TABLE `ingreso`
-  MODIFY `ID_INGRESO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=265;
+  MODIFY `ID_INGRESO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=268;
 
 --
 -- AUTO_INCREMENT de la tabla `origen_ingreso`
@@ -206,7 +206,7 @@ ALTER TABLE `origen_ingreso`
 -- AUTO_INCREMENT de la tabla `saldo`
 --
 ALTER TABLE `saldo`
-  MODIFY `ID_SALDO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
+  MODIFY `ID_SALDO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
 
 --
 -- Restricciones para tablas volcadas
