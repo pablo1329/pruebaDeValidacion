@@ -170,15 +170,18 @@ async function gestionarDatos(accion, datosDelServidor) {
         
 
         ingresoPromedio = devolverPromedioDeMatriz(datos.ingresosActuales);
+        ingresoPromedio = formatearNumero(ingresoPromedio);
         saldoPromedio = devolverPromedioDeMatriz(datos.saldosActuales);
-        promedioAImprimir = 'Ingreso promedio: ' + ingresoPromedio + ' - Saldo promedio: ' + saldoPromedio;
+        saldoPromedio = formatearNumero(saldoPromedio);
+        promedioAImprimir = 'Ingreso promedio: $' + ingresoPromedio + ' - Saldo actual promedio: $' + saldoPromedio;
         imprimirPromedio(promedioAImprimir);
 
     } else if (accion === 'buscarGasto') {
         datosDelServidor.datos.ORIGEN = document.getElementById('inputSaldo').querySelector('select option:checked').textContent;
         console.log(datosDelServidor);
-        let gastoPromedio = devolverPromedioDeMatriz(datosDelServidor.datos.IMPORTE);
-        promedioAImprimir = 'Gasto Promedio: ' + gastoPromedio;
+        gastoPromedio = devolverPromedioDeMatriz(datosDelServidor.datos.IMPORTE);
+        gastoPromedio = formatearNumero(gastoPromedio);
+        promedioAImprimir = 'Gasto Promedio: $' + gastoPromedio;
         imprimirPromedio(promedioAImprimir);
         imprimirDatosEnTabla('gastos', datosDelServidor);
 
