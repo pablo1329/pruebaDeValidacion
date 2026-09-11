@@ -341,3 +341,12 @@ function reestablecerVistaPrincipal() {
     reestablecerCajaDeMensaje();
     reestablecerTabla();
 }
+
+function imprimirPromedio(datos){
+
+            const cajaMensajeDelServidor = document.getElementById('cajaMensajeDelServidor');
+            cajaMensajeDelServidor.classList.remove('d-none');
+            cajaMensajeDelServidor.classList.add('cajaDeMensajeDeExito');
+            cajaMensajeDelServidor.querySelector('p').textContent = datos;
+
+}//fin function imprimirPromedio

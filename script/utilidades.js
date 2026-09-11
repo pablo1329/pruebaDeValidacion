@@ -190,3 +190,15 @@ function devolverFechaMasReciente(datos){
         año: datos.AÑO[indiceDeFechaMasReciente]
     };
 }
+
+function devolverPromedioDeMatriz(matrizDeDatos){
+            const cantidadDeDatos = matrizDeDatos.length;
+            const initialValue = 0;
+            const sumaDeArray = matrizDeDatos.reduce(
+            (accumulator, currentValue) => parseFloat(accumulator) + parseFloat(currentValue), initialValue,);
+
+            let promedio = sumaDeArray/cantidadDeDatos;
+            promedio = Number(promedio.toFixed(2));
+            return promedio;
+
+}//fin function devolverPromedio

@@ -152,19 +152,34 @@ async function devolverGastoTotal(datosDelServidor) {
 }
 
 async function gestionarDatos(accion, datosDelServidor) {
-    console.log(datosDelServidor);
     
+    let ingresoPromedio = 0;
+    let saldoPromedio = 0;
+    let gastoPromedio = 0;
+    let promedioAImprimir = '';
+
     if (accion === 'buscarIngreso') {
         let datosDeSaldo = await buscarDatosDeSaldoPorIngreso(datosDelServidor);
         let datos = almacenarDatosDeIngresosYSaldos(datosDelServidor.cantidadDeResultados, datosDelServidor.datos.ORIGEN, datosDelServidor.datos.IMPORTE, datosDeSaldo);
         let datosAGraficar = almacenarDatosDeIngresoParaGraficar(datosDelServidor, datos.origenDeIngresos, datos.ingresosActuales, datos.saldosActuales);
-
+        
         crearGrafico('grafico', 'bar', 'Ingresos', datosAGraficar.origen, datosAGraficar.datosNumericos, datosAGraficar.colorDeBarra, datosAGraficar.colorDeBordeDeBarra, datosAGraficar.colorTextoDeBarra, datosAGraficar.colorDatosEjeX);
         imprimirDatosEnTabla('ingresos', datosDelServidor);
         detectarInteraccionConBotonEliminar('.botonEliminarIngreso');
+        console.log(datosDelServidor);
+        
+
+        ingresoPromedio = devolverPromedioDeMatriz(datos.ingresosActuales);
+        saldoPromedio = devolverPromedioDeMatriz(datos.saldosActuales);
+        promedioAImprimir = 'Ingreso promedio: ' + ingresoPromedio + ' - Saldo promedio: ' + saldoPromedio;
+        imprimirPromedio(promedioAImprimir);
 
     } else if (accion === 'buscarGasto') {
         datosDelServidor.datos.ORIGEN = document.getElementById('inputSaldo').querySelector('select option:checked').textContent;
+        console.log(datosDelServidor);
+        let gastoPromedio = devolverPromedioDeMatriz(datosDelServidor.datos.IMPORTE);
+        promedioAImprimir = 'Gasto Promedio: ' + gastoPromedio;
+        imprimirPromedio(promedioAImprimir);
         imprimirDatosEnTabla('gastos', datosDelServidor);
 
         let datosDeGastoTotal = await devolverGastoTotal(datosDelServidor.datos);
@@ -280,7 +295,6 @@ async function procesarSolicitudAlServidor(solicitud) {
         case 'buscarGastosPorAñoMesSaldoCategoriaDeGasto':
             datosDeFormulario = obtenerDatosDeFormularioPorSolicitud(solicitud);
             datosDeFormulario.seccion = solicitud;
-
             datosDeGastos = await buscarDatos(datosDeFormulario);
             validarCantidadDeResultadosObtenidos(datosDeGastos.cantidadDeResultados);
             gestionarDatos('buscarGasto', datosDeGastos);
