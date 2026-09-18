@@ -1,3 +1,20 @@
+function almacenarFechaActualEnFormulario(){
+
+            const inputFecha = document.getElementById('inputFecha');
+            // 1. Obtenemos la fecha actual del sistema
+            const fechaActual = new Date();
+            // 2. Extraemos año, mes y día asegurando el formato correcto (YYYY-MM-DD)
+            const anio = fechaActual.getFullYear();
+            // getMonth() devuelve de 0 a 11, por lo que sumamos 1 y rellenamos con '0' a la izquierda si es necesario
+            const mes = String(fechaActual.getMonth() + 1).padStart(2, '0');
+            const dia = String(fechaActual.getDate()).padStart(2, '0');
+            // 3. Unimos los valores en el formato requerido por el input type="date"
+            const fechaFormateada = `${anio}-${mes}-${dia}`;
+            inputFecha.value = fechaFormateada;
+
+}//fin function almacenarFechaActualEnFormulario
+
+
 function devolverFechaFormateada(solicitud, datosDeFormulario){
     let fechaDescompuestaEnDiaMesAnio = devolverFechaEnMesDiaAnio(datosDeFormulario.inputFecha);
 
@@ -10,10 +27,57 @@ function devolverFechaFormateada(solicitud, datosDeFormulario){
     return datosDeFormulario;
 }
 
+function devolverFechaEnMesDiaAnio(fechaString) {
+    const arrayFecha = fechaString.split('-').map(Number);
+
+    return {
+        anio: arrayFecha[0],
+        mes: arrayFecha[1],
+        dia: arrayFecha[2]
+    };
+}
+
+
+function devolverFechaCompleta(dia, mes, año) {
+    const diaFormateado = String(dia).padStart(2, '0');
+    const mesFormateado = String(mes).padStart(2, '0');
+    return `${diaFormateado}/${mesFormateado}/${año}`;
+}
+
+function devolverFechaMasReciente(datos){
+    let cantidadDeDatos = datos.AÑO.length;
+    let matrizDeFechas = [];
+
+    for (let i = 0; i < cantidadDeDatos; i++) {
+        matrizDeFechas.push(new Date(`${datos.AÑO[i]}/${datos.MES[i]}/${datos.DIA[i]}`).getTime());
+    }
+
+    let maxTimestamp = matrizDeFechas[0];
+    let indiceDeFechaMasReciente = 0;
+    cantidadDeDatos =  matrizDeFechas.length;
+    for (let i = 1; i < cantidadDeDatos; i++) {
+        const timestampActual = matrizDeFechas[i];
+        if (timestampActual > maxTimestamp) {
+            maxTimestamp = timestampActual;
+            indiceDeFechaMasReciente = i;
+        }
+    }
+
+    return {
+        dia: datos.DIA[indiceDeFechaMasReciente],
+        mes: datos.MES[indiceDeFechaMasReciente],
+        año: datos.AÑO[indiceDeFechaMasReciente]
+    };
+}
+
+
 function llenarSelect(selectId, valor, nombres) {
     const select = document.getElementById(selectId);
     if (!select) return;
 
+    // Vaciamos el select antes de insertar los nuevos options para evitar duplicados
+    select.innerHTML = '';
+    
     for (let i = 0; i < valor.length; i++) {
         const option = document.createElement('option');
         option.value = valor[i];
@@ -22,14 +86,19 @@ function llenarSelect(selectId, valor, nombres) {
     }
 }
 
-async function cargarSaldos(datos) {
+function cargarSaldos(datos) {
     let idSaldo = [];
     let origenSaldo = [];
     let cantidadDeDatos = datos.length;
-    
     for (let i = 0; i < cantidadDeDatos; i++) {
-        idSaldo.push(datos[i].datos.ID_SALDO[0]);
-        origenSaldo.push(datos[i].datos.ORIGEN[0]);
+
+        if(datos[i].cantidadDeResultados > 0){
+            idSaldo.push(datos[i].datos.ID_SALDO[0]);
+            origenSaldo.push(datos[i].datos.ORIGEN[0]); 
+        } else {
+            continue;
+        }
+        
     }
  
     llenarSelect('inputSaldo', idSaldo, origenSaldo);
@@ -86,7 +155,7 @@ function agregarOptionPorNombreDeBotonDeFormulario(nombreDeBoton){
             elemento.remove();
         }
     };
-
+    
     gestionarOption(
         'optionCualquierOrigen',
         'inputOrigenDeIngreso',
@@ -102,15 +171,6 @@ function agregarOptionPorNombreDeBotonDeFormulario(nombreDeBoton){
     );
 }
 
-function devolverFechaEnMesDiaAnio(fechaString) {
-    const arrayFecha = fechaString.split('-').map(Number);
-
-    return {
-        anio: arrayFecha[0],
-        mes: arrayFecha[1],
-        dia: arrayFecha[2]
-    };
-}
 
 function formatearNumero(numero) {
     const num = parseFloat(numero);
@@ -160,36 +220,6 @@ function suprimirDatosInecesarios(solicitud, datosDeFormulario){
     return datosDeFormulario;
 }
 
-function devolverFechaCompleta(dia, mes, año) {
-    const diaFormateado = String(dia).padStart(2, '0');
-    const mesFormateado = String(mes).padStart(2, '0');
-    return `${diaFormateado}/${mesFormateado}/${año}`;
-}
-
-function devolverFechaMasReciente(datos){
-    let cantidadDeDatos = datos.AÑO.length;
-    let matrizDeFechas = [];
-
-    for (let i = 0; i < cantidadDeDatos; i++) {
-        matrizDeFechas.push(new Date(`${datos.AÑO[i]}/${datos.MES[i]}/${datos.DIA[i]}`).getTime());
-    }
-
-    let maxTimestamp = matrizDeFechas[0];
-    let indiceDeFechaMasReciente = 0;
-    for (let i = 1; i < matrizDeFechas.length; i++) {
-        const timestampActual = matrizDeFechas[i];
-        if (timestampActual > maxTimestamp) {
-            maxTimestamp = timestampActual;
-            indiceDeFechaMasReciente = i;
-        }
-    }
-
-    return {
-        dia: datos.DIA[indiceDeFechaMasReciente],
-        mes: datos.MES[indiceDeFechaMasReciente],
-        año: datos.AÑO[indiceDeFechaMasReciente]
-    };
-}
 
 function devolverPromedioDeMatriz(matrizDeDatos){
             const cantidadDeDatos = matrizDeDatos.length;

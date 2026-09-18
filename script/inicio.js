@@ -4,7 +4,7 @@ addEventListener("DOMContentLoaded", (event) => {
 		almacenarDatos();
 		imprimirTodosLosIngresos();
 		imprimirTodosLosSaldos();
-		imprimirTodasLasImagensPorSaldo();
+		almacenarFechaActualEnFormulario();
 		detectarInteraccionConBarraDeInicio();
 		inicializarEventosFormulario();
 	} catch(error) {

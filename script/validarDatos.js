@@ -126,14 +126,13 @@ function validarDatos(datosDeFormulario) {
     return datosDeFormulario;
 }
 
-async function validarIngresoDuplicado(datosDeFormulario) {
-    datosDeFormulario.seccion = 'buscarIngresoPorMesAñoOrigenDeIngreso';
-    let datosDeIngreso = await buscarDatos(datosDeFormulario);   
+async function validarIngresoDuplicado(datosDeIngreso) {
     
     if (datosDeIngreso.cantidadDeResultados > 0) {
         throw new ValidacionError('servidor', { codigosDeError: 'datosDuplicados' });
     }
-}
+
+}//fin function validarIngresoDuplicado
 
 function validarCantidadDeResultadosObtenidos(cantidadDeResultados) {
     if (cantidadDeResultados === 0) {

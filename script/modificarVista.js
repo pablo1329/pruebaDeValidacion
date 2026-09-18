@@ -16,10 +16,9 @@ const DATOS_DE_TARJETAS_DE_INICIO = {
 const NOMBRE_DE_MESES = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
 async function imprimirImagenes(origen, ingresoActual, saldoActual) {
-    let imagenActual = document.getElementById(DATOS_DE_TARJETAS_DE_INICIO['saldo'][origen]?.idImagen);
-    if (!imagenActual) return;
 
-    let porcentaje = (saldoActual * 100) / ingresoActual;
+    let imagenActual = document.getElementById(DATOS_DE_TARJETAS_DE_INICIO['saldo'][origen]?.idImagen);
+    let porcentaje = (parseFloat(saldoActual) * 100) / parseFloat(ingresoActual);
     let src = 'imagenes/';
 
     if (porcentaje > 50) {
@@ -31,36 +30,32 @@ async function imprimirImagenes(origen, ingresoActual, saldoActual) {
     }
 
     imagenActual.setAttribute('src', src);
-}
+}//fin function imprimirImagenes
 
-async function imprimirTodasLasImagensPorSaldo() {
-    const origenesDeIngresos = await buscarDatos({ seccion: 'buscarTodosLosOrigenesDeIngreso' });
-    const cantidadDeResultados = origenesDeIngresos.cantidadDeResultados;
+async function imprimirTodasLasImagensPorSaldo(datosDeOrigenesDeIngreso, datosDeSaldo) {
+    
 
-    const promesas = Array.from({ length: cantidadDeResultados }, async (_, i) => {
-        const idOrigen = origenesDeIngresos.datos.ID_ORIGEN[i];
-        const [datosDeIngresos, datosDeSaldo] = await Promise.all([
-            buscarDatos({ seccion: 'buscarUltimoIngresoPorOrigenDeIngreso', inputOrigenDeIngreso: idOrigen }),
-            buscarDatos({ seccion: 'buscarUltimoSaldoPorOrigenDeIngreso', inputOrigenDeIngreso: idOrigen })
-        ]);
+    const datosDeUltimoIngreso = await buscarUltimosIngresos();
+    
+    const cantidadDeResultados = datosDeOrigenesDeIngreso.cantidadDeResultados;
 
-        imprimirImagenes(datosDeIngresos.datos.ORIGEN[0], datosDeIngresos.datos.IMPORTE[0], datosDeSaldo.datos.IMPORTE[0]);
+    let ingresoTotal = 0
+    let saldoTotal = 0;
+    for (let i = 0; i < cantidadDeResultados; i++) {
 
-        return {
-            ingreso: parseFloat(datosDeIngresos.datos.IMPORTE[0]),
-            saldo: parseFloat(datosDeSaldo.datos.IMPORTE[0])
-        };
-    });
+        if(datosDeSaldo[i].cantidadDeResultados > 0){
+            imprimirImagenes(datosDeOrigenesDeIngreso.datos.ORIGEN[i], datosDeUltimoIngreso[i].datos.IMPORTE[0], datosDeSaldo[i].datos.IMPORTE[0]);
+            ingresoTotal += parseFloat(datosDeUltimoIngreso[i].datos.IMPORTE[0]);
+            saldoTotal += parseFloat(datosDeSaldo[i].datos.IMPORTE[0]);
+        }
 
-    const resultados = await Promise.all(promesas);
+    }//fin bucle for
 
-    const importeTotal = resultados.reduce((acc, curr) => ({
-        ingresoTotal: acc.ingresoTotal + curr.ingreso,
-        saldoTotal: acc.saldoTotal + curr.saldo
-    }), { ingresoTotal: 0, saldoTotal: 0 });
+    if(ingresoTotal > 0){
+      imprimirImagenes('Total', ingresoTotal, saldoTotal);  
+    }
 
-    imprimirImagenes('Total', importeTotal.ingresoTotal, importeTotal.saldoTotal);
-}
+}//fin function imprimirTodasLasImagensPorSaldo
 
 function obtenerConfiguracionDeFormulario(idDeLista) {
     let configuracion = { cajasAMostrar: [], legendForm: '', nameBotonForm: '', contenidoDeTextoDeBotonForm: '', iconoBotonForm: '' };
@@ -124,12 +119,22 @@ function actualizarNombreBotonFormulario(nombre) {
 
 function configurarCambioDinamicoBoton(inputId, nombreBase, nombreConFiltro) {
     const inputElement = document.getElementById(inputId);
+    let nombreDeBotonDeFormulario = '';
     if (!inputElement) return;
 
     inputElement.addEventListener('change', () => {
+        nombreDeBotonDeFormulario = document.getElementById('botonForm').getAttribute('name');
+        
         const valor = parseInt(inputElement.value, 10);
         const nuevoNombre = valor === 0 ? nombreConFiltro : nombreBase;
-        actualizarNombreBotonFormulario(nuevoNombre);
+    
+        if(nombreDeBotonDeFormulario != 'guardarGasto'){
+            actualizarNombreBotonFormulario(nuevoNombre);
+        }
+             
+        
+        
+        
     });
 }
 
@@ -196,63 +201,89 @@ function obtenerDatosDeTarjetasDeSaldo(origenDeIngreso) {
 
 function imprimirDatosDeIngresoPorOrigen(origenDeIngreso, año, mes, importe) {
     let datosDeTarjeta = obtenerDatosDeTarjeta(origenDeIngreso);
-    let importeFormateado = formatearNumero(importe);
+    let importeFormateado = formatearNumero(parseFloat(importe));
     
     document.getElementById(datosDeTarjeta.idEncabezadoDeTarjeta).textContent = 'Ingreso ' + origenDeIngreso;
     document.getElementById(datosDeTarjeta.idImporteIngreso).textContent = '$' + importeFormateado;
-    document.getElementById(datosDeTarjeta.idFechaIngreso).textContent = NOMBRE_DE_MESES[mes] + ' ' + año;
+
+    if(año === 0 || mes === 0) {
+        document.getElementById(datosDeTarjeta.idFechaIngreso).textContent = 'sin fecha';
+    }else{
+        document.getElementById(datosDeTarjeta.idFechaIngreso).textContent = NOMBRE_DE_MESES[mes] + ' ' + año;  
+    }
+    
 }
 
 function imprimirDatosDeSaldoPorOrigen(origenDeIngreso, dia, mes, año, importe) {
     let datosDeTarjeta = obtenerDatosDeTarjetasDeSaldo(origenDeIngreso);
+    importe = parseFloat(importe);
     let importeFormateado = typeof importe === 'number' ? formatearNumero(importe) : importe;
     
     document.getElementById(datosDeTarjeta.idEncabezadoDeTarjeta).textContent = 'Saldo ' + origenDeIngreso;
     document.getElementById(datosDeTarjeta.idImporteIngreso).textContent = typeof importe === 'number' ? '$' + importeFormateado : importeFormateado;
-    document.getElementById(datosDeTarjeta.idFechaIngreso).textContent = dia ? `${dia}/${mes}/${año}` : ''; 
+
+    if(dia === 0 || mes === 0 || año === 0 || dia === undefined || mes === undefined || año === undefined){
+        document.getElementById(datosDeTarjeta.idFechaIngreso).textContent = 'sin fecha'; 
+    }else{
+        document.getElementById(datosDeTarjeta.idFechaIngreso).textContent = `${dia}/${mes}/${año}`; 
+    }
+    
 }
 
-async function imprimirTodosLosIngresos() {
+async function imprimirTodosLosIngresos(){
+    const datosDeOrigenesDeIngreso = await buscarDatos({seccion: 'buscarTodosLosOrigenesDeIngreso'});
     const datosDeUltimoIngreso = await buscarUltimosIngresos();
     let importes = [];
     let mes = 0, año = 0;
+    const cantidadDeOrigenesDeIngreso = datosDeUltimoIngreso.length;
+    for (let i = 0; i < cantidadDeOrigenesDeIngreso; i++) {
 
-    datosDeUltimoIngreso.forEach((ingreso) => {
-        imprimirDatosDeIngresoPorOrigen(ingreso.datos.ORIGEN[0], ingreso.datos.AÑO[0], ingreso.datos.MES[0], ingreso.datos.IMPORTE[0]);
-        mes = ingreso.datos.MES[0];
-        año = ingreso.datos.AÑO[0];
-        importes.push(ingreso.datos.IMPORTE[0]);
-    });
+        if(datosDeUltimoIngreso[i].cantidadDeResultados > 0){
+            imprimirDatosDeIngresoPorOrigen(datosDeUltimoIngreso[i].datos.ORIGEN[0], datosDeUltimoIngreso[i].datos.AÑO[0], datosDeUltimoIngreso[i].datos.MES[0], datosDeUltimoIngreso[i].datos.IMPORTE[0]);
+            mes = datosDeUltimoIngreso[i].datos.MES[0];
+            año = datosDeUltimoIngreso[i].datos.AÑO[0];
+            importes.push(datosDeUltimoIngreso[i].datos.IMPORTE[0]);
+        }else{
+            imprimirDatosDeIngresoPorOrigen(datosDeOrigenesDeIngreso.datos.ORIGEN[i], 0, 0, 0);
+            mes = 0;
+            año = 0;
+            importes.push(0);
+        }
 
+    }//fin bucle for
     let totalDeIngresos = sumarNumerosEnMatriz(importes);
     imprimirDatosDeIngresoPorOrigen('Total', año, mes, totalDeIngresos);
-}
+}//fin function imprimirTodosLosIngresos
 
-async function imprimirTodosLosSaldos() {
+async function imprimirTodosLosSaldos(){
+    const datosDeOrigenesDeIngreso = await buscarDatos({seccion: 'buscarTodosLosOrigenesDeIngreso'});
+    const cantidadDeOrigenesDeIngreso = datosDeOrigenesDeIngreso.cantidadDeResultados;
     const datosDeSaldo = await buscarDatosDeTodosLosSaldos();
     let datosLocales = { AÑO: [], MES: [], DIA: [], IMPORTE: [] };
 
-    datosDeSaldo.forEach((saldo) => {
-        const origen = saldo.datos?.ORIGEN?.[0] || 'Desconocido';
-        if (saldo.cantidadDeResultados > 0) {
-            imprimirDatosDeSaldoPorOrigen(origen, saldo.datos.DIA[0], saldo.datos.MES[0], saldo.datos.AÑO[0], saldo.datos.IMPORTE[0]);
-            datosLocales.DIA.push(saldo.datos.DIA[0]);
-            datosLocales.MES.push(saldo.datos.MES[0]);
-            datosLocales.AÑO.push(saldo.datos.AÑO[0]);
-            datosLocales.IMPORTE.push(saldo.datos.IMPORTE[0]);
-        } else {
-            imprimirDatosDeSaldoPorOrigen(origen, 0, 0, 0, 'SALDO NO ENCONTRADO');
-            datosLocales.DIA.push(1);
-            datosLocales.MES.push(1);
-            datosLocales.AÑO.push(1995);
+    for (let i = 0; i < cantidadDeOrigenesDeIngreso; i++) {
+        
+        if(datosDeSaldo[i].cantidadDeResultados > 0){
+            imprimirDatosDeSaldoPorOrigen(datosDeOrigenesDeIngreso.datos.ORIGEN[i], datosDeSaldo[i].datos.DIA[0], datosDeSaldo[i].datos.MES[0], datosDeSaldo[i].datos.AÑO[0], datosDeSaldo[i].datos.IMPORTE[0]);
+            datosLocales.DIA.push(datosDeSaldo[i].datos.DIA[0]);
+            datosLocales.MES.push(datosDeSaldo[i].datos.MES[0]);
+            datosLocales.AÑO.push(datosDeSaldo[i].datos.AÑO[0]);
+            datosLocales.IMPORTE.push(datosDeSaldo[i].datos.IMPORTE[0]);
+        }else{
+            imprimirDatosDeSaldoPorOrigen(datosDeOrigenesDeIngreso.datos.ORIGEN[i], 0, 0, 0, 0);
+            /*datosLocales.DIA.push(0);
+            datosLocales.MES.push(0);
+            datosLocales.AÑO.push(0);*/
             datosLocales.IMPORTE.push(0);
         }
-    });
+
+    }//fin bucle for
 
     let totalDeIngresos = sumarNumerosEnMatriz(datosLocales.IMPORTE);
     let fechaMasReciente = devolverFechaMasReciente(datosLocales);
     imprimirDatosDeSaldoPorOrigen('Total', fechaMasReciente.dia, fechaMasReciente.mes, fechaMasReciente.año, totalDeIngresos);
-}
+    imprimirTodasLasImagensPorSaldo(datosDeOrigenesDeIngreso, datosDeSaldo);
+}//fin function imprimirTodosLosSaldos
 
 function mostrarEncabezadoDeTabla(seccion) {
     document.getElementById('encabezadoIngreso').classList.toggle('d-none', seccion !== 'ingresos');
