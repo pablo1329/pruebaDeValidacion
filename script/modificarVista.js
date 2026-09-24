@@ -304,19 +304,19 @@ function imprimirDatosDeIngreso(origen, fechaFormateada, importeFormateado, idIn
 
 function imprimirDatosDeGasto(origen, fechaFormateada, categoriaDeGasto, importeFormateado, detalle, idGasto) {
     return `<tr>
-        <td>${origen}</td>
-        <td>${fechaFormateada}</td>
-        <td>${categoriaDeGasto}</td>
-        <td>$${importeFormateado}</td>
-        <td>${detalle}</td>
-        <td><svg xmlns="http://www.w3.org/2000/svg" class="bi bi-trash mx-2 botonEliminarGasto" viewBox="0 0 16 16" value="${idGasto}">
-                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"></path>
-                <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"></path>
-            </svg></td>
-    </tr>`;
+                <td>${origen}</td>
+                <td>${fechaFormateada}</td>
+                <td>${categoriaDeGasto}</td>
+                <td>$${importeFormateado}</td>
+                <td>${detalle}</td>
+                <td><svg xmlns="http://www.w3.org/2000/svg" class="bi bi-trash mx-2 botonEliminarGasto" viewBox="0 0 16 16" value="${idGasto}">
+                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"></path>
+                    <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"></path>
+                </svg></td>
+            </tr>`;
 }
 
-function imprimirDatosEnCuerpoDeTabla(accion, cantidadDeDatos, datos) {
+/*function imprimirDatosEnCuerpoDeTabla(accion, cantidadDeDatos, datos) {
     const cuerpoTabla = document.getElementById('cuerpoDeTabla');
     let htmlFilas = '';
     
@@ -332,6 +332,159 @@ function imprimirDatosEnCuerpoDeTabla(accion, cantidadDeDatos, datos) {
     }
 
     cuerpoTabla.innerHTML = htmlFilas;
+}*/ 
+
+
+
+function imprimirDatosEnCuerpoDeTabla(accion, cantidadDeDatos, datos) {
+    document.getElementById('pieDeTabla').classList.remove('d-none');
+    let celdaPaginacion = document.getElementById('celdaPaginacion');
+    const filasAMostrar = 10; // Puedes ajustar cuántas filas mostrar por página
+let paginaActualIndex = 1;
+    const tabla = document.querySelector('table');
+    const pieDeTabla = document.getElementById('pieDeTabla');
+    const listaDePaginacion = document.getElementById('listaDePaginacion');
+
+    // 1. Limpieza inicial de tbodys viejos y paginación
+    tabla.querySelectorAll('tbody').forEach(tbody => tbody.remove());
+    if (listaDePaginacion) listaDePaginacion.innerHTML = '';
+
+    if (cantidadDeDatos === 0) return;
+
+    let totalPaginas = Math.ceil(cantidadDeDatos / filasAMostrar);
+    let contadorPagina = 1;
+    let htmlFilasPagina = '';
+
+    // Crear botón Anterior (<<)
+    if (listaDePaginacion) crearBotonNavegacion('<<', 'prev');
+
+    for (let i = 0; i < cantidadDeDatos; i++) {
+        const fechaFormateada = devolverFechaCompleta(datos.DIA[i], datos.MES[i], datos.AÑO[i]);
+        const importeFormateado = formatearNumero(datos.IMPORTE[i]);
+
+        // Acumulamos el HTML devuelto por tus funciones auxiliares
+        if (accion === 'imprimirDatosDeIngreso') {
+            htmlFilasPagina += imprimirDatosDeIngreso(datos.ORIGEN[i], fechaFormateada, importeFormateado, datos.ID_INGRESO[i]);
+        } else if (accion === 'imprimirDatosDeGasto') {
+            celdaPaginacion.setAttribute('colspan', '6');
+            // Nota: Asegúrate de usar datos.ORIGEN[i] si es una matriz
+            htmlFilasPagina += imprimirDatosDeGasto(datos.ORIGEN, fechaFormateada, datos.CATEGORIA[i], importeFormateado, datos.DETALLE[i], datos.ID_GASTO[i]);
+        }
+
+        // ¿Completamos el bloque de filas o es el último dato?
+        const esFinDePagina = (i + 1) % filasAMostrar === 0;
+        const esUltimoDato = i === cantidadDeDatos - 1;
+
+        if (esFinDePagina || esUltimoDato) {
+            let nuevoTbody = document.createElement('tbody');
+            let nombreClasePagina = `pagina${contadorPagina}`;
+            
+            // La primera página se muestra, las demás inician con 'd-none'
+            nuevoTbody.className = contadorPagina === 1 ? nombreClasePagina : `${nombreClasePagina} d-none`;
+            nuevoTbody.innerHTML = htmlFilasPagina;
+
+            // Insertamos el tbody antes del tfoot
+            tabla.insertBefore(nuevoTbody, pieDeTabla);
+
+            // Creamos su botón numérico en la paginación
+            if (listaDePaginacion) {
+                crearBotonPaginaNumero(contadorPagina);
+            }
+
+            // Reseteamos el acumulador para la siguiente página
+            htmlFilasPagina = '';
+            contadorPagina++;
+        }
+    }
+
+    // Crear botón Siguiente (>>)
+    if (listaDePaginacion) {
+        crearBotonNavegacion('>>', 'next');
+    }
+
+    // Reiniciamos el índice de la página activa
+    paginaActualIndex = 1;
+}
+
+// Funciones auxiliares para la creación de botones de paginación
+function crearBotonPaginaNumero(numero) {
+    const listaDePaginacion = document.getElementById('listaDePaginacion');
+    let li = document.createElement('li');
+    li.setAttribute('class', numero === 1 ? 'page-item active' : 'page-item');
+
+    let a = document.createElement('a');
+    a.setAttribute('class', 'page-link');
+    a.setAttribute('data-pagina', numero);
+    a.href = '#';
+    a.textContent = numero;
+
+    li.append(a);
+    listaDePaginacion.append(li);
+}
+
+function crearBotonNavegacion(texto, accion) {
+    const listaDePaginacion = document.getElementById('listaDePaginacion');
+    let li = document.createElement('li');
+    li.setAttribute('class', 'page-item');
+    let a = document.createElement('a');
+    a.setAttribute('class', 'page-link');
+    a.setAttribute('data-accion', accion);
+    a.href = '#';
+    a.textContent = texto;
+    li.append(a);
+    listaDePaginacion.append(li);
+}
+
+// Función global para cambiar de página mediante los botones o flechas
+function cambiarPagina(nuevaPagina) {
+    const tabla = document.querySelector('table');
+    const listaDePaginacion = document.getElementById('listaDePaginacion');
+    const totalPaginas = tabla.querySelectorAll('tbody').length;
+
+    if (nuevaPagina < 1 || nuevaPagina > totalPaginas) return;
+
+    paginaActualIndex = nuevaPagina;
+
+    // 1. Ocultar todos los tbody y quitar clase active de los botones
+    tabla.querySelectorAll('tbody').forEach(tbody => tbody.classList.add('d-none'));
+    listaDePaginacion.querySelectorAll('.page-item').forEach(li => li.classList.remove('active'));
+
+    // 2. Mostrar el tbody de la página destino
+    const tbodyDestino = tabla.querySelector(`tbody.pagina${paginaActualIndex}`);
+    if (tbodyDestino) {
+        tbodyDestino.classList.remove('d-none');
+    }
+
+    // 3. Activar visualmente el botón numérico correspondiente
+    const botonDestino = listaDePaginacion.querySelector(`a[data-pagina="${paginaActualIndex}"]`);
+    if (botonDestino) {
+        botonDestino.parentElement.classList.add('active');
+    }
+}
+
+// Configuración del Listener de eventos (ejecútalo una sola vez al cargar tu app)
+function configurarEventosPaginacion() {
+    const listaDePaginacion = document.getElementById('listaDePaginacion');
+    if (!listaDePaginacion) return;
+
+    listaDePaginacion.addEventListener('click', (evento) => {
+        evento.preventDefault();
+        const elementoA = evento.target.closest('a');
+        if (!elementoA) return;
+
+        if (elementoA.hasAttribute('data-pagina')) {
+            cambiarPagina(parseInt(elementoA.getAttribute('data-pagina')));
+        }
+
+        if (elementoA.hasAttribute('data-accion')) {
+            const accion = elementoA.getAttribute('data-accion');
+            if (accion === 'prev') {
+                cambiarPagina(paginaActualIndex - 1);
+            } else if (accion === 'next') {
+                cambiarPagina(paginaActualIndex + 1);
+            }
+        }
+    });
 }
 
 function imprimirDatosEnTabla(idEncabezadoDeTabla, datosDelServidor) {
@@ -353,9 +506,22 @@ function reestablecerCajaDeMensaje() {
 }
 
 function reestablecerTabla() {
+    // 1. Ocultamos los encabezados
     document.getElementById('encabezadoGastos').classList.add('d-none');
     document.getElementById('encabezadoIngreso').classList.add('d-none');
-    document.getElementById('cuerpoDeTabla').innerHTML = '';
+    document.getElementById('pieDeTabla').classList.add('d-none');
+    
+    // 2. Seleccionamos la tabla y eliminamos todos los <tbody> generados dinámicamente
+    const tabla = document.querySelector('table');
+    if (tabla) {
+        tabla.querySelectorAll('tbody').forEach(tbody => tbody.remove());
+    }
+
+    // 3. Limpiamos también la barra de paginación para que no queden botones huérfanos
+    const listaDePaginacion = document.getElementById('listaDePaginacion');
+    if (listaDePaginacion) {
+        listaDePaginacion.innerHTML = '';
+    }
 }
 
 function reestablecerFormulario() {

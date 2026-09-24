@@ -36,20 +36,24 @@ function obtenerDatosDeFormularioPorSolicitud(solicitud) {
     let datosDeFormulario = almacenarDatosPorId(idsDeInputsDeFormulario);
     datosDeFormulario = validarDatos(datosDeFormulario);
     datosDeFormulario = devolverFechaFormateada(solicitud, datosDeFormulario);
+    console.log(datosDeFormulario);
     return datosDeFormulario;  
 }
 
 async function eliminarIngreso(idIngreso) {
+
     reestablecerTabla();
 
-    let buscarDatosDeSaldo = { 'seccion': 'buscarSaldoPorFkSaldoIngreso', 'idIngreso': idIngreso };   
-    let datosDeSaldo = await buscarDatos(buscarDatosDeSaldo);
+    let datosDeSaldo = await buscarDatos({seccion: 'buscarSaldoPorFkSaldoIngreso', idIngreso: idIngreso });
     const idSaldo = datosDeSaldo.datos.ID_SALDO[0];
 
-    let gastoEliminado = JSON.parse(await solicitarDatosConParametros({ 'seccion': 'eliminarGastoPorId', 'idGasto': idSaldo }));
-    let datosDeSaldoEliminado = JSON.parse(await solicitarDatosConParametros({ 'seccion': 'eliminarSaldoPorId', 'idSaldo': idSaldo }));
-
-    imprimirTodosLosSaldos();
+    let gastoEliminado = JSON.parse(await solicitarDatosConParametros({seccion: 'eliminarGastoPorId', idGasto: idSaldo }));
+    let datosDeSaldoEliminado = JSON.parse(await solicitarDatosConParametros({seccion: 'eliminarSaldoPorId', idSaldo: idSaldo }));
+    let respuestaIngresoEliminado = JSON.parse(await solicitarDatosConParametros({seccion: 'eliminarIngresoPorId', idIngreso: datosDeSaldo.datos.FK_SALDO_INGRESO[0]}));
+    console.log(datosDeSaldo);
+    console.log(gastoEliminado);
+    console.log(respuestaIngresoEliminado);
+    await imprimirTodosLosSaldos();
 }
 
 async function actualizarSaldo(idSaldo, gastoActual, saldoActual) {
@@ -113,11 +117,17 @@ async function buscarDatosDeSaldoPorIngreso(datosDeIngreso) {
 
 function almacenarDatosDeIngresosYSaldos(cantidadDeDatos, origenIngreso, ingresos, saldo) {
     let datos = { origenDeIngresos: [], ingresosActuales: [], saldosActuales: [] };
-
     for (let i = 0; i < cantidadDeDatos; i++) {
+        console.log(saldo[i].datos.IMPORTE[0]);
         datos.origenDeIngresos.push(origenIngreso[i]);
         datos.ingresosActuales.push(ingresos[i]);
-        datos.saldosActuales.push(saldo[i].datos.IMPORTE[0]);
+        if(saldo[i].cantidadDeResultados > 0){
+            datos.saldosActuales.push(saldo[i].datos.IMPORTE[0]);
+        } else {
+            datos.saldosActuales.push(0.00);
+        }
+
+        
     }
 
     return datos;
@@ -163,7 +173,8 @@ async function gestionarDatos(solicitud, accion, datosDelServidor) {
         let datosDeSaldo = await buscarDatosDeSaldoPorIngreso(datosDelServidor);
         let datos = almacenarDatosDeIngresosYSaldos(datosDelServidor.cantidadDeResultados, datosDelServidor.datos.ORIGEN, datosDelServidor.datos.IMPORTE, datosDeSaldo);
         let datosAGraficar = almacenarDatosDeIngresoParaGraficar(datosDelServidor, datos.origenDeIngresos, datos.ingresosActuales, datos.saldosActuales);
-        
+        /*console.log(datos);
+        console.log(datosDeSaldo);*/
         crearGrafico('grafico', 'bar', 'Ingresos', datosAGraficar.origen, datosAGraficar.datosNumericos, datosAGraficar.colorDeBarra, datosAGraficar.colorDeBordeDeBarra, datosAGraficar.colorTextoDeBarra, datosAGraficar.colorDatosEjeX);
         imprimirDatosEnTabla('ingresos', datosDelServidor);
         detectarInteraccionConBotonEliminar('.botonEliminarIngreso');
@@ -171,6 +182,7 @@ async function gestionarDatos(solicitud, accion, datosDelServidor) {
         if(solicitud === 'buscarIngresoPorMesAño'){
             ingresoPromedio = devolverPromedioDeMatriz(datos.ingresosActuales);
             ingresoPromedio = formatearNumero(ingresoPromedio);
+            console.log(ingresoPromedio);
             saldoPromedio = devolverPromedioDeMatriz(datos.saldosActuales);
             saldoPromedio = formatearNumero(saldoPromedio);
             promedioAImprimir = 'Ingreso promedio: $' + ingresoPromedio + ' - Saldo actual promedio: $' + saldoPromedio;
@@ -266,8 +278,8 @@ async function procesarSolicitudAlServidor(solicitud) {
             //Se buscan los datos de un ingreso específico.
             datosDeFormulario.seccion = 'buscarIngresoPorMesAñoOrigenDeIngreso';
             datosDeIngreso = await buscarDatos(datosDeFormulario);
-
-            //Se verifica que el ingreso que se intenta guardar, no esté almacenado previamente, evitando almacenar datos duplicados.
+            console.log(datosDeFormulario);
+           //Se verifica que el ingreso que se intenta guardar, no esté almacenado previamente, evitando almacenar datos duplicados.
             validarIngresoDuplicado(datosDeIngreso);
 
             //Se almacena la seccion para guardar los datos.
@@ -277,8 +289,8 @@ async function procesarSolicitudAlServidor(solicitud) {
 
             //Se guarda el saldo.
             guardarSaldo(datosDeFormulario);
-            imprimirTodosLosIngresos();
-            imprimirTodosLosSaldos();
+            await imprimirTodosLosIngresos();
+            await imprimirTodosLosSaldos();
 
             const datosDeTodosLosSaldos = await buscarDatosDeTodosLosSaldos();
             cargarSaldos(datosDeTodosLosSaldos);
@@ -287,12 +299,11 @@ async function procesarSolicitudAlServidor(solicitud) {
 
         case 'guardarGasto':    
             datosDeFormulario = obtenerDatosDeFormularioPorSolicitud(solicitud);
-            datosDeSaldo = await buscarDatos({ seccion: 'buscarSaldoPorId', inputSaldo: datosDeFormulario.inputSaldo });    
-            validarImporteRespectoAlSaldo(datosDeFormulario, datosDeSaldo);
-            modificarSaldo(datosDeFormulario, datosDeSaldo);
-            guardarGasto(datosDeFormulario);
-
-            imprimirTodosLosSaldos();
+            datosDeSaldo = await buscarDatos({ seccion: 'buscarSaldoPorId', inputSaldo: datosDeFormulario.inputSaldo });
+            validarImporteRespectoAlSaldo(datosDeFormulario.inputImporte, datosDeSaldo);
+            await modificarSaldo(datosDeFormulario, datosDeSaldo);
+            await guardarGasto(datosDeFormulario);
+            await imprimirTodosLosSaldos();
             break;
 
         case 'buscarIngresoPorMesAño':
@@ -310,6 +321,7 @@ async function procesarSolicitudAlServidor(solicitud) {
             datosDeFormulario = obtenerDatosDeFormularioPorSolicitud(solicitud);
             datosDeFormulario.seccion = solicitud;
             datosDeGastos = await buscarDatos(datosDeFormulario);
+            console.log(datosDeGastos);
             validarCantidadDeResultadosObtenidos(datosDeGastos.cantidadDeResultados);
             gestionarDatos(solicitud, 'buscarGasto', datosDeGastos);
             break;

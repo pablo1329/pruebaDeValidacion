@@ -207,21 +207,9 @@ function asignarSeccionPorDatos(solicitud, datosDeFormulario){
     return datosDeFormulario;
 }
 
-function suprimirDatosInecesarios(solicitud, datosDeFormulario){
-    if(solicitud === 'buscarGastos'){
-        for (const [clave, valor] of Object.entries(datosDeFormulario)) {
-            if (valor == 0) {
-                delete datosDeFormulario[clave];
-            }
-        }
-        datosDeFormulario = asignarSeccionPorDatos(solicitud, datosDeFormulario);
-    }
-
-    return datosDeFormulario;
-}
-
 
 function devolverPromedioDeMatriz(matrizDeDatos){
+    console.log(matrizDeDatos);
             const cantidadDeDatos = matrizDeDatos.length;
             const initialValue = 0;
             const sumaDeArray = matrizDeDatos.reduce(

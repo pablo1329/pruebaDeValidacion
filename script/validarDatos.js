@@ -14,7 +14,7 @@ const RESTRICCIONES = {
         longitudMaxima: 15,
         caracteresPermitidos: /^\d+(\.\d+)?$/,
         tipoDeDatoAValidar: 'float',
-        valorAbsolutoMinimo: 0.00,
+        valorAbsolutoMinimo: 1.00,
         valorAbsolutoMaximo: 999999999.99
     },
     inputOrigenDeIngreso: {
@@ -44,7 +44,15 @@ const RESTRICCIONES = {
         valorAbsolutoMinimo: 1,
         valorAbsolutoMaximo: 99
     },
-    inputDetalleDelGasto: {}
+    inputDetalleDelGasto: {
+        obligatorio: true,
+        longitudMinima: 2,
+        longitudMaxima: 150,
+        caracteresPermitidos: /^[a-zA-ZÀ-ÿ0-9,.\s]+$/,
+        tipoDeDatoAValidar: 'string',
+        valorAbsolutoMinimo: 0,
+        valorAbsolutoMaximo: 0
+    }
 };
 
 const PARRAFOS_POR_INPUTS = {
@@ -92,7 +100,6 @@ function validarLimitesAbsolutosDeNumero(campo, numero, limiteMinimo, limiteMaxi
 
 function validarNumeroEntero(valor, campo) {
     const numero = Number(valor);
-
     if (!Number.isInteger(numero)) {
         throw new ValidacionError(`El campo "${campo}" debe ser un número entero.`, campo);
     }
@@ -101,24 +108,69 @@ function validarNumeroEntero(valor, campo) {
     return valor;
 }
 
+function validarNumeroDecimal(valor, restriccion) {
+    // Si no hay restricciones definidas para este campo, lo damos por válido
+    if (!restriccion || !restriccion.caracteresPermitidos) {
+        return null;
+    }
+    
+    if (!restriccion.caracteresPermitidos.test(valor)) {
+        return 'valorNumericoDecimalInvalido';
+    }
+
+    const numero = parseFloat(valor);
+
+    if (numero < restriccion.valorAbsolutoMinimo) {
+        return 'valorAbsolutoInferior';
+    }
+    if (numero > restriccion.valorAbsolutoMaximo) {
+        return 'valorAbsolutoSuperior';
+    }
+
+    return null;
+}
+
 function validarDatos(datosDeFormulario) {
     let almacenarError = { propiedades: [], codigosDeError: [] };
 
-    for (const [propiedad, valor] of Object.entries(datosDeFormulario)) {
+    for (const [propiedad, valorCrudo] of Object.entries(datosDeFormulario)) {
         const restriccionPorInput = RESTRICCIONES[propiedad];
-        
+
         if (!restriccionPorInput) continue;
 
-        const verificarValorVacio = validarValoresVacios(valor);
+        // 1. Limpieza de espacios
+        let valor = typeof valorCrudo === 'string' ? valorCrudo.trim() : String(valorCrudo);
         
+        // 2. NORMALIZACIÓN INMEDIATA: Reemplazar la coma por punto si es float
+        if (restriccionPorInput.tipoDeDatoAValidar === 'float') {
+            valor = valor.replace(',', '.');
+        }
+
+        // Guardamos el valor ya normalizado en el formulario
+        datosDeFormulario[propiedad] = valor;
+
+        // 3. Validar si está vacío
+        const verificarValorVacio = validarValoresVacios(valor);
         if (verificarValorVacio) {
             if (restriccionPorInput.obligatorio) {
                 almacenarError.propiedades.push(propiedad);
                 almacenarError.codigosDeError.push('propiedadObligatoriaVacia');
             }
+            continue; 
         }
-    }
 
+        if (restriccionPorInput.tipoDeDatoAValidar === 'int') {
+            codigoErrorEspecifico = validarNumeroEntero(valor, propiedad);
+        } else if (restriccionPorInput.tipoDeDatoAValidar === 'float') {
+            codigoErrorEspecifico = validarNumeroDecimal(valor, restriccionPorInput);
+        }
+
+       
+            //almacenarError.propiedades.push(propiedad);
+            //almacenarError.codigosDeError.push(codigoErrorEspecifico);
+        
+    }
+    
     if (almacenarError.propiedades.length > 0) {
         throw new ValidacionError('inputFormulario', almacenarError);
     }
@@ -140,8 +192,9 @@ function validarCantidadDeResultadosObtenidos(cantidadDeResultados) {
     }
 }
 
-async function validarImporteRespectoAlSaldo(datosDeFormulario, datosDeSaldo) {
-    let gastoConvertido = parseFloat(datosDeFormulario.inputImporte);
+function validarImporteRespectoAlSaldo(importe, datosDeSaldo) {
+
+    let gastoConvertido = parseFloat(importe);
     let saldoConvertido = parseFloat(datosDeSaldo.datos.IMPORTE[0]);
     
     if (gastoConvertido > saldoConvertido) {
