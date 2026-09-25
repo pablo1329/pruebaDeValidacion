@@ -1,20 +1,3 @@
-const DATOS_DE_TARJETAS_DE_INICIO = { 
-    'ingreso': {
-        'Carol': { idEncabezadoDeTarjeta: 'encabezadoIngresoCarol', idImporteIngresoSinFormatear: 'importeIngresoSinFormatearCarol', idImporteIngreso: 'importeIngresoCarol', idFechaIngreso: 'fechaIngresoCarol' },
-        'Pablo': { idEncabezadoDeTarjeta: 'encabezadoIngresoPablo', idImporteIngresoSinFormatear: 'importeIngresoSinFormatearPablo', idImporteIngreso: 'importeIngresoPablo', idFechaIngreso: 'fechaIngresoPablo' },
-        'Alquiler': { idEncabezadoDeTarjeta: 'encabezadoIngresoAlquiler', idImporteIngresoSinFormatear: 'importeIngresoSinFormatearAlquiler', idImporteIngreso: 'importeIngresoAlquiler', idFechaIngreso: 'fechaIngresoAlquiler' },
-        'Total': { idEncabezadoDeTarjeta: 'encabezadoIngresoTotal', idImporteIngreso: 'importeIngresoTotal', idFechaIngreso: 'fechaIngresoTotal' } 
-    },
-    'saldo': {
-        'Carol': { idEncabezadoDeTarjeta: 'encabezadoSaldoCarol', idImporteIngreso: 'importeSaldoCarol', idFechaIngreso: 'fechaSaldoCarol', idImagen: 'imagenSaldoCarol' },
-        'Pablo': { idEncabezadoDeTarjeta: 'encabezadoSaldoPablo', idImporteIngreso: 'importeSaldoPablo', idFechaIngreso: 'fechaSaldoPablo', idImagen: 'imagenSaldoPablo' },
-        'Alquiler': { idEncabezadoDeTarjeta: 'encabezadoSaldoAlquiler', idImporteIngreso: 'importeSaldoAlquiler', idFechaIngreso: 'fechaSaldoAlquiler', idImagen: 'imagenSaldoAlquiler' },
-        'Total': { idEncabezadoDeTarjeta: 'encabezadoSaldoTotal', idImporteIngreso: 'importeSaldoTotal', idFechaIngreso: 'fechaSaldoTotal', idImagen: 'imagenSaldoTotal' } 
-    }
-};
-
-const NOMBRE_DE_MESES = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-
 async function imprimirImagenes(origen, ingresoActual, saldoActual) {
 
     let imagenActual = document.getElementById(DATOS_DE_TARJETAS_DE_INICIO['saldo'][origen]?.idImagen);
@@ -30,11 +13,11 @@ async function imprimirImagenes(origen, ingresoActual, saldoActual) {
     }
 
     imagenActual.setAttribute('src', src);
+
 }//fin function imprimirImagenes
 
 async function imprimirTodasLasImagensPorSaldo(datosDeOrigenesDeIngreso, datosDeSaldo) {
     
-
     const datosDeUltimoIngreso = await buscarUltimosIngresos();
     
     const cantidadDeResultados = datosDeOrigenesDeIngreso.cantidadDeResultados;
@@ -106,6 +89,7 @@ function mostrarCamposDeFormulario(configuracion) {
 }
 
 function mostrarIconoDeBotonDeFormulario(configuracion) {
+
     const todosLosIconosDeBotonDeFormulario = ['iconoGuardar', 'iconoBuscar', 'iconoModificar'];
 
     todosLosIconosDeBotonDeFormulario.forEach((element) => {
@@ -130,13 +114,10 @@ function configurarCambioDinamicoBoton(inputId, nombreBase, nombreConFiltro) {
     
         if(nombreDeBotonDeFormulario != 'guardarGasto'){
             actualizarNombreBotonFormulario(nuevoNombre);
-        }
-             
-        
-        
-        
+        }  
     });
-}
+
+}//fin function configurarCambioDinamicoBoton
 
 function configurarDinamicaSegunLista(idDeLista) {
     const configuraciones = {
@@ -148,7 +129,7 @@ function configurarDinamicaSegunLista(idDeLista) {
     if (config) {
         configurarCambioDinamicoBoton(config.inputId, config.nombreBase, config.nombreConFiltro);
     }
-}
+}//fin function configurarDinamicaSegunLista
 
 function administrarVistaDeFormularioPorId(idDeLista) {
     let configuracion = obtenerConfiguracionDeFormulario(idDeLista);
@@ -161,7 +142,7 @@ function administrarVistaDeFormularioPorId(idDeLista) {
 
     mostrarIconoDeBotonDeFormulario(configuracion);
     configurarDinamicaSegunLista(idDeLista);
-}
+}//fin function administrarVistaDeFormularioPorId
 
 function imprimirErroresEnFormulario(idsDeParrafosRelacionadosAInputs, erroresPorCodigoDeError) {
     idsDeParrafosRelacionadosAInputs.forEach((id, i) => {
@@ -171,7 +152,7 @@ function imprimirErroresEnFormulario(idsDeParrafosRelacionadosAInputs, erroresPo
             parrafo.textContent = erroresPorCodigoDeError[i];
         }
     });
-}
+}//fin function imprimirErroresEnFormulario
 
 function imprimirMensajeDeErrorDelServidor(objetoError, mensajeDeError) {
     let cajaDeMensajeDelServidor = document.getElementById('cajaMensajeDelServidor');
@@ -180,7 +161,7 @@ function imprimirMensajeDeErrorDelServidor(objetoError, mensajeDeError) {
     cajaDeMensajeDelServidor.classList.remove('d-none', 'cajaDeMensajeDeExito');
     cajaDeMensajeDelServidor.classList.add('cajaDeMensajeDeError');
     parrafo.textContent = mensajeDeError;
-}
+}//fin function imprimirMensajeDeErrorDelServidor
 
 function imprimerMensajeDeExito(mensajeDeExito) {
     let cajaDeMensajeDelServidor = document.getElementById('cajaMensajeDelServidor');
@@ -189,15 +170,15 @@ function imprimerMensajeDeExito(mensajeDeExito) {
     cajaDeMensajeDelServidor.classList.remove('d-none', 'cajaDeMensajeDeError');
     cajaDeMensajeDelServidor.classList.add('cajaDeMensajeDeExito');
     parrafo.textContent = mensajeDeExito;
-}
+}//fin function imprimerMensajeDeExito
 
 function obtenerDatosDeTarjeta(origenDeIngreso) {
     return DATOS_DE_TARJETAS_DE_INICIO['ingreso'][origenDeIngreso] || DATOS_DE_TARJETAS_DE_INICIO['ingreso']['Total'];
-}
+}//fin function obtenerDatosDeTarjeta
 
 function obtenerDatosDeTarjetasDeSaldo(origenDeIngreso) {
     return DATOS_DE_TARJETAS_DE_INICIO['saldo'][origenDeIngreso] || DATOS_DE_TARJETAS_DE_INICIO['saldo']['Total'];
-}
+}//fin function obtenerDatosDeTarjetasDeSaldo
 
 function imprimirDatosDeIngresoPorOrigen(origenDeIngreso, año, mes, importe) {
     let datosDeTarjeta = obtenerDatosDeTarjeta(origenDeIngreso);
@@ -212,7 +193,7 @@ function imprimirDatosDeIngresoPorOrigen(origenDeIngreso, año, mes, importe) {
         document.getElementById(datosDeTarjeta.idFechaIngreso).textContent = NOMBRE_DE_MESES[mes] + ' ' + año;  
     }
     
-}
+}//fin function imprimirDatosDeIngresoPorOrigen
 
 function imprimirDatosDeSaldoPorOrigen(origenDeIngreso, dia, mes, año, importe) {
     let datosDeTarjeta = obtenerDatosDeTarjetasDeSaldo(origenDeIngreso);
@@ -228,7 +209,7 @@ function imprimirDatosDeSaldoPorOrigen(origenDeIngreso, dia, mes, año, importe)
         document.getElementById(datosDeTarjeta.idFechaIngreso).textContent = `${dia}/${mes}/${año}`; 
     }
     
-}
+}//fin function imprimirDatosDeSaldoPorOrigen
 
 async function imprimirTodosLosIngresos(){
     const datosDeOrigenesDeIngreso = await buscarDatos({seccion: 'buscarTodosLosOrigenesDeIngreso'});
@@ -288,19 +269,19 @@ async function imprimirTodosLosSaldos(){
 function mostrarEncabezadoDeTabla(seccion) {
     document.getElementById('encabezadoIngreso').classList.toggle('d-none', seccion !== 'ingresos');
     document.getElementById('encabezadoGastos').classList.toggle('d-none', seccion === 'ingresos');
-}
+}//fin function mostrarEncabezadoDeTabla
 
 function imprimirDatosDeIngreso(origen, fechaFormateada, importeFormateado, idIngreso) {
     return `<tr>
-        <td>${origen}</td>
-        <td>${fechaFormateada}</td>
-        <td>$${importeFormateado}</td>
-        <td><svg xmlns="http://www.w3.org/2000/svg" class="bi bi-trash mx-2 botonEliminarIngreso" viewBox="0 0 16 16" value="${idIngreso}">
-                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"></path>
-                <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"></path>
-            </svg></td>
-    </tr>`;
-}
+                <td>${origen}</td>
+                <td>${fechaFormateada}</td>
+                <td>$${importeFormateado}</td>
+                <td><svg xmlns="http://www.w3.org/2000/svg" class="bi bi-trash mx-2 botonEliminarIngreso" viewBox="0 0 16 16" value="${idIngreso}">
+                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"></path>
+                    <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"></path>
+                </svg></td>
+            </tr>`;
+}//fin function imprimirDatosDeIngreso
 
 function imprimirDatosDeGasto(origen, fechaFormateada, categoriaDeGasto, importeFormateado, detalle, idGasto) {
     return `<tr>
@@ -314,33 +295,14 @@ function imprimirDatosDeGasto(origen, fechaFormateada, categoriaDeGasto, importe
                     <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"></path>
                 </svg></td>
             </tr>`;
-}
-
-/*function imprimirDatosEnCuerpoDeTabla(accion, cantidadDeDatos, datos) {
-    const cuerpoTabla = document.getElementById('cuerpoDeTabla');
-    let htmlFilas = '';
-    
-    for (let i = 0; i < cantidadDeDatos; i++) {
-        const fechaFormateada = devolverFechaCompleta(datos.DIA[i], datos.MES[i], datos.AÑO[i]);
-        const importeFormateado = formatearNumero(datos.IMPORTE[i]);
-
-        if (accion === 'imprimirDatosDeIngreso') {
-            htmlFilas += imprimirDatosDeIngreso(datos.ORIGEN[i], fechaFormateada, importeFormateado, datos.ID_INGRESO[i]);
-        } else if (accion === 'imprimirDatosDeGasto') {
-            htmlFilas += imprimirDatosDeGasto(datos.ORIGEN, fechaFormateada, datos.CATEGORIA[i], importeFormateado, datos.DETALLE[i], datos.ID_GASTO[i]);
-        }
-    }
-
-    cuerpoTabla.innerHTML = htmlFilas;
-}*/ 
-
+}//fin function imprimirDatosDeGasto
 
 
 function imprimirDatosEnCuerpoDeTabla(accion, cantidadDeDatos, datos) {
     document.getElementById('pieDeTabla').classList.remove('d-none');
     let celdaPaginacion = document.getElementById('celdaPaginacion');
     const filasAMostrar = 10; // Puedes ajustar cuántas filas mostrar por página
-let paginaActualIndex = 1;
+    let paginaActualIndex = 1;
     const tabla = document.querySelector('table');
     const pieDeTabla = document.getElementById('pieDeTabla');
     const listaDePaginacion = document.getElementById('listaDePaginacion');
@@ -355,7 +317,6 @@ let paginaActualIndex = 1;
     let contadorPagina = 1;
     let htmlFilasPagina = '';
 
-    // Crear botón Anterior (<<)
     if (listaDePaginacion) crearBotonNavegacion('<<', 'prev');
 
     for (let i = 0; i < cantidadDeDatos; i++) {
@@ -364,6 +325,7 @@ let paginaActualIndex = 1;
 
         // Acumulamos el HTML devuelto por tus funciones auxiliares
         if (accion === 'imprimirDatosDeIngreso') {
+            celdaPaginacion.setAttribute('colspan', '4');
             htmlFilasPagina += imprimirDatosDeIngreso(datos.ORIGEN[i], fechaFormateada, importeFormateado, datos.ID_INGRESO[i]);
         } else if (accion === 'imprimirDatosDeGasto') {
             celdaPaginacion.setAttribute('colspan', '6');
@@ -397,14 +359,14 @@ let paginaActualIndex = 1;
         }
     }
 
-    // Crear botón Siguiente (>>)
     if (listaDePaginacion) {
         crearBotonNavegacion('>>', 'next');
     }
 
     // Reiniciamos el índice de la página activa
     paginaActualIndex = 1;
-}
+
+}//fin function imprimirDatosEnCuerpoDeTabla
 
 // Funciones auxiliares para la creación de botones de paginación
 function crearBotonPaginaNumero(numero) {
@@ -420,7 +382,7 @@ function crearBotonPaginaNumero(numero) {
 
     li.append(a);
     listaDePaginacion.append(li);
-}
+}//fin function crearBotonPaginaNumero
 
 function crearBotonNavegacion(texto, accion) {
     const listaDePaginacion = document.getElementById('listaDePaginacion');
@@ -433,7 +395,7 @@ function crearBotonNavegacion(texto, accion) {
     a.textContent = texto;
     li.append(a);
     listaDePaginacion.append(li);
-}
+}//fin function crearBotonNavegacion
 
 // Función global para cambiar de página mediante los botones o flechas
 function cambiarPagina(nuevaPagina) {
@@ -460,7 +422,7 @@ function cambiarPagina(nuevaPagina) {
     if (botonDestino) {
         botonDestino.parentElement.classList.add('active');
     }
-}
+}//fin function cambiarPagina
 
 // Configuración del Listener de eventos (ejecútalo una sola vez al cargar tu app)
 function configurarEventosPaginacion() {
@@ -485,7 +447,7 @@ function configurarEventosPaginacion() {
             }
         }
     });
-}
+}//fin function configurarEventosPaginacion
 
 function imprimirDatosEnTabla(idEncabezadoDeTabla, datosDelServidor) {
     if (idEncabezadoDeTabla === 'ingresos') {
@@ -495,7 +457,7 @@ function imprimirDatosEnTabla(idEncabezadoDeTabla, datosDelServidor) {
         mostrarEncabezadoDeTabla('gastos');
         imprimirDatosEnCuerpoDeTabla('imprimirDatosDeGasto', datosDelServidor.cantidadDeResultados, datosDelServidor.datos);
     }
-}
+}//fin function imprimirDatosEnTabla
 
 function reestablecerCajaDeMensaje() {
     let cajaDeMensajeDelServidor = document.getElementById('cajaMensajeDelServidor');
@@ -503,7 +465,7 @@ function reestablecerCajaDeMensaje() {
     cajaDeMensajeDelServidor.classList.remove('cajaDeMensajeDeError', 'cajaDeMensajeDeExito');
     cajaDeMensajeDelServidor.classList.add('d-none');
     parrafo.textContent = '';
-}
+}//fin function reestablecerCajaDeMensaje
 
 function reestablecerTabla() {
     // 1. Ocultamos los encabezados
@@ -522,7 +484,7 @@ function reestablecerTabla() {
     if (listaDePaginacion) {
         listaDePaginacion.innerHTML = '';
     }
-}
+}//fin function reestablecerTabla
 
 function reestablecerFormulario() {
     let parrafosDeFormulario = document.getElementById('formGestionDeDatos').querySelectorAll('p');
@@ -530,20 +492,20 @@ function reestablecerFormulario() {
         elemento.classList.remove('mensajeDeError');
         elemento.textContent = '';
     });
-}
+}//fin function reestablecerFormulario
 
 function reestablecerVistaPrincipal() {
     destruirGrafico(document.getElementById('grafico'));
     reestablecerFormulario();
     reestablecerCajaDeMensaje();
     reestablecerTabla();
-}
+}//fin function reestablecerVistaPrincipal
 
 function imprimirPromedio(datos){
 
-            const cajaMensajeDelServidor = document.getElementById('cajaMensajeDelServidor');
-            cajaMensajeDelServidor.classList.remove('d-none');
-            cajaMensajeDelServidor.classList.add('cajaDeMensajeDeExito');
-            cajaMensajeDelServidor.querySelector('p').textContent = datos;
+    const cajaMensajeDelServidor = document.getElementById('cajaMensajeDelServidor');
+    cajaMensajeDelServidor.classList.remove('d-none');
+    cajaMensajeDelServidor.classList.add('cajaDeMensajeDeExito');
+    cajaMensajeDelServidor.querySelector('p').textContent = datos;
 
 }//fin function imprimirPromedio

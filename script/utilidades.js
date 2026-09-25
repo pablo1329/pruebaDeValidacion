@@ -102,7 +102,8 @@ function cargarSaldos(datos) {
     }
  
     llenarSelect('inputSaldo', idSaldo, origenSaldo);
-}
+    
+}//fin function cargarSaldos
 
 async function almacenarDatos(){
     const obtenerTodosLosOrigenesDeIngreso = {'seccion': 'buscarTodosLosOrigenesDeIngreso'};
@@ -209,14 +210,54 @@ function asignarSeccionPorDatos(solicitud, datosDeFormulario){
 
 
 function devolverPromedioDeMatriz(matrizDeDatos){
-    console.log(matrizDeDatos);
-            const cantidadDeDatos = matrizDeDatos.length;
-            const initialValue = 0;
-            const sumaDeArray = matrizDeDatos.reduce(
-            (accumulator, currentValue) => parseFloat(accumulator) + parseFloat(currentValue), initialValue,);
+    const cantidadDeDatos = matrizDeDatos.length;
+    const initialValue = 0;
+    const sumaDeArray = matrizDeDatos.reduce(
+        (accumulator, currentValue) => parseFloat(accumulator) + parseFloat(currentValue), initialValue,);
 
             let promedio = sumaDeArray/cantidadDeDatos;
             promedio = Number(promedio.toFixed(2));
             return promedio;
 
 }//fin function devolverPromedio
+
+function almacenarDatosDeIngresosYSaldos(cantidadDeDatos, origenIngreso, ingresos, saldo) {
+    let datos = { origenDeIngresos: [], ingresosActuales: [], saldosActuales: [] };
+    for (let i = 0; i < cantidadDeDatos; i++) {
+        datos.origenDeIngresos.push(origenIngreso[i]);
+        datos.ingresosActuales.push(ingresos[i]);
+        if(saldo[i].cantidadDeResultados > 0){
+            datos.saldosActuales.push(saldo[i].datos.IMPORTE[0]);
+        } else {
+            datos.saldosActuales.push(0.00);
+        }
+
+    }
+
+    return datos;
+    
+}//fin function almacenarDatosDeIngresosYSaldos
+
+
+function obtenerDatosDeFormularioPorSolicitud(solicitud) {
+    let seccion = document.getElementById('botonForm').name;
+    let idsDeInputsDeFormulario = obtenerIdsDeInputsDeFormularioPorSolicitud(seccion);
+    let datosDeFormulario = almacenarDatosPorId(idsDeInputsDeFormulario);
+    datosDeFormulario = validarDatos(datosDeFormulario);
+    datosDeFormulario = devolverFechaFormateada(solicitud, datosDeFormulario);
+    return datosDeFormulario;  
+}
+
+
+function almacenarDatosPorId(idsDeInputsDeFormulario) {
+    let datosDeFormulario = {};
+    idsDeInputsDeFormulario.forEach((id) => {
+        const inputElement = document.getElementById(id);
+        datosDeFormulario[id] = inputElement ? inputElement.value : null;
+    });
+    return datosDeFormulario;
+}
+
+function obtenerIdsDeInputsDeFormularioPorSolicitud(solicitud) {
+    return CONFIGURACION_FORMULARIOS[solicitud] || [];
+}
